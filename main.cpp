@@ -5,6 +5,12 @@
 #include "day3/Solution.hpp"
 #include "day4/Solution.hpp"
 
+template <typename T>
+T clone(const T& t)
+{
+    return t;
+}
+
 int main()
 {
     {
@@ -26,15 +32,14 @@ int main()
     {
         day3::Solution s;
         auto input = day3::parse();
-        auto input2 = input;
         std::cout << "day 3 test 1: " << s.solve({"vJrwpWtwJgWrhcsFMMfFFhFp",
                                                          "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
                                                          "PmmdzqPrVvPwwTWBwg",
                                                          "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
                                                          "ttgJtRGJQctTZtZT",
                                                          "CrZsJsPPZsGzwwsLwLmpwMDw"}) << std::endl;
-        std::cout << "day 3 part 1: " << s.solve(std::move(input)) << std::endl;
-        std::cout << "day 3 part 2: " << s.solve_part2(std::move(input2)) << std::endl;
+        std::cout << "day 3 part 1: " << s.solve(clone(input)) << std::endl;
+        std::cout << "day 3 part 2: " << s.solve_part2(std::move(input)) << std::endl;
     }
     {
         day4::Solution s;
