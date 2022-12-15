@@ -1,5 +1,5 @@
-#include "sollution.hpp"
-#include <fstream>
+#include "Solution.hpp"
+#include <parsers/parsers.hpp>
 
 enum class hand
 {
@@ -21,24 +21,7 @@ const char* fileLoc = "day2/input.txt";
 
 std::vector<std::pair<char, char>> parse()
 {
-    std::vector<std::pair<char, char>> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    std::pair<char, char> singleInput;
-    while (inputFile)
-    {
-        std::getline(inputFile, line);
-        if (line.size() >= 3)
-        {
-            singleInput.first = line[0];
-            singleInput.second = line[2];
-            out.emplace_back(singleInput);
-        }
-    }
-
-    inputFile.close();
-    return out;
+    return parsers::parse<std::pair<char, char>>(fileLoc);
 }
 
 namespace
@@ -154,7 +137,7 @@ std::pair<hand, hand> map_win_lose_to_hands(const std::pair<hand, Result>& in)
 
 }  // namespace
 
-int Sollution::getSollution(const std::vector<std::pair<char, char>>& input)
+int Solution::solve(const std::vector<std::pair<char, char>>& input)
 {
     int out = 0;
     for (auto&& in: input)
@@ -165,8 +148,7 @@ int Sollution::getSollution(const std::vector<std::pair<char, char>>& input)
     return out;
 }
 
-// x - lose, y - draw, z - win
-int Sollution::getSollution_part2(const std::vector<std::pair<char, char>>& input)
+int Solution::solve_part2(const std::vector<std::pair<char, char>>& input)
 {
     int out = 0;
     for (auto&& in: input)

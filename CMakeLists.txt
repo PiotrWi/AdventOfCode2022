@@ -12,9 +12,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 file(COPY day1/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day1)
 file(COPY day2/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day2)
+file(COPY day3/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day3)
 
 add_executable(aoc
     main.cpp
-    day1/sollution.cpp
-    day2/sollution.cpp)
+        day1/Solution.cpp
+        day2/Solution.cpp
+        day3/Solution.cpp
+    parsers/parsers.hpp)
 

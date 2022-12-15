@@ -1,4 +1,4 @@
-#include "sollution.hpp"
+#include "Solution.hpp"
 #include <algorithm>
 #include <numeric>
 #include <fstream>
@@ -33,12 +33,12 @@ std::vector<std::vector<int>> parse()
     return out;
 }
 
-int Sollution::getSollution(const std::vector<std::vector<int>>& in)
+int Solution::solve_part2(const std::vector<std::vector<int>>& input)
 {
     auto max = 0;
-    for (unsigned int i = 0; i < in.size(); ++i)
+    for (unsigned int i = 0; i < input.size(); ++i)
     {
-        auto current = std::accumulate(in[i].begin(), in[i].end(), 0);
+        auto current = std::accumulate(input[i].begin(), input[i].end(), 0);
         if (current > max)
             max = current;
     }
@@ -46,13 +46,13 @@ int Sollution::getSollution(const std::vector<std::vector<int>>& in)
 }
 
 // Not the optimal one, but short to code.
-int Sollution::getSollution_part2(const std::vector<std::vector<int>>& in)
+int Solution::solve(const std::vector<std::vector<int>>& input)
 {
-    std::vector<int> out(in.size(), 0);
+    std::vector<int> out(input.size(), 0);
 
-    for (unsigned int i = 0; i < in.size(); ++i)
+    for (unsigned int i = 0; i < input.size(); ++i)
     {
-        out[i] = std::accumulate(in[i].begin(), in[i].end(), 0);
+        out[i] = std::accumulate(input[i].begin(), input[i].end(), 0);
     }
     std::sort(out.begin(), out.end());
 
