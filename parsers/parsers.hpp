@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <fstream>
+#include <sstream>
 
 namespace parsers
 {
@@ -19,6 +20,17 @@ template<>
 inline auto toT<std::pair<char, char>>(const std::string& in) -> std::pair<char, char>
 {
     return std::pair<char, char>{in[0], in[2]};
+}
+
+using Day4Type = std::pair<std::pair<int, int>, std::pair<int, int>>;
+template<>
+inline auto toT<Day4Type>(const std::string& in) -> Day4Type
+{
+    char c;
+    Day4Type out;
+    std::stringstream lineStream(in);
+    lineStream >> out.first.first >> c >> out.first.second >> c >> out.second.first >> c >> out.second.second;
+    return out;
 }
 
 template <typename T>

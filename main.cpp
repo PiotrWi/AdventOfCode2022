@@ -3,6 +3,7 @@
 #include "day1/Solution.hpp"
 #include "day2/Solution.hpp"
 #include "day3/Solution.hpp"
+#include "day4/Solution.hpp"
 
 int main()
 {
@@ -33,8 +34,13 @@ int main()
                                                          "ttgJtRGJQctTZtZT",
                                                          "CrZsJsPPZsGzwwsLwLmpwMDw"}) << std::endl;
         std::cout << "day 3 part 1: " << s.solve(std::move(input)) << std::endl;
-        std::cout << "day 3 part 1: " << s.solve_part2(std::move(input2)) << std::endl;
-
+        std::cout << "day 3 part 2: " << s.solve_part2(std::move(input2)) << std::endl;
+    }
+    {
+        day4::Solution s;
+        auto input = day4::parse();
+        std::cout << "day 4 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 4 part2: " << s.solve_part2(input) << std::endl;
     }
     return 0;
 }
