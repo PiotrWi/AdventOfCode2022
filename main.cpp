@@ -6,6 +6,7 @@
 #include "day4/Solution.hpp"
 #include "day5/Solution.hpp"
 #include "day6/Solution.hpp"
+#include "day7/Solution.hpp"
 
 template <typename T>
 T clone(const T& t)
@@ -60,6 +61,12 @@ int main()
         auto input = day6::parse();
         std::cout << "day 6 part1: " << s.solve(input) << std::endl;
         std::cout << "day 6 part2: " << s.solve_part2(input) << std::endl;
+    }
+    {
+        day7::Solution s;
+        auto input = day7::parse();
+        std::cout << "day 7 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 7 part2: " << s.solve_part2(input) << std::endl;
     }
     return 0;
 }
