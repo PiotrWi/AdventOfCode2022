@@ -49,4 +49,31 @@ auto parse(const char* fileLocation) -> std::vector<T>
     return out;
 }
 
+inline std::vector<std::vector<int>> parseMatrixOfChars(const char* fileLoc)
+{
+    std::vector<std::vector<int>> out;
+    std::fstream inputFile(fileLoc);
+    std::string line;
+
+    while (inputFile)
+    {
+        std::getline(inputFile, line);
+        if (line == "")
+        {
+            continue;
+        }
+        std::vector<int> singleRow;
+        std::stringstream ss(line);
+        char c;
+        while (ss.get(c))
+        {
+            singleRow.push_back(c);
+        }
+        out.emplace_back(std::move(singleRow));
+    }
+
+    inputFile.close();
+    return out;
+}
+
 }  // namespace parsers

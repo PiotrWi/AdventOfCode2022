@@ -18,7 +18,7 @@ class Solution
 {
 public:
     int solve(const std::vector<Command>& in);
-    int solve_part2(const std::vector<Command>& in);
+    void solve_part2(const std::vector<Command>& in);
 };
 
 }  // namespace day10

@@ -10,6 +10,10 @@
 #include "day8/Solution.hpp"
 #include "day9/Solution.hpp"
 #include "day10/Solution.hpp"
+#include "day11/Solution.hpp"
+#include "day12/Solution.hpp"
+#include "day13/Solution.hpp"
+#include "day14/Solution.hpp"
 
 template <typename T>
 T clone(const T& t)
@@ -87,7 +91,32 @@ int main()
         day10::Solution s;
         auto input = day10::parse();
         std::cout << "day 10 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 10 part2: " << s.solve_part2(input) << std::endl;
+        s.solve_part2(input);
+    }
+    {
+        day11::Solution s;
+        auto input = day11::parse();
+        std::cout << "day 11 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 11 part1: " << s.solve_part2(input) << std::endl;
+    }
+    {
+        day12::Solution s;
+        auto input = day12::parse();
+        std::cout << "day 12 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 12 part2: " << s.solve_part2(input) << std::endl;
+    }
+    {
+        day13::Solution s;
+        auto input = day13::parse();
+        std::cout << "day 13 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 13 part2: " << s.solve_part2(input) << std::endl;
+    }
+    {
+        day14::Solution s;
+        auto input = day14::parse();
+        std::cout << "day 14 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 14 part1: " << s.solve_part2(input) << std::endl;
+
     }
     return 0;
 }

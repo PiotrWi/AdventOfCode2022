@@ -20,15 +20,26 @@ file(COPY day7/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day7)
 file(COPY day8/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day8)
 file(COPY day9/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day9)
 file(COPY day10/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day10)
+file(COPY day11/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day11)
+file(COPY day12/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day12)
+file(COPY day13/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day13)
+file(COPY day14/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day14)
 
 add_executable(aoc
-    main.cpp
-    day1/Solution.cpp day1/Solution.hpp
-    day2/Solution.cpp day2/Solution.hpp
-    day3/Solution.cpp day3/Solution.hpp
-    day4/Solution.cpp day4/Solution.hpp
-    day5/Solution.cpp day5/Solution.hpp
-    day6/Solution.cpp day6/Solution.hpp
-    day7/Solution.cpp
-    parsers/parsers.hpp day8/Solution.hpp day8/Solution.cpp day9/Solution.hpp day9/Solution.cpp day10/Solution.hpp day10/Solution.cpp)
+        main.cpp
+        parsers/parsers.hpp
+        day1/Solution.cpp day1/Solution.hpp
+        day2/Solution.cpp day2/Solution.hpp
+        day3/Solution.cpp day3/Solution.hpp
+        day4/Solution.cpp day4/Solution.hpp
+        day5/Solution.cpp day5/Solution.hpp
+        day6/Solution.cpp day6/Solution.hpp
+        day7/Solution.cpp day7/Solution.hpp
+        day8/Solution.hpp day8/Solution.cpp
+        day9/Solution.hpp day9/Solution.cpp
+        day10/Solution.hpp day10/Solution.cpp
+        day11/Solution.cpp day11/Solution.hpp
+        day12/Solution.cpp day12/Solution.hpp
+        day13/Solution.hpp day13/Solution.cpp
+        day14/Solution.hpp day14/Solution.cpp day14/Solution.hpp day14/Solution.cpp StringAlgorithms/StringAlgorithms.hpp)
 
