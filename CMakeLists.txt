@@ -7,6 +7,12 @@ endif()
 
 project(aoc LANGUAGES CXX)
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    SET(CMAKE_CXX_FLAGS  "-Og -g -Wall -Wextra -Werror -std=c++20 -fuse-ld=gold")
+else()
+    SET(CMAKE_CXX_FLAGS  "-Ofast -Wall -Wextra -Werror -std=c++20 -mbmi2 -mavx -march=haswell -msse4.1 -flto -fuse-ld=gold -m64 -lrt")
+endif()
+
 SET(CMAKE_CXX_FLAGS  "-Og -g -Wall -Wextra -Werror -std=c++20 -fuse-ld=gold")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -24,10 +30,13 @@ file(COPY day11/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day11)
 file(COPY day12/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day12)
 file(COPY day13/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day13)
 file(COPY day14/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day14)
+file(COPY day15/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day15)
+file(COPY day16/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day16)
 
 add_executable(aoc
         main.cpp
         parsers/parsers.hpp
+        StringAlgorithms/StringAlgorithms.hpp
         day1/Solution.cpp day1/Solution.hpp
         day2/Solution.cpp day2/Solution.hpp
         day3/Solution.cpp day3/Solution.hpp
@@ -41,5 +50,7 @@ add_executable(aoc
         day11/Solution.cpp day11/Solution.hpp
         day12/Solution.cpp day12/Solution.hpp
         day13/Solution.hpp day13/Solution.cpp
-        day14/Solution.hpp day14/Solution.cpp day14/Solution.hpp day14/Solution.cpp StringAlgorithms/StringAlgorithms.hpp)
+        day14/Solution.hpp day14/Solution.cpp
+        day14/Solution.hpp day14/Solution.cpp
+        day15/Solution.hpp day15/Solution.cpp utility/Point.hpp utility/Point.cpp day16/Solution.hpp day16/Solution.cpp)
 
