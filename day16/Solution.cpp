@@ -151,7 +151,7 @@ const int Timeout = 30;
 long findMaxFromAA(const std::vector<std::vector<int> > &costMartix,
                    const std::vector<NodeInt>& nodes,
                    int node,
-                   TNodesToVisitList nodesWorthToVisit,
+                   TNodesToVisitList& nodesWorthToVisit,
                    long currentFloat,
                    long cuttentValue,
                    long elapsedTime)
@@ -191,7 +191,7 @@ const int Timeout = 26;
 long releaseElephant(const std::vector<std::vector<int> > &costMartix,
                    const std::vector<NodeInt>& nodes,
                    int node,
-                   TNodesToVisitList nodesWorthToVisit,
+                   TNodesToVisitList& nodesWorthToVisit,
                    long currentFloat,
                    long cuttentValue,
                    long elapsedTime)

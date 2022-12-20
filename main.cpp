@@ -16,6 +16,7 @@
 #include "day14/Solution.hpp"
 #include "day15/Solution.hpp"
 #include "day16/Solution.hpp"
+#include "day17/Solution.hpp"
 
 template <typename T>
 T clone(const T& t)
@@ -25,7 +26,7 @@ T clone(const T& t)
 
 int main()
 {
-    {
+    /*{
         day1::Solution s;
         auto intput = day1::parse();
         std::cout << "day 1 part 1: " << s.solve(intput) << std::endl;
@@ -107,12 +108,12 @@ int main()
         std::cout << "day 12 part1: " << s.solve(input) << std::endl;
         std::cout << "day 12 part2: " << s.solve_part2(input) << std::endl;
     }
-    /*{
+    {
         day13::Solution s;
         auto input = day13::parse();
         std::cout << "day 13 part1: " << s.solve(input) << std::endl;
         std::cout << "day 13 part2: " << s.solve_part2(input) << std::endl;
-    }*/
+    }
     {
         day14::Solution s;
         auto input = day14::parse();
@@ -131,6 +132,12 @@ int main()
         auto input = day16::parse();
         std::cout << "day 16 part1: " << s.solve(input) << std::endl;
         std::cout << "day 16 part2: " << s.solve_part2(input) << std::endl;
+    }*/
+    {
+        day17::Solution s;
+        auto input = day17::parse();
+        std::cout << "day 17 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 17 part2: " << s.solve_part2(input) << std::endl;
     }
     return 0;
 }
