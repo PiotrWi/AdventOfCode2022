@@ -293,7 +293,6 @@ long Solution::solve_part2(std::vector<WindDirrection> in)
         notCatchToNextCycle = i;
     }
     tallestPointSoFar -= cycles[1].tallestPoint - cycles[0].tallestPoint;
-    unsigned long topDiffBethweenCycles = cycles[1].tallestPoint - cycles[0].tallestPoint;
 
     tunel = cycles[1].tunnelTop;
     long topOfTheCycleEnd = getTallestPoint(tunel);
