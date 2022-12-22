@@ -22,6 +22,13 @@ inline auto toT<std::pair<char, char>>(const std::string& in) -> std::pair<char,
     return std::pair<char, char>{in[0], in[2]};
 }
 
+template<>
+inline auto toT<int>(const std::string& in) -> int
+{
+    return std::stoi(in);
+}
+
+
 using Day4Type = std::pair<std::pair<int, int>, std::pair<int, int>>;
 template<>
 inline auto toT<Day4Type>(const std::string& in) -> Day4Type
