@@ -20,6 +20,7 @@
 #include "day18/Solution.hpp"
 #include "day19/Solution.hpp"
 #include "day20/Solution.hpp"
+#include "day21/Solution.hpp"
 
 template <typename T>
 T clone(const T& t)
@@ -153,12 +154,18 @@ int main()
         auto input = day19::parse();
         std::cout << "day 19 part1: " << s.solve(input) << std::endl;
         std::cout << "day 19 part2: " << s.solve_part2(input) << std::endl;
-    }*/
+    }
     {
         day20::Solution s;
         auto input = day20::parse();
         std::cout << "day 20 part1: " << s.solve(input) << std::endl;
         std::cout << "day 20 part2: " << s.solve_part2(input) << std::endl;
+    }*/
+    {
+        day21::Solution s;
+        auto input = day21::parse();
+        std::cout << "day 21 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 21 part2: " << s.solve_part2(input) << std::endl;
     }
     return 0;
 }

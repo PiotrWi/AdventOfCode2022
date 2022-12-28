@@ -36,6 +36,7 @@ file(COPY day17/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day17)
 file(COPY day18/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day18)
 file(COPY day19/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day19)
 file(COPY day20/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day20)
+file(COPY day21/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day21)
 
 add_executable(aoc
         main.cpp
@@ -62,5 +63,5 @@ add_executable(aoc
         day17/Solution.hpp day17/Solution.cpp
         day18/Solution.hpp day18/Solution.cpp
         day19/Solution.hpp day19/Solution.cpp
-        day20/Solution.hpp day20/Solution.cpp)
+        day20/Solution.hpp day20/Solution.cpp day21/Solution.hpp day21/Solution.cpp)
 
