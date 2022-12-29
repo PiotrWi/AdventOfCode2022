@@ -1,7 +1,7 @@
 #include "Solution.hpp"
 #include <algorithm>
 #include <numeric>
-#include <fstream>
+#include <parsers/parsers.hpp>
 
 namespace day1
 {
@@ -11,13 +11,9 @@ const char* fileLoc = "day1/input.txt";
 std::vector<std::vector<int>> parse()
 {
     std::vector<std::vector<int>> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
     std::vector<int> singleInput;
-    while (inputFile)
+    for (auto&& line : parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
         if (not line.empty())
         {
             singleInput.emplace_back(std::stoi(line));
@@ -29,7 +25,6 @@ std::vector<std::vector<int>> parse()
         }
     }
 
-    inputFile.close();
     return out;
 }
 
@@ -39,8 +34,7 @@ int Solution::solve_part2(const std::vector<std::vector<int>>& input)
     for (unsigned int i = 0; i < input.size(); ++i)
     {
         auto current = std::accumulate(input[i].begin(), input[i].end(), 0);
-        if (current > max)
-            max = current;
+        max = std::max(current, max);
     }
     return max;
 }

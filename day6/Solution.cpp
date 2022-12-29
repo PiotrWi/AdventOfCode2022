@@ -9,7 +9,6 @@ const char* fileLoc = "day6/input.txt";
 std::string parse()
 {
     std::fstream inputFile(fileLoc);
-
     std::string line;
     std::getline(inputFile, line);
     inputFile.close();

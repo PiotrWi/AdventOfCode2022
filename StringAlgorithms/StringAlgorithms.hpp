@@ -50,3 +50,31 @@ inline std::vector<std::string> splitAndTrimByStr(const std::string& in, std::st
     }
     return out;
 }
+
+inline std::vector<std::string> splitNumbersAndLetters(const std::string& in)
+{
+    std::vector<std::string> out;
+    for (unsigned int i = 0; i < in.size();)
+    {
+        std::string number;
+        while (std::isdigit(in[i]))
+        {
+            number.push_back(in[i++]);
+        }
+        if (number.size())
+        {
+            out.push_back(number);
+        }
+
+        std::string letters;
+        while (std::isalnum(in[i]))
+        {
+            letters.push_back(in[i++]);
+        }
+        if (letters.size())
+        {
+            out.push_back(letters);
+        }
+    }
+    return out;
+}

@@ -1,7 +1,7 @@
 #include "Solution.hpp"
-// #include <iostream>
-#include <fstream>
 #include <StringAlgorithms/StringAlgorithms.hpp>
+
+#include <parsers/parsers.hpp>
 
 namespace day14
 {
@@ -11,16 +11,9 @@ const char* fileLoc = "day14/input.txt";
 std::vector<SingleScanPath> parse()
 {
     std::vector<SingleScanPath> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
 
-    while (inputFile)
+    for (auto&& line: parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
-        if (line == "") {
-            continue;
-        }
-
         SingleScanPath singleReadout;
         for (auto&& singleRead: splitAndTrimByStr(line, "->"))
         {
@@ -31,7 +24,6 @@ std::vector<SingleScanPath> parse()
             singleReadout.push_back(sse);
         }
         out.push_back(singleReadout);
-
     }
 
     return out;
@@ -142,20 +134,6 @@ bool simulateSandFalling(std::vector<std::vector <char> >& occupancy)
     }
     return true;
 }
-
-/*
-void printOccupancy(std::vector<std::vector <char> >& occupancy)
-{
-    for (auto depth = 0u; depth < occupancy.size(); ++depth)
-    {
-        for (auto col = 0u; col < occupancy[depth].size(); ++col)
-        {
-            std::cout << occupancy[depth][col];
-        }
-        std::cout << std::endl;
-    }
-}
-*/
 
 auto getSize(const std::vector<SingleScanPath>& in)
 {

@@ -1,9 +1,7 @@
 #include "Solution.hpp"
-#include <cassert>
-#include <fstream>
-#include <iostream>
 #include <cctype>
 #include <typeinfo>
+#include <parsers/parsers.hpp>
 
 namespace day13
 {
@@ -59,12 +57,8 @@ int parseList(List& node, std::string in)
 std::vector<std::unique_ptr<Node>> parse()
 {
     std::vector<std::unique_ptr<Node>> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    while (inputFile)
+    for (auto&& line: parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
         if (line == "") {
             continue;
         }

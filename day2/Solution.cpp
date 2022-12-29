@@ -1,6 +1,17 @@
 #include "Solution.hpp"
 #include <parsers/parsers.hpp>
 
+namespace parsers
+{
+
+template<>
+inline auto toT<std::pair<char, char>>(const std::string& in) -> std::pair<char, char>
+{
+    return std::pair<char, char>{in[0], in[2]};
+}
+
+}
+
 enum class hand
 {
     rock,

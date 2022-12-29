@@ -1,8 +1,7 @@
 #include "Solution.hpp"
-#include <fstream>
-#include <iostream>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 #include <array>
+#include <parsers/parsers.hpp>
 
 namespace day19
 {
@@ -12,16 +11,8 @@ const char *fileLoc = "day19/input.txt";
 std::vector<Blueprint> parse()
 {
     std::vector<Blueprint> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    while (inputFile)
+    for (auto&& line: parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
-        if (line == "")
-        {
-            continue;
-        }
         auto splited = splitAndTrim(line, ' ');
         Blueprint bp;
         bp.oreRobotCost.ore = std::stoi(splited[6]);
@@ -183,6 +174,5 @@ int Solution::solve_part2(std::vector<Blueprint>blueprints)
     }
     return allQualities;
 }
-
 
 }

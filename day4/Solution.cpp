@@ -3,6 +3,21 @@
 #include <numeric>
 #include <parsers/parsers.hpp>
 
+namespace parsers
+{
+
+template <>
+inline auto toT<::day4::TEntityType>(const std::string& in) -> ::day4::TEntityType
+{
+    char c;
+    ::day4::TEntityType out;
+    std::stringstream lineStream(in);
+    lineStream >> out.first.first >> c >> out.first.second >> c >> out.second.first >> c >> out.second.second;
+    return out;
+}
+
+}
+
 namespace day4
 {
 
@@ -27,20 +42,12 @@ bool isFullyInRange(TEntityType elem)
 
 bool doOverlap(TEntityType elem)
 {
-
     if (elem.first.second >= elem.second.first && elem.first.first <= elem.second.second)
         return true;
     if (elem.second.second >= elem.first.first && elem.second.first <= elem.first.second)
         return true;
     return false;
 }
-
-/*
- * 5-7,7-9 overlaps in a single section, 7.
-2-8,3-7 overlaps all of the sections 3 through 7.
-6-6,4-6 overlaps in a single section, 6.
-2-6,4-8 overlaps in sections 4, 5, and 6.
- */
 
 }  // namespace
 

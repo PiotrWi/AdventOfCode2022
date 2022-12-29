@@ -4,10 +4,11 @@
 #include <ranges>
 #include <list>
 #include <deque>
-#include <fstream>
 #include <sstream>
 #include <utility>
 #include <StringAlgorithms/StringAlgorithms.hpp>
+
+#include <parsers/parsers.hpp>
 
 namespace day16
 {
@@ -43,14 +44,9 @@ Node parseLine(const std::string &s)
 std::map<std::string, Node> parse()
 {
     std::map<std::string, Node> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
 
-    while (inputFile) {
-        std::getline(inputFile, line);
-        if (line == "") {
-            continue;
-        }
+    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    {
         auto node = parseLine(line);
         out[node.label] = node;
     }
@@ -104,7 +100,6 @@ auto fillCostForSingleNode(const std::vector<NodeInt> nodes,
         }
         auto cost = it->first;
         costs[node.id][destinationNode.id] = cost;
-        // costs[destinationNode.id][node.id] = cost;
         ++filled;
 
         for (auto &&neigbourId: destinationNode.neighbours) {

@@ -1,8 +1,7 @@
 #include "Solution.hpp"
-#include <fstream>
 #include <set>
 #include <sstream>
-#include <iostream>
+#include <parsers/parsers.hpp>
 
 namespace day15
 {
@@ -14,7 +13,6 @@ namespace
 
 std::pair<SensorLocation, BeaconLocation> parseLine(const std::string& s)
 {
-    //"Sensor at x=(\\d+), y=(\\d+): closest beacon is at x=(\\d+), y=(\\d+)";
     std::pair<SensorLocation, BeaconLocation> out;
 
     std::stringstream ss(s);
@@ -34,22 +32,12 @@ std::pair<SensorLocation, BeaconLocation> parseLine(const std::string& s)
 std::vector<std::pair<SensorLocation, BeaconLocation> > parse()
 {
     std::vector<std::pair<SensorLocation, BeaconLocation> > out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    while (inputFile)
+    for (auto&& line : parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
-        if (line == "") {
-            continue;
-        }
         out.push_back(parseLine(line));
     }
-
     return out;
 }
-
-
 
 namespace
 {
@@ -63,7 +51,6 @@ struct KeyCompare
 };
 using TRangesSet = std::set<std::pair<int, int>, KeyCompare>;
 
-int i = 0;
 void addToSetAndIntegrate(TRangesSet& ranges, std::pair<int, int> range)
 {
     std::vector<std::set<std::pair<int, int>, KeyCompare>::iterator> elementsMerged;
@@ -196,9 +183,7 @@ unsigned long long Solution::solve_part2(std::vector<std::pair<SensorLocation, B
             unsigned long long out = ranges.begin()->second;
             out = out * 4000000ull + (unsigned long long)line;
 
-            std::cout << i;
             return out;
-
         }
     }
     return -1;

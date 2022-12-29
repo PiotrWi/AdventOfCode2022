@@ -1,8 +1,6 @@
 #include "Solution.hpp"
 
-#include <fstream>
-#include <iostream>
-
+#include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 
 namespace day11
@@ -56,15 +54,9 @@ Equasion parseEquasion(const std::string& in)
 std::vector<Monkey> parse()
 {
     std::vector<Monkey> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
 
-    while (inputFile)
+    for (auto&& line: parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
-        if (line == "") {
-            continue;
-        }
         std::string item;
 
         line = ltrim(line);

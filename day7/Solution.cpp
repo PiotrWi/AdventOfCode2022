@@ -6,6 +6,8 @@
 #include <iostream>
 #include <algorithm>
 #include <ranges>
+#include <parsers/parsers.hpp>
+
 
 namespace day7
 {
@@ -15,17 +17,8 @@ std::vector<Command> parse()
 {
     std::vector<Command> out;
 
-    std::fstream inputFile(fileLoc);
-
-    std::string line;
-
-    while (inputFile)
+    for (auto&& line : parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
-        if (line == "")
-        {
-            continue;
-        }
         if (line[0] == '$')
         {
             out.push_back(Command{line, std::vector<std::string>{}});
@@ -35,9 +28,6 @@ std::vector<Command> parse()
             out.back().output.emplace_back(line);
         }
     }
-
-    inputFile.close();
-
     return out;
 }
 

@@ -37,12 +37,13 @@ file(COPY day18/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day18)
 file(COPY day19/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day19)
 file(COPY day20/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day20)
 file(COPY day21/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day21)
+file(COPY day22/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day22)
 
 add_executable(aoc
         main.cpp
         parsers/parsers.hpp
         StringAlgorithms/StringAlgorithms.hpp
-        utility/Point.hpp utility/Point.cpp
+        utility/PointXY.hpp utility/PointXY.cpp
         day1/Solution.cpp day1/Solution.hpp
         day2/Solution.cpp day2/Solution.hpp
         day3/Solution.cpp day3/Solution.hpp
@@ -63,5 +64,6 @@ add_executable(aoc
         day17/Solution.hpp day17/Solution.cpp
         day18/Solution.hpp day18/Solution.cpp
         day19/Solution.hpp day19/Solution.cpp
-        day20/Solution.hpp day20/Solution.cpp day21/Solution.hpp day21/Solution.cpp)
+        day20/Solution.hpp day20/Solution.cpp
+        day21/Solution.hpp day21/Solution.cpp day22/Solution.hpp day22/Solution.cpp parsers/parsers.cpp)
 

@@ -1,9 +1,25 @@
 #include "Solution.hpp"
 
-#include <fstream>
-#include <iostream>
 #include <sstream>
-#include <utility>
+#include <parsers/parsers.hpp>
+
+namespace parsers
+{
+
+template<>
+auto toT<std::vector<int>>(const std::string& line) -> std::vector<int>
+{
+    std::vector<int> singleRow;
+    std::stringstream ss(line);
+    char c;
+    while (ss.get(c))
+    {
+        singleRow.push_back(c);
+    }
+    return singleRow;
+}
+
+}
 
 const char* fileLoc = "day8/input.txt";
 
@@ -12,29 +28,7 @@ namespace day8
 
 std::vector<std::vector<int>> parse()
 {
-    std::vector<std::vector<int>> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    while (inputFile)
-    {
-        std::getline(inputFile, line);
-        if (line == "")
-        {
-            continue;
-        }
-        std::vector<int> singleRow;
-        std::stringstream ss(line);
-        char c;
-        while (ss.get(c))
-        {
-            singleRow.push_back(c);
-        }
-        out.emplace_back(std::move(singleRow));
-    }
-
-    inputFile.close();
-    return out;
+    return parsers::parse<std::vector<int>>(fileLoc);
 }
 
 int Solution::solve(const std::vector<std::vector<int>>& in)
@@ -116,7 +110,6 @@ int getVisibility(const std::vector<std::vector<int>>& in , int row, int col)
         left += 1;
         if (in[row][c] >= currentHeight) break;
     }
-    // std::cout << row << " " << col << " " << up*down*left*right << std::endl;
     return up*down*left*right;
 }
 

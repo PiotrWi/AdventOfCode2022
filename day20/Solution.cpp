@@ -2,6 +2,17 @@
 #include <parsers/parsers.hpp>
 #include <iostream>
 
+namespace parsers
+{
+
+template<>
+inline auto toT<int>(const std::string &in) -> int
+{
+    return std::stoi(in);
+}
+
+}
+
 namespace day20
 {
 

@@ -3,13 +3,13 @@
 #include <vector>
 #include <utility>
 
-#include <utility/Point.hpp>
+#include <utility/PointXY.hpp>
 
 namespace day15
 {
 
-using SensorLocation = Point;
-using BeaconLocation = Point;
+using SensorLocation = PointXY;
+using BeaconLocation = PointXY;
 
 std::vector<std::pair<SensorLocation, BeaconLocation> > parse();
 

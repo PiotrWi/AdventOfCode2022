@@ -1,8 +1,9 @@
 #include "Solution.hpp"
 
-#include <fstream>
 #include <sstream>
 #include <iostream>
+
+#include <parsers/parsers.hpp>
 
 namespace day10
 {
@@ -12,14 +13,9 @@ const char* fileLoc = "day10/input.txt";
 std::vector<Command> parse()
 {
     std::vector<Command> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
 
-    while (inputFile) {
-        std::getline(inputFile, line);
-        if (line == "") {
-            continue;
-        }
+    for (auto&& line: parsers::LinesInFileRange(fileLoc))
+    {
         Command c;
         std::stringstream ss(line);
         ss >> c.command;

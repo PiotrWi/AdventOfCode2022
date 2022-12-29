@@ -27,7 +27,7 @@ class Solution
 {
 public:
     std::string solve(Input input);
-    std::string  solve_part2(Input input);
+    std::string solve_part2(Input input);
 };
 
 }  // namespace day5

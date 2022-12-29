@@ -3,42 +3,46 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <optional>
 
 namespace parsers
 {
 
+class LinesInFileRange
+{
+public:
+    explicit LinesInFileRange(const char* fileLocation);
+    ~LinesInFileRange();
+    bool hasData() const;
+
+private:
+    struct TIterator
+    {
+        TIterator(LinesInFileRange& parent);
+        std::string operator*();
+        void operator++();
+        bool hasData() const;
+    private:
+        LinesInFileRange& parent_;
+    };
+
+    struct TEndTag{};
+
+public:
+    TIterator begin();
+    TEndTag end();
+
+private:
+    std::optional<std::string> line_;
+    std::fstream inputFile_;
+
+public:
+    friend bool operator==(const LinesInFileRange::TIterator& lhs, LinesInFileRange::TEndTag);
+    friend bool operator!=(const LinesInFileRange::TIterator& lhs, LinesInFileRange::TEndTag);
+};
+
 template <typename T>
 auto toT(const std::string&) -> T;
-
-template<>
-inline auto toT<std::string>(const std::string& in) -> std::string
-{
-    return in;
-}
-
-template<>
-inline auto toT<std::pair<char, char>>(const std::string& in) -> std::pair<char, char>
-{
-    return std::pair<char, char>{in[0], in[2]};
-}
-
-template<>
-inline auto toT<int>(const std::string& in) -> int
-{
-    return std::stoi(in);
-}
-
-
-using Day4Type = std::pair<std::pair<int, int>, std::pair<int, int>>;
-template<>
-inline auto toT<Day4Type>(const std::string& in) -> Day4Type
-{
-    char c;
-    Day4Type out;
-    std::stringstream lineStream(in);
-    lineStream >> out.first.first >> c >> out.first.second >> c >> out.second.first >> c >> out.second.second;
-    return out;
-}
 
 template <typename T>
 auto parse(const char* fileLocation) -> std::vector<T>

@@ -8,6 +8,8 @@
 #include <ranges>
 #include <algorithm>
 
+#include <parsers/parsers.hpp>
+
 namespace day18
 {
 
@@ -16,16 +18,8 @@ const char *fileLoc = "day18/input.txt";
 std::vector<Point3d> parse()
 {
     std::vector<Point3d> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    while (inputFile)
+    for (auto&& line : parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
-        if (line == "")
-        {
-            continue;
-        }
         auto splited = splitAndTrim(line, ',');
         out.emplace_back(std::stoi(splited[0]), std::stoi(splited[1]), std::stoi(splited[2]));
     }
@@ -171,7 +165,7 @@ int Solution::solve_part2(std::vector<Point3d> points)
         groupedByYZ[std::make_pair(point.y, point.z)].insert(point.x);
     }
 
-    return points.size()*6 - calculateAdjustment(groupedByXY) - calculateAdjustment(groupedByXZ) - calculateAdjustment(groupedByYZ);
+    return points.size() * 6 - calculateAdjustment(groupedByXY) - calculateAdjustment(groupedByXZ) - calculateAdjustment(groupedByYZ);
 }
 
 

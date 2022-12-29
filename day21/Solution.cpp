@@ -1,7 +1,6 @@
 #include "Solution.hpp"
 
-#include <fstream>
-
+#include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 
 namespace day21
@@ -88,20 +87,11 @@ std::unique_ptr<Monkey> parseLine(const std::string& line)
 std::map<std::string, std::unique_ptr<Monkey> > parse()
 {
     std::map<std::string, std::unique_ptr<Monkey>> monkeys;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    while (inputFile)
+    for (auto&& line : parsers::LinesInFileRange(fileLoc))
     {
-        std::getline(inputFile, line);
-        if (line == "")
-        {
-            continue;
-        }
         auto monkey = parseLine(line);
         monkeys.emplace(monkey->name_, std::move(monkey));
     }
-
     return monkeys;
 }
 

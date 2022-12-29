@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <utility/Point.hpp>
+#include <utility/PointXY.hpp>
 
 namespace day17
 {
@@ -47,7 +47,7 @@ auto addEmptyLinesForFigure(std::vector<std::string>& tunel, int tallestPoint, i
     }
 }
 
-std::vector<Point> addFigure(std::vector<std::string>& tunel, int tallestPoint, long i)
+std::vector<PointXY> addFigure(std::vector<std::string>& tunel, int tallestPoint, long i)
 {
     const int horizontalLine = 0;
     const int plus = 1;
@@ -83,6 +83,7 @@ std::vector<Point> addFigure(std::vector<std::string>& tunel, int tallestPoint, 
     return {};
 }
 
+[[maybe_unused]]
 void printTunel(const std::vector<std::string>& tunel)
 {
     std::cout << std::endl;
@@ -93,31 +94,17 @@ void printTunel(const std::vector<std::string>& tunel)
     }
     std::cout << std::endl;
 }
-/*
-void printTunel(std::vector<std::string> tunel, const std::vector<Point>& cords)
+
+auto tryToMoveWithWind(const std::vector<std::string>& tunel, std::vector<PointXY>& cords, WindDirrection w)
 {
-    for (auto&& c : cords)
-    {
-        tunel[c.y][c.x] = '@';
-    }
-    std::cout << std::endl;
-    for (auto i = tunel.size(); i != 0u; --i)
-    {
-        std::cout << tunel[i-1] << std::endl;
-    }
-    std::cout << std::endl;
-}
-*/
-auto tryToMoveWithWind(const std::vector<std::string>& tunel, std::vector<Point>& cords, WindDirrection w)
-{
-    Point diff;
+    PointXY diff;
     if (w == WindDirrection::left)
     {
-        diff = Point{-1, 0};
+        diff = PointXY{-1, 0};
     }
     else
     {
-        diff = Point{1, 0};
+        diff = PointXY{1, 0};
     }
 
     for (auto it = cords.begin(); it != cords.end(); ++it)
@@ -133,10 +120,10 @@ auto tryToMoveWithWind(const std::vector<std::string>& tunel, std::vector<Point>
         }
     }
 }
-auto tryToMoveDown(const std::vector<std::string>& tunel, std::vector<Point>& cords)
+auto tryToMoveDown(const std::vector<std::string>& tunel, std::vector<PointXY>& cords)
 {
-    Point diff;
-    diff = Point{0, -1};
+    PointXY diff;
+    diff = PointXY{0, -1};
 
     for (auto it = cords.begin(); it != cords.end(); ++it)
     {
@@ -152,7 +139,7 @@ auto tryToMoveDown(const std::vector<std::string>& tunel, std::vector<Point>& co
     }
     return true;
 }
-auto writeFigureToTunel(std::vector<std::string>& tunel, const std::vector<Point>& cords)
+auto writeFigureToTunel(std::vector<std::string>& tunel, const std::vector<PointXY>& cords)
 {
     for (auto&& c : cords)
     {
@@ -258,7 +245,6 @@ long Solution::solve_part2(std::vector<WindDirrection> in)
             std::cout << getTallestPoint(tunel) << std::endl;
             auto top = getTunnelTop(tunel);
             cycles.emplace_back(i, getTallestPoint(tunel), top);
-            printTunel(top);
             if (cycles.size() == 3)
                 break;
         }

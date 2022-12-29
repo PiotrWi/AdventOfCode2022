@@ -5,6 +5,15 @@
 #include <numeric>
 #include <parsers/parsers.hpp>
 
+namespace parsers
+{
+template<>
+inline auto toT<std::string>(const std::string& in) -> std::string
+{
+    return in;
+}
+}
+
 namespace day3
 {
 const char* fileLoc = "day3/input.txt";

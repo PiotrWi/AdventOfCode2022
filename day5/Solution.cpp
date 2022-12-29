@@ -1,8 +1,7 @@
 #include "Solution.hpp"
 #include <vector>
 #include <string>
-#include <fstream>
-#include <sstream>
+#include <parsers/parsers.hpp>
 
 namespace day5
 {
@@ -36,18 +35,16 @@ Input parse()
 {
     Input input;
 
-    std::fstream inputFile(fileLoc);
-    std::string line;
+    auto fileRange = parsers::LinesInFileRange(fileLoc);
+    auto it = fileRange.begin();
 
-    while (std::getline(inputFile, line))
+    for (; it != fileRange.end() && *it != ""; ++it)
     {
-        if (line == "")
-            break;
-        if (line.find('[') == std::string::npos)
+        if ((*it).find('[') == std::string::npos)
         {
             continue;
         }
-        parseStackLine(input, line);
+        parseStackLine(input, (*it));
     }
 
     for (auto& stack_: input.stacks)
@@ -55,11 +52,11 @@ Input parse()
         std::reverse(stack_.begin(), stack_.end());
     }
 
-    while (std::getline(inputFile, line))
+    ++it;
+    for (; it != fileRange.end(); ++it)
     {
-        input.commands.emplace_back(parseToCommand(line));
+        input.commands.emplace_back(parseToCommand(*it));
     }
-    inputFile.close();
 
     return input;
 }
