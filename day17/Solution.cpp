@@ -158,7 +158,7 @@ int Solution::solve(std::vector<WindDirrection> in)
 
     int windPointer = 0;
 
-    for (unsigned long i = 0; i < 2000000; ++i)
+    for (unsigned long i = 0; i < 2022; ++i)
     {
         auto tallestPoint = getTallestPoint(tunel);
         auto cords = addFigure(tunel, tallestPoint, i);
@@ -241,8 +241,6 @@ long Solution::solve_part2(std::vector<WindDirrection> in)
         // And after then we can do a check. Whether it is a cycle.
         if (windPointer == 0 && i != 0)
         {
-            std::cout << i << " " << i % 5 << std::endl;
-            std::cout << getTallestPoint(tunel) << std::endl;
             auto top = getTunnelTop(tunel);
             cycles.emplace_back(i, getTallestPoint(tunel), top);
             if (cycles.size() == 3)

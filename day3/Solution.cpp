@@ -37,7 +37,7 @@ int getSumOfPriorities(std::string &in, std::string ::iterator& end)
 
 }  // namespace
 
-int Solution::solve(std::vector<std::string>&& in)
+int Solution::solve(std::vector<std::string> in)
 {
     int out = 0;
     for(auto&& elem: in)
@@ -57,7 +57,7 @@ int Solution::solve(std::vector<std::string>&& in)
     return out;
 }
 
-int Solution::solve_part2(std::vector<std::string>&& in)
+int Solution::solve_part2(std::vector<std::string> in)
 {
     int out = 0;
 

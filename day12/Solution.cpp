@@ -9,7 +9,7 @@ const char* fileLoc = "day12/input.txt";
 
 std::vector<std::vector<int>> parse()
 {
-    return parsers::parseMatrixOfChars(fileLoc);
+    return parsers::parseMatrixOfChars_ints(fileLoc);
 }
 
 namespace

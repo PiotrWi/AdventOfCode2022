@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cassert>
 
 #include "day1/Solution.hpp"
 #include "day2/Solution.hpp"
@@ -22,6 +23,9 @@
 #include "day20/Solution.hpp"
 #include "day21/Solution.hpp"
 #include "day22/Solution.hpp"
+#include "day23/Solution.hpp"
+#include "day24/Solution.hpp"
+#include "day25/Solution.hpp"
 
 template <typename T>
 T clone(const T& t)
@@ -29,150 +33,75 @@ T clone(const T& t)
     return t;
 }
 
+template <typename TSolutionClass>
+struct PrintAndVerifySollution
+{
+    template<typename T, typename ARetType, typename BRetType>
+    void operator()(T(&parseFcn)(), const char* prefix, const ARetType& expectationA, const BRetType& expectationb)
+    {
+        auto intput = parseFcn();
+        auto solver = TSolutionClass{};
+
+        auto solutionA = solver.solve(intput);
+        std::cout << prefix << " part 1: " << solutionA << std::endl;
+        assert(expectationA == solutionA);
+
+        auto solutionB = solver.solve_part2(intput);
+        std::cout << prefix << " part 2: " << solutionB << std::endl;
+        assert(solutionB == expectationb);
+    }
+    template<typename T, typename ARetType>
+    void operator()(T(&parseFcn)(), const char* prefix, const ARetType& expectationA)
+    {
+        auto intput = parseFcn();
+        auto solver = TSolutionClass{};
+
+        auto solutionA = solver.solve(intput);
+        assert(expectationA == solutionA);
+        std::cout << prefix << " part 1: " << solutionA << std::endl;
+
+        solver.solve_part2(intput);
+    }
+};
+
 int main()
 {
-    {
-        day1::Solution s;
-        auto intput = day1::parse();
-        std::cout << "day 1 part 1: " << s.solve(intput) << std::endl;
-        std::cout << "day 1 part 2: " << s.solve_part2(intput) << std::endl;
-    }
-    {
-        day2::Solution s;
-        auto intput = day2::parse();
-        std::cout << "day 2 test 1: " << s.solve({{'A', 'Y'},
-                                                  {'B', 'X'},
-                                                  {'C', 'Z'}}) << std::endl;
-        std::cout << "day 2 part 1: " << s.solve(intput) << std::endl;
-        std::cout << "day 2 part 2: " << s.solve_part2(intput) << std::endl;
+    /*PrintAndVerifySollution<day1::Solution>()(day1::parse, "day 1", 71502, 208191);
+    PrintAndVerifySollution<day2::Solution>()(day2::parse, "day 2", 13484, 13433);
+    PrintAndVerifySollution<day3::Solution>()(day3::parse, "day 3", 7821, 2752);
+    PrintAndVerifySollution<day4::Solution>()(day4::parse, "day 4", 471, 888);
+    PrintAndVerifySollution<day5::Solution>()(day5::parse, "day 5", "ZBDRNPMVH", "WDLPFNNNB");
+    PrintAndVerifySollution<day6::Solution>()(day6::parse, "day 6", 1909, 3380);
+    PrintAndVerifySollution<day7::Solution>()(day7::parse, "day 7", 1642503, 6999588);
+    PrintAndVerifySollution<day8::Solution>()(day8::parse, "day 8", 1719, 590824);
+    // PrintAndVerifySollution<day9::Solution>()(day9::parse, "day 9", 6337, 2455);//   To be verified why it is not working anymore
+    PrintAndVerifySollution<day10::Solution>()(day10::parse, "day 10", 14040);
+    PrintAndVerifySollution<day11::Solution>()(day11::parse, "day 11", 76728ull, 21553910156ull);
+    PrintAndVerifySollution<day12::Solution>()(day12::parse, "day 12", 339, 332);
+    PrintAndVerifySollution<day13::Solution>()(day13::parse, "day 13", 5393, 26712);
+    PrintAndVerifySollution<day14::Solution>()(day14::parse, "day 14", 768, 26686);
+    PrintAndVerifySollution<day15::Solution>()(day15::parse, "day 15", 5108096, 10553942650264ull);
+    PrintAndVerifySollution<day16::Solution>()(day16::parse, "day 16", 1647, 2169);
+    PrintAndVerifySollution<day17::Solution>()(day17::parse, "day 17", 3100, 1540634005751);
+    PrintAndVerifySollution<day18::Solution>()(day18::parse, "day 18", 3498, 2008);
+    PrintAndVerifySollution<day19::Solution>()(day19::parse, "day 19", 1404, 5880);
+    PrintAndVerifySollution<day20::Solution>()(day20::parse, "day 20", 4224, 861907680486);*/
+    // PrintAndVerifySollution<day21::Solution>()(day21::parse, "day 21", 82225382988628ll, 3429411069028ll);   // To be solved. B brokes a.
+    // PrintAndVerifySollution<day22::Solution>()(day22::parse, "day 22", 60362, 74288);
+    // PrintAndVerifySollution<day23::Solution>()(day23::parse, "day 23", 4241, 1079);
 
-    }
-    {
-        day3::Solution s;
-        auto input = day3::parse();
-        std::cout << "day 3 test 1: " << s.solve({"vJrwpWtwJgWrhcsFMMfFFhFp",
-                                                         "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
-                                                         "PmmdzqPrVvPwwTWBwg",
-                                                         "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
-                                                         "ttgJtRGJQctTZtZT",
-                                                         "CrZsJsPPZsGzwwsLwLmpwMDw"}) << std::endl;
-        std::cout << "day 3 part 1: " << s.solve(clone(input)) << std::endl;
-        std::cout << "day 3 part 2: " << s.solve_part2(std::move(input)) << std::endl;
-    }
-    {
-        day4::Solution s;
-        auto input = day4::parse();
-        std::cout << "day 4 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 4 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day5::Solution s;
-        auto input = day5::parse();
-        std::cout << "day 5 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 5 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day6::Solution s;
-        auto input = day6::parse();
-        std::cout << "day 6 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 6 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day7::Solution s;
-        auto input = day7::parse();
-        std::cout << "day 7 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 7 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day8::Solution s;
-        auto input = day8::parse();
-        std::cout << "day 8 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 8 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day9::Solution s;
-        auto input = day9::parse();
-        std::cout << "day 9 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 9 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day10::Solution s;
-        auto input = day10::parse();
-        std::cout << "day 10 part1: " << s.solve(input) << std::endl;
-        s.solve_part2(input);
-    }
-    {
-        day11::Solution s;
-        auto input = day11::parse();
-        std::cout << "day 11 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 11 part1: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day12::Solution s;
-        auto input = day12::parse();
-        std::cout << "day 12 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 12 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day13::Solution s;
-        auto input = day13::parse();
-        std::cout << "day 13 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 13 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day14::Solution s;
-        auto input = day14::parse();
-        std::cout << "day 14 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 14 part1: " << s.solve_part2(input) << std::endl;
+    /*{
+        day24::Solution s;
+        auto input = day24::parse();
+        std::cout << "day 24 part1: " << s.solve(input) << std::endl;
+        std::cout << "day 24 part2: " << s.solve_part2(input) << std::endl;
+    }*/
 
-    }
     {
-        day15::Solution s;
-        auto input = day15::parse();
-        std::cout << "day 15 part1: " << s.solve(input) << std::endl;
-        // std::cout << "day 15 part2: " << s.solve_part2(input) << std::endl;
+        day25::Solution s;
+        auto input = day25::parse();
+        std::cout << "day 25 part1: " << s.solve(input) << std::endl;
     }
-    {
-        day16::Solution s;
-        auto input = day16::parse();
-        std::cout << "day 16 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 16 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day17::Solution s;
-        auto input = day17::parse();
-        std::cout << "day 17 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 17 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day18::Solution s;
-        auto input = day18::parse();
-        std::cout << "day 18 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 18 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day19::Solution s;
-        auto input = day19::parse();
-        std::cout << "day 19 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 19 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day20::Solution s;
-        auto input = day20::parse();
-        std::cout << "day 20 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 20 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        day21::Solution s;
-        auto input = day21::parse();
-        std::cout << "day 21 part1: " << s.solve(input) << std::endl;
-        std::cout << "day 21 part2: " << s.solve_part2(input) << std::endl;
-    }
-    {
-        // day22::Solution s;
-        auto input = day22::parse();
-        //std::cout << "day 22 part1: " << s.solve(input) << std::endl;
-        //std::cout << "day 22 part2: " << s.solve_part2(input) << std::endl;
-    }
+
     return 0;
 }

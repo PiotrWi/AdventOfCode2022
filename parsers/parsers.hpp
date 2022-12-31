@@ -60,7 +60,8 @@ auto parse(const char* fileLocation) -> std::vector<T>
     return out;
 }
 
-inline std::vector<std::vector<int>> parseMatrixOfChars(const char* fileLoc)
+// Possibly, it would be good to replace it via just a char version
+inline std::vector<std::vector<int>> parseMatrixOfChars_ints(const char* fileLoc)
 {
     std::vector<std::vector<int>> out;
     std::fstream inputFile(fileLoc);
@@ -85,6 +86,21 @@ inline std::vector<std::vector<int>> parseMatrixOfChars(const char* fileLoc)
 
     inputFile.close();
     return out;
+}
+
+inline std::vector<std::vector<char>> parseMatrixOfChars(const char* fileLoc)
+{
+    std::vector<std::vector<char>> martix;
+    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    {
+        std::vector<char> lineOfChars;
+        for (char in : line)
+        {
+            lineOfChars.push_back(in);
+        }
+        martix.push_back(lineOfChars);
+    }
+    return martix;
 }
 
 }  // namespace parsers

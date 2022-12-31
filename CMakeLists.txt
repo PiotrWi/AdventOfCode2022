@@ -38,6 +38,9 @@ file(COPY day19/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day19)
 file(COPY day20/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day20)
 file(COPY day21/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day21)
 file(COPY day22/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day22)
+file(COPY day23/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day23)
+file(COPY day24/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day24)
+file(COPY day25/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day25)
 
 add_executable(aoc
         main.cpp
@@ -65,5 +68,5 @@ add_executable(aoc
         day18/Solution.hpp day18/Solution.cpp
         day19/Solution.hpp day19/Solution.cpp
         day20/Solution.hpp day20/Solution.cpp
-        day21/Solution.hpp day21/Solution.cpp day22/Solution.hpp day22/Solution.cpp parsers/parsers.cpp)
+        day21/Solution.hpp day21/Solution.cpp day22/Solution.hpp day22/Solution.cpp parsers/parsers.cpp StringAlgorithms/StringAlgorithms.cpp day23/Solution.hpp day23/Solution.cpp utility/PointRowCol.hpp utility/PointRowCol.cpp day24/Solution.hpp day24/Solution.cpp utility/PointRowColOrientation.hpp utility/PointRowColOrientation.cpp day25/Solution.hpp day25/Solution.cpp)
 

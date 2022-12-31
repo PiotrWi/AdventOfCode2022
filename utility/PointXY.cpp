@@ -1,6 +1,6 @@
 #include "PointXY.hpp"
 
-namespace
+namespace internal
 {
 int abs(int arg)
 {
@@ -23,10 +23,6 @@ PointXY operator-(PointXY lhs, PointXY rhs)
 
 int manhatanAbs(PointXY lhs)
 {
-    return abs(lhs.x) + abs(lhs.y);
+    return internal::abs(lhs.x) + internal::abs(lhs.y);
 }
 
-PointRowCol operator+(PointRowCol lhs, PointRowCol rhs)
-{
-    return {lhs.row + rhs.row, lhs.col + rhs.col};
-}

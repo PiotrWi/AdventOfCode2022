@@ -28,7 +28,7 @@ std::vector<std::vector<int>> parse()
     return out;
 }
 
-int Solution::solve_part2(const std::vector<std::vector<int>>& input)
+int Solution::solve(const std::vector<std::vector<int>>& input)
 {
     auto max = 0;
     for (unsigned int i = 0; i < input.size(); ++i)
@@ -40,7 +40,7 @@ int Solution::solve_part2(const std::vector<std::vector<int>>& input)
 }
 
 // Not the optimal one, but short to code.
-int Solution::solve(const std::vector<std::vector<int>>& input)
+int Solution::solve_part2(const std::vector<std::vector<int>>& input)
 {
     std::vector<int> out(input.size(), 0);
 

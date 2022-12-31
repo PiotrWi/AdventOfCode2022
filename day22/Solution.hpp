@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-#include "utility/PointXY.hpp"
 
 namespace day22
 {
@@ -29,6 +28,7 @@ Input parse();
 struct Solution
 {
     int solve(Input);
+    int solve_part2(Input);
 };
 
 }
