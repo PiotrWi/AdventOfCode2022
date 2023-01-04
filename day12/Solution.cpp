@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <parsers/parsers.hpp>
 #include <utility/Martix.hpp>
+#include <iostream>
+#include <functional>
 
 namespace day12
 {
@@ -17,50 +19,87 @@ std::vector<std::vector<char>> parse()
 namespace
 {
 
-std::pair<int, int> findPos(const std::vector<std::vector<char>>& in, char c)
+PointRowCol findPos(const std::vector<std::vector<char>>& in, char c)
 {
     auto matrixWrapper = createMatrixWrapper(in);
     auto pos = std::find(matrixWrapper.begin(), matrixWrapper.end(), c);
     if (pos != matrixWrapper.end())
     {
-        pos.toPointRowCol(matrixWrapper.begin());
+        return pos.toPointRowCol(matrixWrapper.begin());
     }
+
     throw 1;
 }
 
-bool wasVisited(std::pair<int, int> in, const std::vector<std::vector<int>>& costs)
+bool wasVisited(PointRowCol in, const MatrixWrapper<int>& costs)
 {
-    return costs[in.first][in.second] != -1;
+    return costs[in] != -1;
 }
 
-std::pair<int, int> operator+(const std::pair<int, int>& lhs, const std::pair<int, int>& rhs)
-{
-    return {lhs.first + rhs.first, lhs.second+ rhs.second};
-}
-
-auto isInMatrix(std::pair<int, int> in, const std::vector<std::vector<int>>& costs)
-{
-    return in.first >= 0 && in.second >= 0 && in.first < (int)costs.size() and in.second < (int)costs[0].size();
-}
-
-auto isAccessible(std::pair<int, int> source,
-                  std::pair<int, int> destination,
+auto isAccessible(PointRowCol source,
+    PointRowCol destination,
                   const std::vector<std::vector<char>>& heights)
 {
-    return heights[destination.first][destination.second] - heights[source.first][source.second] <= 1;
+    return heights[destination.row][destination.col] - heights[source.row][source.col] <= 1;
 }
 
-auto is_a(std::pair<int, int> in, const std::vector<std::vector<char>>& heights)
+auto is_a(PointRowCol in, const std::vector<std::vector<char>>& heights)
 {
-    return heights[in.first][in.second] == 'a';
+    return heights[in.row][in.col] == 'a';
 }
 
-auto isAccessible_part2(std::pair<int, int> source,
-                  std::pair<int, int> destination,
+auto isAccessible_part2(PointRowCol source,
+                    PointRowCol destination,
                   const std::vector<std::vector<char>>& heights)
 {
-    return heights[source.first][source.second] - heights[destination.first][destination.second] <= 1;
+    return heights[source.row][source.col] - heights[destination.row][destination.col] <= 1;
 }
+
+struct BFS
+{
+public:
+    BFS(MatrixWrapper<int>& costMatrix)
+        : costMatrix_(costMatrix)
+    {}
+    
+    int calculateTotalCost(const PointRowCol& startingPoint,
+        std::function<bool(PointRowCol)> stopCondition,
+        std::function<bool(PointRowCol, PointRowCol)> isValidTransaction)
+    {
+        std::vector<std::pair<int, PointRowCol>> nodesToCheck = { {0, startingPoint} };
+        for (unsigned i = 0; i < nodesToCheck.size(); ++i)
+        {
+            auto nodeCost = nodesToCheck[i].first;
+            auto analyzedNode = nodesToCheck[i].second;
+
+            if (wasVisited(nodesToCheck[i].second, costMatrix_))
+            {
+                continue;
+            }
+            costMatrix_[analyzedNode] = nodeCost;
+            if (stopCondition(analyzedNode))
+            {
+                return nodeCost;
+            }
+            for (auto&& diff : {
+                BottomPointDiff,
+                UpperPointDiff,
+                RightPointDiff,
+                LeftPointDiff})
+            {
+                auto neigbourNode = nodesToCheck[i].second + diff;
+                if (costMatrix_.isInBound(neigbourNode)
+                    && isValidTransaction(analyzedNode, neigbourNode))
+                {
+                    nodesToCheck.push_back({ nodeCost + 1, neigbourNode });
+                }
+            }
+        }
+        return -1;
+    }
+private:
+    MatrixWrapper<int> costMatrix_;
+};
 
 }
 
@@ -68,42 +107,18 @@ int Solution::solve(std::vector<std::vector<char>> in)
 {
     std::vector<std::vector<int>> stepsToVisit(in.size(), std::vector<int>(in[0].size(), -1));
 
-    std::pair<int, int> startPos = findPos(in, 'S');
-    std::pair<int, int> endPos = findPos(in, 'E');
-    in[startPos.first][startPos.second] = 'a';
-    in[endPos.first][endPos.second] = 'z';
+    auto startPos = findPos(in, 'S');
+    auto endPos = findPos(in, 'E');
+    in[startPos.row][startPos.col] = 'a';
+    in[endPos.row][endPos.col] = 'z';
 
-    std::vector<std::pair<int, std::pair<int, int>>> nodesToCheck = {{0, startPos}};
-    for (unsigned i = 0; i < nodesToCheck.size(); ++i)
-    {
-        // need to be copied because we add nodes in the loop
-        auto nodeCost = nodesToCheck[i].first;
-        auto analyzedNode = nodesToCheck[i].second;
-
-        if (wasVisited(nodesToCheck[i].second, stepsToVisit))
+    auto costMatrix = createMatrixWrapper(stepsToVisit);
+    return BFS(costMatrix).calculateTotalCost(startPos,
+        [&endPos](auto&& point) {return point == endPos; },
+        [&](auto&& sourceNode, auto&& destinationNode)
         {
-            continue;
-        }
-        stepsToVisit[analyzedNode.first][analyzedNode.second] = nodeCost;
-        if (analyzedNode == endPos)
-        {
-            return nodeCost;
-        }
-        for (std::pair<int, int> diff: {
-                std::pair<int, int>{1,0},
-                std::pair<int, int>{-1, 0},
-                std::pair<int, int>{0, 1},
-                std::pair<int, int>{0, -1}
-        })
-        {
-            auto neigbourNode = nodesToCheck[i].second + diff;
-            if (isInMatrix(neigbourNode, stepsToVisit)
-                && isAccessible(analyzedNode, neigbourNode, in))
-            {
-                nodesToCheck.push_back({nodeCost+1, neigbourNode});
-            }
-        }
-    }
+            return isAccessible(sourceNode, destinationNode, in);
+        });
     return 0;
 }
 
@@ -111,45 +126,19 @@ int Solution::solve_part2(std::vector<std::vector<char>> in)
 {
     std::vector<std::vector<int>> stepsToVisit(in.size(), std::vector<int>(in[0].size(), -1));
 
-    std::pair<int, int> startPos = findPos(in, 'S');
-    std::pair<int, int> endPos = findPos(in, 'E');
-    in[startPos.first][startPos.second] = 'a';
-    in[endPos.first][endPos.second] = 'z';
-
+    auto startPos = findPos(in, 'S');
+    auto endPos = findPos(in, 'E');
+    in[startPos.row][startPos.col] = 'a';
+    in[endPos.row][endPos.col] = 'z';
     startPos = endPos;
 
-    std::vector<std::pair<int, std::pair<int, int>>> nodesToCheck = {{0, startPos}};
-    for (unsigned i = 0; i < nodesToCheck.size(); ++i)
-    {
-        // need to be copied because we add nodes in the loop
-        auto nodeCost = nodesToCheck[i].first;
-        auto analyzedNode = nodesToCheck[i].second;
-
-        if (wasVisited(nodesToCheck[i].second, stepsToVisit))
+    auto costMatrix = createMatrixWrapper(stepsToVisit);
+    return BFS(costMatrix).calculateTotalCost(startPos,
+        [&](auto&& point) {return is_a(point, in); },
+        [&](auto&& sourceNode, auto&& destinationNode)
         {
-            continue;
-        }
-        stepsToVisit[analyzedNode.first][analyzedNode.second] = nodeCost;
-        if (is_a(analyzedNode, in))
-        {
-            return nodeCost;
-        }
-        for (std::pair<int, int> diff: {
-                std::pair<int, int>{1,0},
-                std::pair<int, int>{-1, 0},
-                std::pair<int, int>{0, 1},
-                std::pair<int, int>{0, -1}
-        })
-        {
-            auto neigbourNode = nodesToCheck[i].second + diff;
-            if (isInMatrix(neigbourNode, stepsToVisit)
-                && isAccessible_part2(analyzedNode, neigbourNode, in))
-            {
-                nodesToCheck.push_back({nodeCost+1, neigbourNode});
-            }
-        }
-    }
-    return 0;
+            return isAccessible_part2(sourceNode, destinationNode, in);
+        });
 }
 
 }  // namespace day12

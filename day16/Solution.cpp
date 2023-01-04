@@ -132,8 +132,36 @@ unsigned char maxVal(const std::vector<NodeInt>& nodes, const TNodesToVisitList&
 
 long heuristic(int timeLeft, const std::vector<NodeInt>& nodes, const TNodesToVisitList& nodesWorthToVisit)
 {
-    return ((timeLeft-2)*timeLeft * maxVal(nodes, nodesWorthToVisit)) / 4;
+    return ((timeLeft - 2) * timeLeft * maxVal(nodes, nodesWorthToVisit)) / 4;
 }
+
+[[maybe_unused]]
+std::pair<unsigned int, int> maxValAndMinCost(const std::vector<std::vector<int> >& costMartix, const std::vector<NodeInt>& nodes, int node, const TNodesToVisitList& nodesWorthToVisit)
+{
+    unsigned char max = 0;
+    int minCost = 30;
+
+    for (auto it = nodesWorthToVisit.begin(); it != nodesWorthToVisit.end(); it++)
+    {
+        minCost = std::min(minCost, costMartix[node][*it]);
+        max = std::max(nodes[*it].flowRate, max);
+    }
+    return std::make_pair(max, minCost);
+}
+
+long heuristic2(const std::vector<std::vector<int> >& costMartix, int timeLeft, int node, const std::vector<NodeInt>& nodes, const TNodesToVisitList& nodesWorthToVisit)
+{
+    auto mm = maxValAndMinCost(costMartix, nodes, node,  nodesWorthToVisit);
+
+    auto timeleftAfterReachClosest = timeLeft - mm.second -1;
+    int out = 0;
+    for (int time = timeleftAfterReachClosest; time > 0; time = time - 2)
+    {
+        out += time * mm.first;
+    }
+    return out;
+}
+
 
 }  // namespace
 
@@ -152,7 +180,7 @@ long findMaxFromAA(const std::vector<std::vector<int> > &costMartix,
 {
     auto timeLeft = Timeout - elapsedTime;
     long max = cuttentValue + currentFloat * timeLeft;
-    if (max + heuristic(timeLeft, nodes, nodesWorthToVisit) < currentMax)
+    if (max + heuristic2(costMartix, timeLeft, node, nodes, nodesWorthToVisit) < currentMax)
     {
         return 0;
     }
@@ -192,7 +220,7 @@ long releaseElephant(const std::vector<std::vector<int> > &costMartix,
 {
     auto timeLeft = Timeout - elapsedTime;
     long max = cuttentValue + currentFloat * timeLeft;
-    if (max + heuristic(timeLeft, nodes, nodesWorthToVisit) < currentMax)
+    if (max + heuristic2(costMartix, timeLeft, node, nodes, nodesWorthToVisit) < currentMax)
     {
         return 0;
     }
@@ -267,7 +295,9 @@ long findMaxFromAA(const std::vector<std::vector<int> > &costMartix,
 int Solution::solve(std::map<std::string, Node> in)
 {
     currentMax = 0;
+
     auto nodes = mapInputLabelsToInts(in);
+
     std::vector<std::vector<int> > costMartix = buildCostMatrix(nodes);
 
     TNodesToVisitList nodesWorhtToVisit;

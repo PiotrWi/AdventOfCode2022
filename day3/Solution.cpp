@@ -55,7 +55,7 @@ auto getAllUniqueElementsRepeatedInRanges(std::string::iterator lhsRuckstackBegi
         std::inserter(commonPart, commonPart.end()));
     std::sort(commonPart.begin(), commonPart.end());
     auto firstRepeatedIt = std::unique(commonPart.begin(), commonPart.end());
-    commonPart.erase(firstRepeatedIt);
+    commonPart.erase(firstRepeatedIt, std::end(commonPart));
     return commonPart;
 }
 

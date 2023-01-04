@@ -34,7 +34,7 @@ std::vector<std::vector<int>> parse()
 
 int Solution::solve(const std::vector<std::vector<int>>& in)
 {
-    std::vector<std::vector<bool>> visibility(in.size(), std::vector<bool>(in[0].size(), false));
+    std::vector<std::vector<int>> visibility(in.size(), std::vector<int>(in[0].size(), 0));
     auto visibilityMatrixWrapper = createMatrixWrapper(visibility);
 
     for (auto row = 0u; row < in.size(); ++row)
@@ -69,7 +69,7 @@ int Solution::solve(const std::vector<std::vector<int>>& in)
     }
 
     int out = 0;
-    for (auto&& elem : createMatrixWrapper(in))
+    for (auto&& elem : visibilityMatrixWrapper)
     {
         out += elem;
     }

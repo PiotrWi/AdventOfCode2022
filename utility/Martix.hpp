@@ -54,7 +54,7 @@ public:
 		return (**colIt_);
 	}
 
-	Traits::TIteratorReturnValue& operator->()
+	pointer operator->()
 	{
 		return this->operator*();
 	}
@@ -71,7 +71,7 @@ public:
 
 	PointRowCol toPointRowCol(const MatritWrapperIterator<TDataTypeIn, TRawMatrixTypeIn>& begin)
 	{
-		auto thisCol = (colIt_) ? (**colIt_) : 0;
+		auto thisCol = (colIt_) ? ((*colIt_) - rowIt_->begin()) : 0;
 		return PointRowCol{ int(rowIt_ - begin.rowIt_), (int)thisCol };
 	}
 private:
@@ -79,7 +79,7 @@ private:
 	std::optional<typename Traits::TColumnIterator> colIt_;
 };
 
-template <typename TDataTypeIn, typename TRawMatrixTypeIn>
+template <typename TDataTypeIn, typename TRawMatrixTypeIn = std::vector<std::vector<TDataTypeIn>> >
 class MatrixWrapper : public TypesTraits<TDataTypeIn, TRawMatrixTypeIn>
 {
 	using Traits = typename TypesTraits<TDataTypeIn, TRawMatrixTypeIn>;
@@ -114,6 +114,35 @@ public:
 	Traits::TColumnType & operator[](std::size_t rowIndex)
 	{
 		return matrix_[rowIndex];
+	}
+
+	Traits::TDataType& operator[](const PointRowCol& point)
+	{
+		return matrix_[point.row][point.col];
+	}
+
+	const Traits::TDataType& operator[](const PointRowCol& point) const
+	{
+		return matrix_[point.row][point.col];
+	}
+
+	int getRowsCount()
+	{
+		return (int)matrix_.size();
+	}
+
+	int getColumnsCount()
+	{
+		if (getRowsCount() == 0)
+		{
+			return 0;
+		}
+		return (int)matrix_[0].size();
+	}
+
+	bool isInBound(const PointRowCol& point)
+	{
+		return point.row >= 0 && point.col >= 0 && point.row < getRowsCount() and point.col < getColumnsCount();
 	}
 private:
 	Traits::TRawMatrixType& matrix_;
