@@ -1,5 +1,6 @@
 #include "Solution.hpp"
 
+#include <algorithm>
 #include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 #include <iostream>
@@ -167,7 +168,7 @@ PointRowCol goForward(PointRowColOrientation pos, int count, const std::vector<s
 
 void alignMapSizeForAllRows(std::vector<std::string>& map)
 {
-    auto maxW = 0ul;
+    decltype(map.size()) maxW = 0ul;
     for (auto&& s: map)
     {
         maxW = std::max(maxW, s.size());

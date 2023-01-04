@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
+
 find_package(Boost)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
@@ -7,13 +8,21 @@ endif()
 
 project(aoc LANGUAGES CXX)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(CMAKE_CXX_FLAGS  "-Og -g -Wall -Wextra -Werror -std=c++20 -fuse-ld=gold")
-else()
-    SET(CMAKE_CXX_FLAGS  "-Ofast -Wall -Wextra -Werror -std=c++20 -mbmi2 -mavx -march=haswell -msse4.1 -flto -fuse-ld=gold -m64 -lrt")
+if (CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        SET(CMAKE_CXX_FLAGS  "-Og -g -Wall -Wextra -Werror -std=c++20 -fuse-ld=gold")
+    else()
+        SET(CMAKE_CXX_FLAGS  "-Ofast -Wall -Wextra -Werror -std=c++20 -mbmi2 -mavx -march=haswell -msse4.1 -flto -fuse-ld=gold -m64 -lrt")
+    endif()
+elseif()
+    SET(CMAKE_CXX_FLAGS "/EHsc")
+    SET(CMAKE_CXX_FLAGS  "-Ofast -Wall -mbmi2 -mavx -march=haswell -msse4.1 -flto -m64 -lrt")
 endif()
 
-SET(CMAKE_CXX_FLAGS  "-Og -g -Wall -Wextra -Werror -std=c++20 -fuse-ld=gold")
+if(MSVC)
+    SET(CMAKE_CXX_FLAGS "/EHsc")
+endif()
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 file(COPY day1/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day1)
@@ -44,9 +53,11 @@ file(COPY day25/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/day25)
 
 add_executable(aoc
         main.cpp
-        parsers/parsers.hpp
-        StringAlgorithms/StringAlgorithms.hpp
+        parsers/parsers.hpp parsers/parsers.cpp
+        StringAlgorithms/StringAlgorithms.hpp StringAlgorithms/StringAlgorithms.cpp
         utility/PointXY.hpp utility/PointXY.cpp
+        utility/PointRowCol.hpp utility/PointRowCol.cpp
+        utility/PointRowColOrientation.hpp utility/PointRowColOrientation.cpp
         day1/Solution.cpp day1/Solution.hpp
         day2/Solution.cpp day2/Solution.hpp
         day3/Solution.cpp day3/Solution.hpp
@@ -68,5 +79,10 @@ add_executable(aoc
         day18/Solution.hpp day18/Solution.cpp
         day19/Solution.hpp day19/Solution.cpp
         day20/Solution.hpp day20/Solution.cpp
-        day21/Solution.hpp day21/Solution.cpp day22/Solution.hpp day22/Solution.cpp parsers/parsers.cpp StringAlgorithms/StringAlgorithms.cpp day23/Solution.hpp day23/Solution.cpp utility/PointRowCol.hpp utility/PointRowCol.cpp day24/Solution.hpp day24/Solution.cpp utility/PointRowColOrientation.hpp utility/PointRowColOrientation.cpp day25/Solution.hpp day25/Solution.cpp)
+        day21/Solution.hpp day21/Solution.cpp
+        day22/Solution.hpp day22/Solution.cpp
+        day23/Solution.hpp day23/Solution.cpp
+        day24/Solution.hpp day24/Solution.cpp
+        day25/Solution.hpp day25/Solution.cpp)
 
+set_property(TARGET aoc PROPERTY CXX_STANDARD 20)

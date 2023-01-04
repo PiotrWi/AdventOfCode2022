@@ -1,12 +1,15 @@
 #include "PointRowCol.hpp"
 
+#include <cstdlib>
+
 namespace
 {
-int abs_i(int arg)
+
+auto sign(int arg)
 {
-    if (arg <0)
-        return -1*arg;
-    return arg;
+    if (arg > 0) return 1;
+    if (arg < 0) return -1;
+    return 0;
 }
 
 }
@@ -39,6 +42,11 @@ bool operator<(const PointRowCol& lhs, const PointRowCol& rhs)
     return lhs.col < rhs.col;
 }
 
+PointRowCol sign(const PointRowCol& point)
+{
+    return PointRowCol{ sign(point.row), sign(point.col) };
+}
+
 PointRowCol to1BaseIndexing(PointRowCol point)
 {
     return {point.row + 1, point.col + 1};
@@ -52,5 +60,5 @@ std::ostream& operator << (std::ostream& str, const PointRowCol& point)
 
 int manhatanAbs(PointRowCol lhs)
 {
-    return abs_i(lhs.row) + abs_i(lhs.col);
+    return abs(lhs.row) + abs(lhs.col);
 }

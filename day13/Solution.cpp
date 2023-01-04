@@ -1,4 +1,5 @@
 #include "Solution.hpp"
+#include <algorithm>
 #include <cctype>
 #include <typeinfo>
 #include <parsers/parsers.hpp>

@@ -302,23 +302,17 @@ int Solution::solve_part2(Wall wall)
     auto endPoint = PointRowCol{(int)wall.size()-1, (int)wall[0].size() - 2};
     auto iterationNum = visit<false>(startingPoint, endPoint, {});
 
-    std::cout << "First part" << iterationNum << std::endl;
-
     minRouteSoFar = 1000000;
     visitedPoints = {};
     startingPoint = RouteEntity{iterationNum, {(int)wall.size()-1, (int)wall[0].size() - 2}};
     endPoint =  PointRowCol{0, 1};
     iterationNum = visit<true>(startingPoint, endPoint, {});
 
-    std::cout << "Second part" << iterationNum << std::endl;
-
     minRouteSoFar = 1000000;
     visitedPoints = {};
     startingPoint = RouteEntity {iterationNum, {0, 1}};
     endPoint = PointRowCol{(int)wall.size()-1, (int)wall[0].size() - 2};
     iterationNum = visit<false>(startingPoint, endPoint, {});
-
-    std::cout << "Third part" << iterationNum << std::endl;
 
     return iterationNum;
 }

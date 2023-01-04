@@ -13,12 +13,19 @@ class LinesInFileRange
 public:
     explicit LinesInFileRange(const char* fileLocation);
     ~LinesInFileRange();
+
+    LinesInFileRange(const LinesInFileRange&) = delete;
+    LinesInFileRange& operator=(const LinesInFileRange&) = delete;
+    LinesInFileRange(LinesInFileRange&&) = delete;
+    LinesInFileRange& operator=(LinesInFileRange&&) = delete;
+
     bool hasData() const;
 
 private:
     struct TIterator
     {
-        TIterator(LinesInFileRange& parent);
+        explicit TIterator(LinesInFileRange& parent);
+
         std::string operator*();
         void operator++();
         bool hasData() const;

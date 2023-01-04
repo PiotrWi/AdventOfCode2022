@@ -30,7 +30,7 @@ struct Node
 {
     Node* prev;
     Node* next;
-    long val;
+    long long val;
 };
 
 Node* getNth(std::vector<Node>& nodes, long n)
@@ -98,7 +98,7 @@ int Solution::solve(std::vector<int> in)
     return getNth(nodes, 1000)->val + getNth(nodes, 2000)->val + getNth(nodes, 3000)->val;
 }
 
-long Solution::solve_part2(std::vector<int> in)
+long long Solution::solve_part2(std::vector<int> in)
 {
     std::vector<Node> nodes(in.size(), Node{});
     for (unsigned i = 0; i < in.size(); ++i)

@@ -12,8 +12,8 @@ std::vector<TEntityType> parse();
 class Solution
 {
 public:
-    int solve(const std::vector<TEntityType>& input);
-    int solve_part2(const std::vector<TEntityType>& input);
+    int solve(const std::vector<TEntityType>& input) const;
+    int solve_part2(const std::vector<TEntityType>& input) const;
 };
 
 }  // namespace day4

@@ -16,7 +16,7 @@ std::vector<WindDirrection> parse();
 struct Solution
 {
     int solve(std::vector<WindDirrection>);
-    long solve_part2(std::vector<WindDirrection> in);
+    long long solve_part2(std::vector<WindDirrection> in);
 };
 
 }

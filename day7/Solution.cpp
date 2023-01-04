@@ -35,17 +35,17 @@ struct Node
 {
     std::string name = "";
     bool isDir = false;
-    uint size = 0;
-    uint totalSize = 0;
+    unsigned int size = 0;
+    unsigned int totalSize = 0;
     std::vector<Node*> children = {};
 };
 
 namespace
 {
 
-std::string createLoc (std::string parrent, std::string name)
+std::string createLoc (std::string parrent, std::string name) noexcept
 {
-    if (parrent.back() == '/')
+    if (not parrent.empty() && parrent.back() == '/')
     {
         parrent += name;
     }
@@ -56,7 +56,7 @@ std::string createLoc (std::string parrent, std::string name)
     return parrent;
 }
 
-std::map<std::string, Node> buildTree(const std::vector<Command>& input)
+std::map<std::string, Node> buildTree(const std::vector<Command>& input) noexcept
 {
     std::map<std::string, Node> tree;
     std::string currentNodeLoc = "/";
@@ -112,7 +112,7 @@ std::map<std::string, Node> buildTree(const std::vector<Command>& input)
     return tree;
 }
 
-int fillSize(Node* node)
+int fillSize(Node* node) noexcept
 {
     if (node->isDir == false)
     {
@@ -126,7 +126,7 @@ int fillSize(Node* node)
     return node->totalSize;
 }
 
-int aggregateSize(Node* node)
+int aggregateSize(Node* node) noexcept
 {
     if (node->isDir == false)
     {
@@ -143,14 +143,14 @@ int aggregateSize(Node* node)
 
 }
 
-int Solution::solve(const std::vector<Command>& input)
+int Solution::solve(const std::vector<Command>& input) const
 {
     std::map<std::string, Node> tree = buildTree(input);
     fillSize(&tree["/"]);
     return aggregateSize(&tree["/"]);
 
 }
-int Solution::solve_part2(const std::vector<Command>& input)
+int Solution::solve_part2(const std::vector<Command>& input) const
 {
     std::map<std::string, Node> tree = buildTree(input);
     fillSize(&tree["/"]);

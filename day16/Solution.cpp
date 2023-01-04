@@ -22,7 +22,6 @@ Node parseLine(const std::string &s)
     Node node;
     std::stringstream ss(s);
     std::string ingore;
-    // "Valve KR has flow rate=17; tunnels lead to valves WA, JQ, JY, KI"
     ss >> ingore >> node.label;
     ss >> ingore >> ingore;
 
@@ -221,7 +220,7 @@ long releaseElephant(const std::vector<std::vector<int> > &costMartix,
 long findMaxFromAA(const std::vector<std::vector<int> > &costMartix,
                    const std::vector<NodeInt>& nodes,
                    int node,
-                   TNodesToVisitList nodesWorthToVisit,
+                   TNodesToVisitList& nodesWorthToVisit,
                    long currentFloat,
                    long cuttentValue,
                    long elapsedTime)

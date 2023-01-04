@@ -148,7 +148,7 @@ std::pair<hand, hand> map_win_lose_to_hands(const std::pair<hand, Result>& in)
 
 }  // namespace
 
-int Solution::solve(const std::vector<std::pair<char, char>>& input)
+int Solution::solve(const std::vector<std::pair<char, char>>& input) const
 {
     int out = 0;
     for (auto&& in: input)
@@ -159,7 +159,7 @@ int Solution::solve(const std::vector<std::pair<char, char>>& input)
     return out;
 }
 
-int Solution::solve_part2(const std::vector<std::pair<char, char>>& input)
+int Solution::solve_part2(const std::vector<std::pair<char, char>>& input) const
 {
     int out = 0;
     for (auto&& in: input)

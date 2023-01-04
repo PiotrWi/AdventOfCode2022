@@ -220,7 +220,7 @@ std::vector<std::string> getTunnelTop(const std::vector<std::string>& tunel)
 const long secondTaskDone = 1000000000000;
 }
 
-long Solution::solve_part2(std::vector<WindDirrection> in)
+long long Solution::solve_part2(std::vector<WindDirrection> in)
 {
     std::vector<std::string> tunel;
     tunel.push_back({"+-------+"});

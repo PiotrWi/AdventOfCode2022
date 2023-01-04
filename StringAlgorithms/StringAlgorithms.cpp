@@ -24,7 +24,7 @@ std::string trim(const std::string& in)
 std::vector<std::string> splitAndTrim(const std::string& in, char c)
 {
     std::vector<std::string> out;
-    for (unsigned int i = 0; i < in.size();)
+    for (decltype(in.size()) i = 0; i < in.size();)
     {
         auto pos = in.find(c, i);
         out.emplace_back(trim(in.substr(i, pos-i)));
@@ -38,7 +38,7 @@ std::vector<std::string> splitAndTrim(const std::string& in, char c)
 std::vector<std::string> splitAndTrimByStr(const std::string& in, std::string delimeter)
 {
     std::vector<std::string> out;
-    for (unsigned int i = 0; i < in.size();)
+    for (decltype(in.size()) i = 0; i < in.size();)
     {
         auto pos = in.find(delimeter, i);
         out.emplace_back(trim(in.substr(i, pos-i)));
@@ -52,7 +52,7 @@ std::vector<std::string> splitAndTrimByStr(const std::string& in, std::string de
 std::vector<std::string> splitNumbersAndLetters(const std::string& in)
 {
     std::vector<std::string> out;
-    for (unsigned int i = 0; i < in.size();)
+    for (decltype(in.size()) i = 0; i < in.size();)
     {
         std::string number;
         while (std::isdigit(in[i]))

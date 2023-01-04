@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <parsers/parsers.hpp>
+#include <utility/Martix.hpp>
 
 namespace parsers
 {
@@ -34,19 +35,20 @@ std::vector<std::vector<int>> parse()
 int Solution::solve(const std::vector<std::vector<int>>& in)
 {
     std::vector<std::vector<bool>> visibility(in.size(), std::vector<bool>(in[0].size(), false));
+    auto visibilityMatrixWrapper = createMatrixWrapper(visibility);
 
     for (auto row = 0u; row < in.size(); ++row)
     {
         auto max = -1;
         for (auto col = 0u; col < in[row].size(); ++col)
         {
-            visibility[row][col] = visibility[row][col] || (max < in[row][col]);
+            visibilityMatrixWrapper[row][col] = visibilityMatrixWrapper[row][col] || (max < in[row][col]);
             max = std::max(in[row][col], max);
         }
         max = -1;
         for (int col = in[row].size() -1; col >= 0; --col)
         {
-            visibility[row][col] = visibility[row][col] || (max < in[row][col]);
+            visibilityMatrixWrapper[row][col] = visibilityMatrixWrapper[row][col] || (max < in[row][col]);
             max = std::max(in[row][col], max);
         }
     }
@@ -55,24 +57,21 @@ int Solution::solve(const std::vector<std::vector<int>>& in)
         auto max = -1;
         for (auto row = 0u; row < in.size(); ++row)
         {
-            visibility[row][col] = visibility[row][col] || (max < in[row][col]);
+            visibilityMatrixWrapper[row][col] = visibilityMatrixWrapper[row][col] || (max < in[row][col]);
             max = std::max(in[row][col], max);
         }
         max = -1;
         for (int row = in.size() -1; row >= 0; --row)
         {
-            visibility[row][col] = visibility[row][col] || (max < in[row][col]);
+            visibilityMatrixWrapper[row][col] = visibilityMatrixWrapper[row][col] || (max < in[row][col]);
             max = std::max(in[row][col], max);
         }
     }
 
     int out = 0;
-    for (auto col = 0u; col < in[0].size(); ++col)
+    for (auto&& elem : createMatrixWrapper(in))
     {
-        for (auto row = 0u; row < in.size(); ++row)
-        {
-            out += visibility[row][col];
-        }
+        out += elem;
     }
 
     return out;

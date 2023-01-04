@@ -1,31 +1,29 @@
 #include "Solution.hpp"
 
+#include <algorithm>
 #include <parsers/parsers.hpp>
+#include <utility/Martix.hpp>
 
 namespace day12
 {
 
 const char* fileLoc = "day12/input.txt";
 
-std::vector<std::vector<int>> parse()
+std::vector<std::vector<char>> parse()
 {
-    return parsers::parseMatrixOfChars_ints(fileLoc);
+    return parsers::parseMatrixOfChars(fileLoc);
 }
 
 namespace
 {
 
-std::pair<int, int> findPos(const std::vector<std::vector<int>>& in, char c)
+std::pair<int, int> findPos(const std::vector<std::vector<char>>& in, char c)
 {
-    for (auto row = 0u; row < in.size(); ++row)
+    auto matrixWrapper = createMatrixWrapper(in);
+    auto pos = std::find(matrixWrapper.begin(), matrixWrapper.end(), c);
+    if (pos != matrixWrapper.end())
     {
-        for (auto col = 0u; col < in[0].size(); ++col)
-        {
-            if (c == in[row][col])
-            {
-                return {row, col};
-            }
-        }
+        pos.toPointRowCol(matrixWrapper.begin());
     }
     throw 1;
 }
@@ -47,26 +45,26 @@ auto isInMatrix(std::pair<int, int> in, const std::vector<std::vector<int>>& cos
 
 auto isAccessible(std::pair<int, int> source,
                   std::pair<int, int> destination,
-                  const std::vector<std::vector<int>>& heights)
+                  const std::vector<std::vector<char>>& heights)
 {
     return heights[destination.first][destination.second] - heights[source.first][source.second] <= 1;
 }
 
-auto is_a(std::pair<int, int> in, const std::vector<std::vector<int>>& heights)
+auto is_a(std::pair<int, int> in, const std::vector<std::vector<char>>& heights)
 {
     return heights[in.first][in.second] == 'a';
 }
 
 auto isAccessible_part2(std::pair<int, int> source,
                   std::pair<int, int> destination,
-                  const std::vector<std::vector<int>>& heights)
+                  const std::vector<std::vector<char>>& heights)
 {
     return heights[source.first][source.second] - heights[destination.first][destination.second] <= 1;
 }
 
 }
 
-int Solution::solve(std::vector<std::vector<int>> in)
+int Solution::solve(std::vector<std::vector<char>> in)
 {
     std::vector<std::vector<int>> stepsToVisit(in.size(), std::vector<int>(in[0].size(), -1));
 
@@ -109,7 +107,7 @@ int Solution::solve(std::vector<std::vector<int>> in)
     return 0;
 }
 
-int Solution::solve_part2(std::vector<std::vector<int>> in)
+int Solution::solve_part2(std::vector<std::vector<char>> in)
 {
     std::vector<std::vector<int>> stepsToVisit(in.size(), std::vector<int>(in[0].size(), -1));
 

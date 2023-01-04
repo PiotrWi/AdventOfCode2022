@@ -3,8 +3,6 @@
 #include <ostream>
 #include <functional>
 
-
-
 struct PointRowCol
 {
     int row;
@@ -17,6 +15,7 @@ PointRowCol operator-(const PointRowCol& lhs, const PointRowCol& rhs);
 bool operator==(const PointRowCol& lhs, const PointRowCol &rhs);
 bool operator<(const PointRowCol& lhs, const PointRowCol& rhs);
 std::ostream& operator << (std::ostream& str, const PointRowCol&);
+PointRowCol sign(const PointRowCol& point);
 
 PointRowCol to1BaseIndexing(PointRowCol);
 int manhatanAbs(PointRowCol lhs);
@@ -29,7 +28,7 @@ struct std::hash<PointRowCol>
         /*std::size_t h1 = std::hash<int>{}(point.row);
         std::size_t h2 = std::hash<int>{}(point.col);
         return h1 ^ (h2 << 1);*/
-        return (long)point.row | ((long)point.col << 32);
+        return (long)point.row | ((long)point.col << 16);
     }
 };
 

@@ -61,7 +61,7 @@ Input parse()
     return input;
 }
 
-std::string Solution::solve(Input input)
+std::string Solution::solve(Input input) const
 {
     std::string out;
     for (auto&& command : input.commands)
@@ -79,7 +79,7 @@ std::string Solution::solve(Input input)
     return out;
 }
 
-std::string Solution::solve_part2(Input input)
+std::string Solution::solve_part2(Input input) const
 {
     std::string out;
     for (auto&& command : input.commands)
