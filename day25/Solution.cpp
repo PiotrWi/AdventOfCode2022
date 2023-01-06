@@ -74,9 +74,7 @@ std::string Solution::solve(std::vector<std::string> input)
         long long  val = snafuToInt(snafu);
         sumInDec += val;
     }
-    std::cout << sumInDec << std::endl;
-    std::cout << intToSnafu(sumInDec) << std::endl;
-    std::cout << snafuToInt(intToSnafu(sumInDec))  << std::endl;
+
     return intToSnafu(sumInDec);
 }
 }

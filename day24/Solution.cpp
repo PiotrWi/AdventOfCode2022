@@ -2,9 +2,11 @@
 #include <parsers/parsers.hpp>
 #include <utility/PointRowColOrientation.hpp>
 #include <iostream>
+#include <array>
 #include <deque>
 #include <unordered_set>
 #include <cassert>
+#include <queue>
 
 namespace day24
 {
@@ -158,7 +160,23 @@ void Blizards::performIteration()
 
     for (auto&& bp : blizzardPoints_)
     {
-        wall_[bp.position_.row][bp.position_.col] = 'W';
+        // wall_[bp.position_.row][bp.position_.col] = 'W';
+        if (bp.orientation_ == Dir::left)
+        {
+            wall_[bp.position_.row][bp.position_.col] += 1ull;
+        }
+        if (bp.orientation_ == Dir::right)
+        {
+            wall_[bp.position_.row][bp.position_.col] += 2ull;
+        }
+        if (bp.orientation_ == Dir::up)
+        {
+            wall_[bp.position_.row][bp.position_.col] += 4ull;
+        }
+        if (bp.orientation_ == Dir::down)
+        {
+            wall_[bp.position_.row][bp.position_.col] += 8ull;
+        }
     }
 }
 
@@ -177,14 +195,13 @@ void printBlizards(const Wall& wall)
 }
 
 std::deque<Blizards> blizards;
-const Wall & getBlizard(int iteration)
+const Wall& getBlizard(int iteration)
 {
     assert(iteration <= (int)blizards.size());
     if (iteration >= (int)blizards.size())
     {
         blizards.push_back(blizards.back().getNewIteration());
-        // std::cout << "Blizard number: " << iteration << std::endl;
-        // printBlizards(blizards.back().getFullSurface());
+        auto lastWall = blizards.back().getFullSurface();
     }
     return blizards[iteration].getFullSurface();
 }
@@ -195,9 +212,20 @@ struct RouteEntity
     PointRowCol point;
 };
 
+struct RouteEntityWithHeuristic
+{
+    RouteEntity re;
+    int heuristicVal;
+};
+
 bool operator==(const RouteEntity& lhs, const RouteEntity& rhs)
 {
     return lhs.iteration == rhs.iteration && rhs.point == lhs.point;
+}
+
+bool operator<(const RouteEntityWithHeuristic& lhs, const RouteEntityWithHeuristic& rhs)
+{
+    return lhs.heuristicVal > rhs.heuristicVal;  // hack ...;]
 }
 
 namespace
@@ -229,90 +257,65 @@ void printCurrentRoute (const std::vector<RouteEntity>& currentRoute)
     std::cout << std::endl;
 }
 
-std::unordered_set<RouteEntity, RouteEntityHash> visitedPoints = {};
-
-template <bool reverse>
-int visit(RouteEntity point, PointRowCol destination, std::vector<RouteEntity> currentRoute)
+int solveAStarLike(const PointRowCol& startingPoint, const PointRowCol& endPoint, int iterationInit = 0)
 {
-    if (visitedPoints.contains(point))
-    {
-        return 1000000;
-    }
-    visitedPoints.insert(point);
+    std::unordered_set<RouteEntity, RouteEntityHash> visitedPoints = {};
+    std::priority_queue<RouteEntityWithHeuristic> routeEntityPrQueue;
 
-    currentRoute.push_back(point);
-    // printCurrentRoute(currentRoute);
+    routeEntityPrQueue.push(RouteEntityWithHeuristic{ RouteEntity{iterationInit, startingPoint}, iterationInit + heuristic(startingPoint, endPoint) });
+    while (true)
+    {
+        auto currentNode = routeEntityPrQueue.top();
+        routeEntityPrQueue.pop();
 
-    int minRoute = 1000000;
-    if (point.point == destination)
-    {
-        // std::cout << "reached: " << point.iteration << std::endl;
-        minRouteSoFar = std::min(minRouteSoFar, point.iteration);
-        return point.iteration;
-    }
-
-    if (point.iteration + heuristic(point.point, destination) >= minRouteSoFar)
-    {
-        return 1000000;
-    }
-
-    const auto nextSurface = getBlizard(point.iteration+1);
-    auto neighboursDiffs = std::vector<PointRowCol>{BottomPointDiff, RightPointDiff, PointRowCol{0, 0}, UpperPointDiff, LeftPointDiff};
-    if (reverse)
-    {
-        std::reverse(neighboursDiffs.begin(), neighboursDiffs.end());
-    }
-    for (const auto& neighbourDiff : neighboursDiffs)
-    {
-        auto neighbourPoint = point.point + neighbourDiff;
-        if (isBlank(nextSurface, neighbourPoint))
+        if (visitedPoints.contains(currentNode.re))
         {
-            minRoute = std::min(minRoute, visit<reverse>(RouteEntity{point.iteration + 1, neighbourPoint}, destination, currentRoute));
+            continue;
+        }
+        visitedPoints.insert(currentNode.re);
+        if (currentNode.re.point == endPoint)
+        {
+            return currentNode.re.iteration;
+        }
+        auto nextIteration = currentNode.re.iteration + 1;
+        const auto nextSurface = getBlizard(nextIteration);
+        constexpr auto neighboursDiffs = std::array<PointRowCol, 5>{BottomPointDiff, RightPointDiff, PointRowCol{ 0, 0 }, UpperPointDiff, LeftPointDiff};
+        for (const auto& neighbourDiff : neighboursDiffs)
+        {
+            auto neighbourPoint = currentNode.re.point + neighbourDiff;
+
+            if (isBlank(nextSurface, neighbourPoint))
+            {
+                routeEntityPrQueue.push(RouteEntityWithHeuristic{ RouteEntity{nextIteration, neighbourPoint}, nextIteration + heuristic(neighbourPoint, endPoint) });
+            }
         }
     }
-
-    minRouteSoFar = std::min(minRouteSoFar, minRoute);
-
-    return minRoute;
 }
 
 }
-
-// 288 to high??
 
 int Solution::solve(Wall wall)
 {
-    minRouteSoFar = 1000000;
     blizards = {};
     blizards.push_back(Blizards(wall));
-    auto startingPoint = RouteEntity {0, {0, 1}};
+
+    auto startingPoint = PointRowCol{0, 1};
     auto endPoint = PointRowCol{(int)wall.size()-1, (int)wall[0].size() - 2};
 
-    return visit<false>(startingPoint, endPoint, {});
+    return solveAStarLike({ 0, 1 }, endPoint);
 }
 
 int Solution::solve_part2(Wall wall)
 {
-    minRouteSoFar = 1000000;
     blizards = {};
     blizards.push_back(Blizards(wall));
-    // printBlizards(blizards.back().getFullSurface());
-    visitedPoints = {};
-    auto startingPoint = RouteEntity {0, {0, 1}};
+
+    auto startingPoint = PointRowCol{0, 1};
     auto endPoint = PointRowCol{(int)wall.size()-1, (int)wall[0].size() - 2};
-    auto iterationNum = visit<false>(startingPoint, endPoint, {});
 
-    minRouteSoFar = 1000000;
-    visitedPoints = {};
-    startingPoint = RouteEntity{iterationNum, {(int)wall.size()-1, (int)wall[0].size() - 2}};
-    endPoint =  PointRowCol{0, 1};
-    iterationNum = visit<true>(startingPoint, endPoint, {});
-
-    minRouteSoFar = 1000000;
-    visitedPoints = {};
-    startingPoint = RouteEntity {iterationNum, {0, 1}};
-    endPoint = PointRowCol{(int)wall.size()-1, (int)wall[0].size() - 2};
-    iterationNum = visit<false>(startingPoint, endPoint, {});
+    auto iterationNum = solveAStarLike(startingPoint, endPoint);
+    iterationNum = solveAStarLike(endPoint, startingPoint, iterationNum);
+    iterationNum = solveAStarLike(startingPoint, endPoint, iterationNum);
 
     return iterationNum;
 }

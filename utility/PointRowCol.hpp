@@ -32,12 +32,12 @@ struct std::hash<PointRowCol>
     }
 };
 
-inline PointRowCol UpperPointDiff{-1, 0};
-inline PointRowCol BottomPointDiff{1, 0};
-inline PointRowCol RightPointDiff{0, 1};
-inline PointRowCol LeftPointDiff{0, -1};
+constexpr PointRowCol UpperPointDiff{-1, 0};
+constexpr PointRowCol BottomPointDiff{1, 0};
+constexpr PointRowCol RightPointDiff{0, 1};
+constexpr PointRowCol LeftPointDiff{0, -1};
 
-inline PointRowCol UpperLeftPointDiff{-1, -1};
-inline PointRowCol UpperRightPointDiff{-1, 1};
-inline PointRowCol BottomLeftPointDiff{1, -1};
-inline PointRowCol BottomRightPointDiff{1, 1};
+constexpr PointRowCol UpperLeftPointDiff{-1, -1};
+constexpr PointRowCol UpperRightPointDiff{-1, 1};
+constexpr PointRowCol BottomLeftPointDiff{1, -1};
+constexpr PointRowCol BottomRightPointDiff{1, 1};
