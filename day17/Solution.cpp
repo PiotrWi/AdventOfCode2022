@@ -29,7 +29,7 @@ std::vector<WindDirrection> parse()
 namespace
 {
 
-long getTallestPoint (std::vector<std::string>& tunel)
+long long getTallestPoint (std::vector<std::string>& tunel)
 {
     auto it = std::find_if(tunel.rbegin(), tunel.rend(), [](auto&& line)
     {
@@ -47,7 +47,7 @@ auto addEmptyLinesForFigure(std::vector<std::string>& tunel, int tallestPoint, i
     }
 }
 
-std::vector<PointXY> addFigure(std::vector<std::string>& tunel, int tallestPoint, long i)
+std::vector<PointXY> addFigure(std::vector<std::string>& tunel, int tallestPoint, long long i)
 {
     const int horizontalLine = 0;
     const int plus = 1;
@@ -217,7 +217,7 @@ std::vector<std::string> getTunnelTop(const std::vector<std::string>& tunel)
     return out;
 }
 
-const long secondTaskDone = 1000000000000;
+const long long secondTaskDone = 1000000000000;
 }
 
 long long Solution::solve_part2(std::vector<WindDirrection> in)
@@ -270,8 +270,8 @@ long long Solution::solve_part2(std::vector<WindDirrection> in)
 
     auto notCatchToNextCycle = 0ull;
 
-    unsigned long tallestPointSoFar = cycles[0].tallestPoint;
-    for (unsigned long i = firstCycleEnd; i < secondTaskDone; i+=cyclesDiff)
+    unsigned long long tallestPointSoFar = cycles[0].tallestPoint;
+    for (unsigned long long i = firstCycleEnd; i < secondTaskDone; i+=cyclesDiff)
     {
         tallestPointSoFar += cycles[1].tallestPoint - cycles[0].tallestPoint;
         notCatchToNextCycle = i;
@@ -279,9 +279,9 @@ long long Solution::solve_part2(std::vector<WindDirrection> in)
     tallestPointSoFar -= cycles[1].tallestPoint - cycles[0].tallestPoint;
 
     tunel = cycles[1].tunnelTop;
-    long topOfTheCycleEnd = getTallestPoint(tunel);
+    long long topOfTheCycleEnd = getTallestPoint(tunel);
     windPointer = 0;
-    for (unsigned long i = notCatchToNextCycle; i < secondTaskDone; ++i)
+    for (unsigned long long i = notCatchToNextCycle; i < secondTaskDone; ++i)
     {
         auto tallestPoint = getTallestPoint(tunel);
         auto cords = addFigure(tunel, tallestPoint, i);
@@ -299,7 +299,7 @@ long long Solution::solve_part2(std::vector<WindDirrection> in)
 
         writeFigureToTunel(tunel, cords);
     }
-    long topOfTheTail = getTallestPoint(tunel);
+    long long topOfTheTail = getTallestPoint(tunel);
     return tallestPointSoFar + topOfTheTail - topOfTheCycleEnd;
 }
 

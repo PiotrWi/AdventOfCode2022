@@ -40,3 +40,12 @@ Dir rotateLeft(const Dir pos)
     dirInt = (dirInt - 1 + 4) % 4;
     return static_cast<Dir>(dirInt);
 }
+
+PointRowCol getDirrectionDif(Dir d)
+{
+    if (d == Dir::up) return UpperPointDiff;
+    if (d == Dir::down) return BottomPointDiff;
+    if (d == Dir::left) return LeftPointDiff;
+    if (d == Dir::right) return RightPointDiff;
+    throw 1;
+}

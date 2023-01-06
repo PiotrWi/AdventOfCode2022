@@ -56,7 +56,6 @@ PointRowCol findStartingPos(const std::vector<std::string> &map)
     return PointRowCol{0, (int) map[0].find('.')};
 }
 
-
 [[maybe_unused]]
 std::ostream& operator<<(std::ostream& str, Command c)
 {
@@ -72,15 +71,6 @@ std::ostream& operator<<(std::ostream& str, Command c)
     {
         return  str << "go forward, c = " << c.count;
     }
-    throw 1;
-}
-
-PointRowCol getDirrectionDif(Dir d)
-{
-    if (d == Dir::up) return UpperPointDiff;
-    if (d == Dir::down) return BottomPointDiff;
-    if (d == Dir::left) return LeftPointDiff;
-    if (d == Dir::right) return RightPointDiff;
     throw 1;
 }
 

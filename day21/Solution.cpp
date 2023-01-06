@@ -11,75 +11,45 @@ const char *fileLoc = "day21/input.txt";
 namespace
 {
 
+
+
+std::unique_ptr<Operation> toOperation(const char sign)
+{
+    if (sign == '+') return std::make_unique<Addition>();
+    if (sign == '-') return std::make_unique<Substraction>();
+    if (sign == '/') return std::make_unique<Divide>();
+    if (sign == '*') return std::make_unique<Mutliply>();
+    throw 1;
+}
+
+std::unique_ptr<Monkey> monkeyWithOperation(const std::string& name, const std::string& equation, const char sign)
+{
+    auto monkeys = splitAndTrim(equation, sign);
+    auto monkey = std::make_unique<MonkeyWithOperation>();
+    monkey->name_ = name;
+    monkey->monkeySourceA_ = monkeys[0];
+    monkey->monkeySourceB_ = monkeys[1];
+    monkey->operation_ = toOperation(sign);
+    return monkey;
+}
+
 std::unique_ptr<Monkey> parseLine(const std::string& line)
 {
     auto nameAndEquation = splitAndTrim(line, ':');
     auto equation = nameAndEquation[1];
 
-    if (nameAndEquation[0] == "root")
+    for (char c : {'+', '-', '/', '*' })
     {
-        auto monkeys = splitAndTrim(nameAndEquation[1], '+');
-        auto monkey = std::make_unique<Root>();
-        monkey->name_ = nameAndEquation[0];
-        monkey->monkeySourceA_ = monkeys[0];
-        monkey->monkeySourceB_ = monkeys[1];
-        return monkey;
+        if (equation.find(c) != std::string::npos)
+        {
+            return monkeyWithOperation(nameAndEquation[0], equation, c);
+        }
     }
-    if (nameAndEquation[0] == "humn")
-    {
-        auto monkeys = splitAndTrim(nameAndEquation[1], '+');
-        auto monkey = std::make_unique<Humman>();
-        monkey->name_ = nameAndEquation[0];
-        return monkey;
-    }
-    if (equation.find('+') != std::string::npos)
-    {
-        auto monkeys = splitAndTrim(nameAndEquation[1], '+');
-        auto monkey = std::make_unique<MonkeyWithOperation>();
-        monkey->name_ = nameAndEquation[0];
-        monkey->monkeySourceA_ = monkeys[0];
-        monkey->monkeySourceB_ = monkeys[1];
-        monkey->operation_ = std::make_unique<Addition>();
-        return monkey;
-    }
-    else if (equation.find('-') != std::string::npos)
-    {
-        auto monkeys = splitAndTrim(nameAndEquation[1], '-');
-        auto monkey = std::make_unique<MonkeyWithOperation>();
-        monkey->name_ = nameAndEquation[0];
-        monkey->monkeySourceA_ = monkeys[0];
-        monkey->monkeySourceB_ = monkeys[1];
-        monkey->operation_ = std::make_unique<Substraction>();
-        return monkey;
-    }
-    else if (equation.find('/') != std::string::npos)
-    {
-        auto monkeys = splitAndTrim(nameAndEquation[1], '/');
-        auto monkey = std::make_unique<MonkeyWithOperation>();
-        monkey->name_ = nameAndEquation[0];
-        monkey->monkeySourceA_ = monkeys[0];
-        monkey->monkeySourceB_ = monkeys[1];
-        monkey->operation_ = std::make_unique<Divide>();
-        return monkey;
-    }
-    else if (equation.find('*') != std::string::npos)
-    {
-        auto monkeys = splitAndTrim(nameAndEquation[1], '*');
-        auto monkey = std::make_unique<MonkeyWithOperation>();
-        monkey->name_ = nameAndEquation[0];
-        monkey->monkeySourceA_ = monkeys[0];
-        monkey->monkeySourceB_ = monkeys[1];
-        monkey->operation_ = std::make_unique<Mutliply>();
-        return monkey;
-    }
-    else
-    {
-        auto monkey = std::make_unique<MonkeyWithNumber>();
-        monkey->name_ = nameAndEquation[0];
-        monkey->number_ = std::stoi(nameAndEquation[1]);
-        return monkey;
-    }
-    throw 1;
+
+    auto monkey = std::make_unique<MonkeyWithNumber>();
+    monkey->name_ = nameAndEquation[0];
+    monkey->number_ = std::stoi(nameAndEquation[1]);
+    return monkey;
 }
 
 }  // namespace
@@ -95,12 +65,12 @@ std::map<std::string, std::unique_ptr<Monkey> > parse()
     return monkeys;
 }
 
-std::optional<long> MonkeyWithNumber::getValue(std::map<std::string, std::unique_ptr<Monkey> >&)
+std::optional<long long> MonkeyWithNumber::getValue(std::map<std::string, std::unique_ptr<Monkey> >&)
 {
     return number_;
 }
 
-std::optional<long> MonkeyWithOperation::getValue(std::map<std::string, std::unique_ptr<Monkey> >& allMonkeys)
+std::optional<long long> MonkeyWithOperation::getValue(std::map<std::string, std::unique_ptr<Monkey> >& allMonkeys)
 {
     if (number_)
     {
@@ -120,7 +90,7 @@ std::optional<long> MonkeyWithOperation::getValue(std::map<std::string, std::uni
     return number_;
 }
 
-void MonkeyWithOperation::propagateUp(std::map<std::string, std::unique_ptr<Monkey>>& allMonkeys, std::optional<long> val)
+void MonkeyWithOperation::propagateUp(std::map<std::string, std::unique_ptr<Monkey>>& allMonkeys, std::optional<long long> val)
 {
     number_ = val;
     if (not valueFromA_)
@@ -135,7 +105,23 @@ void MonkeyWithOperation::propagateUp(std::map<std::string, std::unique_ptr<Monk
     }
 }
 
-std::optional<long> Root::getValue(std::map<std::string, std::unique_ptr<Monkey>>& allMonkeys)
+std::unique_ptr<Monkey> MonkeyWithOperation::cloneToRoot()
+{
+    auto monkey = std::make_unique<Root>();
+    monkey->name_ = name_;
+    monkey->monkeySourceA_ = monkeySourceA_;
+    monkey->monkeySourceB_ = monkeySourceB_;
+    return monkey;
+}
+
+std::unique_ptr<Monkey> MonkeyWithOperation::cloneToHumman()
+{
+    auto monkey = std::make_unique<Humman>();
+    monkey->name_ = name_;
+    return monkey;
+}
+
+std::optional<long long> Root::getValue(std::map<std::string, std::unique_ptr<Monkey>>& allMonkeys)
 {
     if (number_)
     {
@@ -159,7 +145,7 @@ std::optional<long> Root::getValue(std::map<std::string, std::unique_ptr<Monkey>
     return number_;
 }
 
-void Root::propagateUp(std::map<std::string, std::unique_ptr<Monkey>>& allMonkeys, std::optional<long>)
+void Root::propagateUp(std::map<std::string, std::unique_ptr<Monkey>>& allMonkeys, std::optional<long long>)
 {
     if (not valueFromA_)
     {
@@ -171,25 +157,30 @@ void Root::propagateUp(std::map<std::string, std::unique_ptr<Monkey>>& allMonkey
     }
 }
 
-std::optional<long> Humman::getValue(std::map<std::string, std::unique_ptr<Monkey>> &)
+std::optional<long long> Humman::getValue(std::map<std::string, std::unique_ptr<Monkey>> &)
 {
     return number_;
 }
 
-void Humman::propagateUp(std::map<std::string, std::unique_ptr<Monkey>> &, std::optional<long> val)
+void Humman::propagateUp(std::map<std::string, std::unique_ptr<Monkey>> &, std::optional<long long> val)
 {
     number_ = val;
 }
 
-long Solution::solve(std::map<std::string, std::unique_ptr<Monkey>>& monkeys)
+long long Solution::solve(std::map<std::string, std::unique_ptr<Monkey>>& monkeys)
 {
     return *monkeys["root"]->getValue(monkeys);
 }
 
-long Solution::solve_part2(std::map<std::string, std::unique_ptr<Monkey>>& monkeys)
+long long Solution::solve_part2(std::map<std::string, std::unique_ptr<Monkey>>& monkeys)
 {
+    monkeys = parse();
+    monkeys["root"] = static_cast<MonkeyWithOperation*>(monkeys["root"].get())->cloneToRoot();
+    monkeys["humn"] = static_cast<MonkeyWithOperation*>(monkeys["humn"].get())->cloneToHumman();
+
     monkeys["root"]->getValue(monkeys);
     monkeys["root"]->propagateUp(monkeys, {});
+
     return *monkeys["humn"]->getValue(monkeys);
 }
 

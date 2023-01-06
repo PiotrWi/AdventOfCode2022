@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <cassert>
 #include <queue>
+#include <utility/Martix.hpp>
 
 namespace day24
 {
@@ -20,11 +21,11 @@ Wall parse()
 namespace
 {
 
-PointRowCol teleport(const std::vector<std::vector<char>> &map, PointRowCol pow, Dir orientation)
+PointRowCol teleport(const MatrixWrapper<char> &map, PointRowCol pow, Dir orientation)
 {
     if (orientation == Dir::up)
     {
-        for (int row = map.size()-1; row >= 0; row--)
+        for (int row = map.getRowsCount() -1; row >= 0; row--)
         {
             if (map[row][pow.col] == '.')
             {
@@ -34,7 +35,7 @@ PointRowCol teleport(const std::vector<std::vector<char>> &map, PointRowCol pow,
     }
     if (orientation == Dir::down)
     {
-        for (int row = 0; row < (int)map.size(); row++)
+        for (int row = 0; row < (int)map.getRowsCount(); row++)
         {
             if (map[row][pow.col] == '.')
             {
@@ -65,71 +66,60 @@ PointRowCol teleport(const std::vector<std::vector<char>> &map, PointRowCol pow,
     return {};
 }
 
-PointRowCol getDirrectionDif(Dir d)
-{
-    if (d == Dir::up) return UpperPointDiff;
-    if (d == Dir::down) return BottomPointDiff;
-    if (d == Dir::left) return LeftPointDiff;
-    if (d == Dir::right) return RightPointDiff;
-    throw 1;
 }
 
-}
-bool isRock(const std::vector<std::vector<char> > &map, PointRowCol pos)
+bool isRock(const MatrixWrapper<char> &map, PointRowCol pos)
 {
-    return map[pos.row][pos.col] == '#';
+    return map[pos] == '#';
 }
 
-bool isBlank(const std::vector<std::vector<char> > &map, PointRowCol pos)
+bool isBlank(const MatrixWrapper<char>& map, PointRowCol pos)
 {
-    return pos.row >= 0 && pos.col >= 0 && pos.row < (int)map.size() && pos.col < (int)map[0].size() && map[pos.row][pos.col] == '.';
+    return map.isInBound(pos) && map[pos] == '.';
 }
 
 struct Blizards
 {
-    explicit Blizards(Wall);
+    explicit Blizards(Wall&);
     Blizards getNewIteration();
-    const Wall& getFullSurface();
+    const MatrixWrapper<char>& getFullSurface();
 private:
     void performIteration();
-    Wall wall_;
+    MatrixWrapper<char> wall_;
     std::vector<PointRowColOrientation> blizzardPoints_;
     std::vector<PointRowCol> rocks_;
 };
 
-Blizards::Blizards(Wall wall)
+Blizards::Blizards(Wall& wall)
     : wall_(wall)
 {
-    for (int row = 0; row < (int)wall.size(); ++row)
+    for (auto it = wall_.begin(); it != wall_.end(); ++it)
     {
-        for (int col = 0; col < (int)wall[row].size(); ++col)
+        const auto& point = it.toPointRowCol(wall_.begin());
+        if (isRock(wall_, point))
         {
-            if (isRock(wall, PointRowCol{row, col}))
-            {
-                rocks_.emplace_back(row, col);
-            }
-
-            if (wall_[row][col] == '<')
-            {
-                blizzardPoints_.emplace_back(Dir::left, PointRowCol{row, col});
-            }
-            if (wall_[row][col] == '>')
-            {
-                blizzardPoints_.emplace_back(Dir::right, PointRowCol{row, col});
-            }
-            if (wall_[row][col] == '^')
-            {
-                blizzardPoints_.emplace_back(Dir::up, PointRowCol{row, col});
-            }
-            if (wall_[row][col] == 'v')
-            {
-                blizzardPoints_.emplace_back(Dir::down, PointRowCol{row, col});
-            }
+            rocks_.emplace_back(point);
+        }
+        if (wall_[point] == '<')
+        {
+            blizzardPoints_.emplace_back(Dir::left, point);
+        }
+        if (wall_[point] == '>')
+        {
+            blizzardPoints_.emplace_back(Dir::right, point);
+        }
+        if (wall_[point] == '^')
+        {
+            blizzardPoints_.emplace_back(Dir::up, point);
+        }
+        if (wall_[point] == 'v')
+        {
+            blizzardPoints_.emplace_back(Dir::down, point);
         }
     }
 }
 
-const Wall& Blizards::getFullSurface()
+const MatrixWrapper<char>& Blizards::getFullSurface()
 {
     return wall_;
 }
@@ -143,11 +133,11 @@ Blizards Blizards::getNewIteration()
 
 void Blizards::performIteration()
 {
-    wall_ = std::vector<std::vector<char>>(wall_.size(), std::vector<char>(wall_[0].size(), '.'));
+    wall_ = wall_.cloneAndClear('.');
 
     for (auto&& rock : rocks_)
     {
-        wall_[rock.row][rock.col] = '#';
+        wall_[rock] = '#';
     }
     for (auto&& bp : blizzardPoints_)
     {
@@ -160,23 +150,7 @@ void Blizards::performIteration()
 
     for (auto&& bp : blizzardPoints_)
     {
-        // wall_[bp.position_.row][bp.position_.col] = 'W';
-        if (bp.orientation_ == Dir::left)
-        {
-            wall_[bp.position_.row][bp.position_.col] += 1ull;
-        }
-        if (bp.orientation_ == Dir::right)
-        {
-            wall_[bp.position_.row][bp.position_.col] += 2ull;
-        }
-        if (bp.orientation_ == Dir::up)
-        {
-            wall_[bp.position_.row][bp.position_.col] += 4ull;
-        }
-        if (bp.orientation_ == Dir::down)
-        {
-            wall_[bp.position_.row][bp.position_.col] += 8ull;
-        }
+        wall_[bp.position_] += (1ull << static_cast<int>(Dir::left));
     }
 }
 
@@ -195,7 +169,7 @@ void printBlizards(const Wall& wall)
 }
 
 std::deque<Blizards> blizards;
-const Wall& getBlizard(int iteration)
+const MatrixWrapper<char>& getBlizard(int iteration)
 {
     assert(iteration <= (int)blizards.size());
     if (iteration >= (int)blizards.size())
@@ -243,7 +217,7 @@ struct RouteEntityHash
 {
     std::size_t operator()(const RouteEntity& p) const noexcept
     {
-        return (p.iteration << 20) | (p.point.row << 10) | (p.point.col << 10);
+        return (p.iteration << 20) | (p.point.row << 10) | p.point.col;
     }
 };
 

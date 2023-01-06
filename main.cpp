@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cassert>
-#include <chrono>
 
 #include "day1/Solution.hpp"
 #include "day2/Solution.hpp"
@@ -27,12 +26,7 @@
 #include "day23/Solution.hpp"
 #include "day24/Solution.hpp"
 #include "day25/Solution.hpp"
-
-template <typename T>
-T clone(const T& t)
-{
-    return t;
-}
+#include "utility/RaiiTimer.hpp"
 
 struct SolveBWithoutCheck {};
 
@@ -42,7 +36,7 @@ struct PrintAndVerifySollution
     template<typename T, typename ARetType, typename BRetType>
     void operator()(T(&parseFcn)(), const char* prefix, const ARetType& expectationA, const BRetType& expectationb)
     {
-        auto start = std::chrono::system_clock::now();
+        RaiiTimer rt(prefix);
 
         auto intput = parseFcn();
         auto solver = TSolutionClass{};
@@ -54,15 +48,11 @@ struct PrintAndVerifySollution
         auto solutionB = solver.solve_part2(intput);
         std::cout << prefix << " part 2: " << solutionB << std::endl;
         assert(solutionB == expectationb);
-
-        auto end = std::chrono::system_clock::now();
-        auto elapsed = end - start;
-        std::cout << prefix << " time needed: " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms" << std::endl;
     }
     template<typename T, typename ARetType>
     void operator()(T(&parseFcn)(), const char* prefix, const ARetType& expectationA)
     {
-        auto start = std::chrono::system_clock::now();
+        RaiiTimer rt(prefix);
 
         auto intput = parseFcn();
         auto solver = TSolutionClass{};
@@ -70,17 +60,11 @@ struct PrintAndVerifySollution
         auto solutionA = solver.solve(intput);
         assert(expectationA == solutionA);
         std::cout << prefix << " part 1: " << solutionA << std::endl;
-
-        auto end = std::chrono::system_clock::now();
-        auto elapsed = end - start;
-        std::cout << prefix << " time needed: " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms" << std::endl;
-
     }
     template<typename T, typename ARetType>
     void operator()(T(&parseFcn)(), const char* prefix, const ARetType& expectationA, SolveBWithoutCheck)
     {
-        auto start = std::chrono::system_clock::now();
-        auto intput = parseFcn();
+        RaiiTimer rt(prefix);        auto intput = parseFcn();
         auto solver = TSolutionClass{};
 
         auto solutionA = solver.solve(intput);
@@ -88,45 +72,37 @@ struct PrintAndVerifySollution
         std::cout << prefix << " part 1: " << solutionA << std::endl;
 
         solver.solve_part2(intput);
-
-        auto end = std::chrono::system_clock::now();
-        auto elapsed = end - start;
-        std::cout << prefix << " time needed: " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms" << std::endl;
     }
 };
 
 int main()
 {
-    auto start = std::chrono::system_clock::now();
-    {
-        PrintAndVerifySollution<day1::Solution>()(day1::parse, "day 1", 71502, 208191);
-        PrintAndVerifySollution<day2::Solution>()(day2::parse, "day 2", 13484, 13433);
-        PrintAndVerifySollution<day3::Solution>()(day3::parse, "day 3", 7821, 2752);
-        PrintAndVerifySollution<day4::Solution>()(day4::parse, "day 4", 471, 888);
-        PrintAndVerifySollution<day5::Solution>()(day5::parse, "day 5", "ZBDRNPMVH", "WDLPFNNNB");
-        PrintAndVerifySollution<day6::Solution>()(day6::parse, "day 6", 1909, 3380);
-        PrintAndVerifySollution<day7::Solution>()(day7::parse, "day 7", 1642503, 6999588);
-        PrintAndVerifySollution<day8::Solution>()(day8::parse, "day 8", 1719, 590824);
-        PrintAndVerifySollution<day9::Solution>()(day9::parse, "day 9", 6337, 2455);
-        PrintAndVerifySollution<day10::Solution>()(day10::parse, "day 10", 14040, SolveBWithoutCheck{});
-        PrintAndVerifySollution<day11::Solution>()(day11::parse, "day 11", 76728ull, 21553910156ull);
-        PrintAndVerifySollution<day12::Solution>()(day12::parse, "day 12", 339, 332);
-        PrintAndVerifySollution<day13::Solution>()(day13::parse, "day 13", 5393, 26712);
-        PrintAndVerifySollution<day14::Solution>()(day14::parse, "day 14", 768, 26686);
-        // PrintAndVerifySollution<day15::Solution>()(day15::parse, "day 15", 5108096, 10553942650264ull); // to be optimized;
-        PrintAndVerifySollution<day16::Solution>()(day16::parse, "day 16", 1647, 2169);
-        // PrintAndVerifySollution<day17::Solution>()(day17::parse, "day 17", 3100, 1540634005751);  // to be optimized;
-        PrintAndVerifySollution<day18::Solution>()(day18::parse, "day 18", 3498, 2008);
-        PrintAndVerifySollution<day19::Solution>()(day19::parse, "day 19", 1404, 5880);
-        PrintAndVerifySollution<day20::Solution>()(day20::parse, "day 20", 4224, 861907680486);
-        // PrintAndVerifySollution<day21::Solution>()(day21::parse, "day 21", 82225382988628ll, 3429411069028ll);   // To be solved. B brokes a.
-        PrintAndVerifySollution<day22::Solution>()(day22::parse, "day 22", 60362, 74288);
-        PrintAndVerifySollution<day23::Solution>()(day23::parse, "day 23", 4241, 1079);
-        PrintAndVerifySollution<day24::Solution>()(day24::parse, "day 24", 225, 711);
-        PrintAndVerifySollution<day25::Solution>()(day25::parse, "day 25", std::string("2-121-=10=200==2==21"));
-    }
-    auto end = std::chrono::system_clock::now();
-    auto elapsed = end - start;
-    std::cout << " Time needed for all: " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms" << std::endl;
+    RaiiTimer rt("ALL TASKS");
+
+    PrintAndVerifySollution<day1::Solution>()(day1::parse, "day 1", 71502, 208191);
+    PrintAndVerifySollution<day2::Solution>()(day2::parse, "day 2", 13484, 13433);
+    PrintAndVerifySollution<day3::Solution>()(day3::parse, "day 3", 7821, 2752);
+    PrintAndVerifySollution<day4::Solution>()(day4::parse, "day 4", 471, 888);
+    PrintAndVerifySollution<day5::Solution>()(day5::parse, "day 5", "ZBDRNPMVH", "WDLPFNNNB");
+    PrintAndVerifySollution<day6::Solution>()(day6::parse, "day 6", 1909, 3380);
+    PrintAndVerifySollution<day7::Solution>()(day7::parse, "day 7", 1642503, 6999588);
+    PrintAndVerifySollution<day8::Solution>()(day8::parse, "day 8", 1719, 590824);
+    PrintAndVerifySollution<day9::Solution>()(day9::parse, "day 9", 6337, 2455);
+    PrintAndVerifySollution<day10::Solution>()(day10::parse, "day 10", 14040, SolveBWithoutCheck{});
+    PrintAndVerifySollution<day11::Solution>()(day11::parse, "day 11", 76728ull, 21553910156ull);
+    PrintAndVerifySollution<day12::Solution>()(day12::parse, "day 12", 339, 332);
+    PrintAndVerifySollution<day13::Solution>()(day13::parse, "day 13", 5393, 26712);
+    PrintAndVerifySollution<day14::Solution>()(day14::parse, "day 14", 768, 26686);
+    PrintAndVerifySollution<day15::Solution>()(day15::parse, "day 15", 5108096, 10553942650264ull);  // b can be improved
+    PrintAndVerifySollution<day16::Solution>()(day16::parse, "day 16", 1647, 2169);
+    PrintAndVerifySollution<day17::Solution>()(day17::parse, "day 17", 3100, 1540634005751);
+    PrintAndVerifySollution<day18::Solution>()(day18::parse, "day 18", 3498, 2008);
+    PrintAndVerifySollution<day19::Solution>()(day19::parse, "day 19", 1404, 5880);
+    PrintAndVerifySollution<day20::Solution>()(day20::parse, "day 20", 4224, 861907680486);
+    PrintAndVerifySollution<day21::Solution>()(day21::parse, "day 21", 82225382988628ll, 3429411069028ll);
+    PrintAndVerifySollution<day22::Solution>()(day22::parse, "day 22", 60362, 74288);
+    PrintAndVerifySollution<day23::Solution>()(day23::parse, "day 23", 4241, 1079);
+    PrintAndVerifySollution<day24::Solution>()(day24::parse, "day 24", 225, 711);
+    PrintAndVerifySollution<day25::Solution>()(day25::parse, "day 25", "2-121-=10=200==2==21");
     return 0;
 }

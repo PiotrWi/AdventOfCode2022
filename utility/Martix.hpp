@@ -87,65 +87,141 @@ class MatrixWrapper : public TypesTraits<TDataTypeIn, TRawMatrixTypeIn>
 	using TConstIteratorType = MatritWrapperIterator<const TDataTypeIn, const TRawMatrixTypeIn>;
 public:
 	explicit MatrixWrapper(TRawMatrixTypeIn& matrix)
-		: matrix_(matrix)
+		: matrix_(&matrix)
 	{
+	}
+
+	explicit MatrixWrapper(int rows, int columns, TDataTypeIn&& initValue)
+	{
+		matrixData_ = std::vector<std::vector<TDataTypeIn>>(rows, std::vector<TDataTypeIn>(columns, initValue));
+	}
+
+	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn> operator=(MatrixWrapper&& other)
+	{
+		matrixData_ = std::move(other.matrixData_);
+		if (matrixData_)
+		{
+			matrix_ = &(*matrixData_);
+		}
+		else
+		{
+			matrix_ = other.matrix_;
+		}
+		return *this;
+	}
+
+	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>(MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>&& other)
+	{
+		matrixData_ = std::move(other.matrixData_);
+		if (matrixData_)
+		{
+			matrix_ = &(*matrixData_);
+		}
+		else
+		{
+			matrix_ = other.matrix_;
+		}
+	}
+
+	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>(const MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>& other)
+	{
+		matrixData_ = other.matrixData_;
+		if (matrixData_)
+		{
+			matrix_ = &(*matrixData_);
+		}
+		else
+		{
+			matrix_ = other.matrix_;
+		}
+	}
+
+	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn> operator=(const MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>& other)
+	{
+		if (&other == this)
+		{
+			return *this;
+		}
+		matrixData_ = other.matrixData_;
+		if (matrixData_)
+		{
+			matrix_ = &(*matrixData_);
+		}
+		else
+		{
+			matrix_ = other.matrix_;
+		}
+		return *this;
+	}
+
+
+	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn> cloneAndClear(TDataTypeIn&& initValue) const
+	{
+		MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn> mv(this->getRowsCount(), this->getColumnsCount(), std::forward<TDataTypeIn>(initValue));
+		return mv;
 	}
 
 	TConstIteratorType begin() const
 	{
-		return TConstIteratorType(matrix_.begin());
+		return TConstIteratorType((*matrix_).begin());
 	}
 
 	TConstIteratorType end() const
 	{
-		return TConstIteratorType(matrix_.end());
+		return TConstIteratorType((*matrix_).end());
 	}
 
 	TIteratorType begin()
 	{
-		return TIteratorType(matrix_.begin());
+		return TIteratorType((*matrix_).begin());
 	}
 
 	TIteratorType end()
 	{
-		return TIteratorType(matrix_.end());
+		return TIteratorType((*matrix_).end());
 	}
 
 	Traits::TColumnType & operator[](std::size_t rowIndex)
 	{
-		return matrix_[rowIndex];
+		return (*matrix_)[rowIndex];
+	}
+
+	const Traits::TColumnType& operator[](std::size_t rowIndex) const
+	{
+		return (*matrix_)[rowIndex];
 	}
 
 	Traits::TDataType& operator[](const PointRowCol& point)
 	{
-		return matrix_[point.row][point.col];
+		return (*matrix_)[point.row][point.col];
 	}
 
 	const Traits::TDataType& operator[](const PointRowCol& point) const
 	{
-		return matrix_[point.row][point.col];
+		return (*matrix_)[point.row][point.col];
 	}
 
-	int getRowsCount()
+	int getRowsCount() const
 	{
-		return (int)matrix_.size();
+		return (int)(*matrix_).size();
 	}
 
-	int getColumnsCount()
+	int getColumnsCount() const 
 	{
 		if (getRowsCount() == 0)
 		{
 			return 0;
 		}
-		return (int)matrix_[0].size();
+		return (int)(*matrix_)[0].size();
 	}
 
-	bool isInBound(const PointRowCol& point)
+	bool isInBound(const PointRowCol& point) const
 	{
 		return point.row >= 0 && point.col >= 0 && point.row < getRowsCount() and point.col < getColumnsCount();
 	}
 private:
-	Traits::TRawMatrixType& matrix_;
+	Traits::TRawMatrixType* matrix_;
+	std::optional<typename Traits::TRawMatrixType> matrixData_;
 };
 
 template <typename TDataType>
