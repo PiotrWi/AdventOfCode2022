@@ -51,7 +51,7 @@ bool doOverlap(TEntityType elem)
 
 }  // namespace
 
-int Solution::solve(const std::vector<TEntityType>& input)
+int Solution::solve(const std::vector<TEntityType>& input) const
 {
     int out = std::accumulate(std::begin(input), std::end(input), 0, [](auto&& currentSum, auto&& elem)
     {
@@ -60,7 +60,7 @@ int Solution::solve(const std::vector<TEntityType>& input)
     return out;
 }
 
-int Solution::solve_part2(const std::vector<TEntityType>& input)
+int Solution::solve_part2(const std::vector<TEntityType>& input) const
 {
     int out = std::accumulate(std::begin(input), std::end(input), 0, [](auto&& currentSum, auto&& elem)
     {

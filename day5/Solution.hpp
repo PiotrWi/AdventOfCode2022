@@ -26,8 +26,8 @@ Input parse();
 class Solution
 {
 public:
-    std::string solve(Input input);
-    std::string solve_part2(Input input);
+    std::string solve(Input input) const;
+    std::string solve_part2(Input input) const;
 };
 
 }  // namespace day5

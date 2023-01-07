@@ -1,5 +1,6 @@
 #include "Solution.hpp"
 
+#include <algorithm>
 #include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 

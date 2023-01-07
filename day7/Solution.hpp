@@ -17,8 +17,8 @@ std::vector<Command> parse();
 class Solution
 {
 public:
-    int solve(const std::vector<Command>&);
-    int solve_part2(const std::vector<Command>&);
+    int solve(const std::vector<Command>&) const;
+    int solve_part2(const std::vector<Command>&) const;
 };
 
 }  // namespace day7

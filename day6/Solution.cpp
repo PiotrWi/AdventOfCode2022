@@ -76,12 +76,12 @@ int findPosition(std::string input, int n)
 }
 }
 
-int Solution::solve(std::string input)
+int Solution::solve(std::string input) const
 {
     return findPosition(input, 4);
 }
 
-int Solution::solve_part2(std::string input)
+int Solution::solve_part2(std::string input) const
 {
     return findPosition(input, 14);
 }

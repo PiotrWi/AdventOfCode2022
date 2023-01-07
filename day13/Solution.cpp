@@ -1,4 +1,5 @@
 #include "Solution.hpp"
+#include <algorithm>
 #include <cctype>
 #include <typeinfo>
 #include <parsers/parsers.hpp>
@@ -11,7 +12,6 @@ const char* fileLoc = "day13/input.txt";
 namespace
 {
 
-/*shall be changed to str view it fact*/
 int parseList(List& node, std::string in);
 int parseInteger(Integer& node, std::string in);
 
@@ -155,7 +155,7 @@ int Solution::solve(const std::vector<std::unique_ptr<Node>>& in)
             counter += (i / 2) + 1;
         }
     }
-    return counter; // tmp
+    return counter;
 }
 
 int Solution::solve_part2(std::vector<std::unique_ptr<Node>>& in)

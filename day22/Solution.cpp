@@ -1,5 +1,6 @@
 #include "Solution.hpp"
 
+#include <algorithm>
 #include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 #include <iostream>
@@ -55,7 +56,6 @@ PointRowCol findStartingPos(const std::vector<std::string> &map)
     return PointRowCol{0, (int) map[0].find('.')};
 }
 
-
 [[maybe_unused]]
 std::ostream& operator<<(std::ostream& str, Command c)
 {
@@ -71,15 +71,6 @@ std::ostream& operator<<(std::ostream& str, Command c)
     {
         return  str << "go forward, c = " << c.count;
     }
-    throw 1;
-}
-
-PointRowCol getDirrectionDif(Dir d)
-{
-    if (d == Dir::up) return UpperPointDiff;
-    if (d == Dir::down) return BottomPointDiff;
-    if (d == Dir::left) return LeftPointDiff;
-    if (d == Dir::right) return RightPointDiff;
     throw 1;
 }
 
@@ -167,7 +158,7 @@ PointRowCol goForward(PointRowColOrientation pos, int count, const std::vector<s
 
 void alignMapSizeForAllRows(std::vector<std::string>& map)
 {
-    auto maxW = 0ul;
+    decltype(map.size()) maxW = 0ul;
     for (auto&& s: map)
     {
         maxW = std::max(maxW, s.size());

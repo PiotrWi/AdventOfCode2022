@@ -22,4 +22,4 @@ struct PointRowColOrientation
 std::ostream& operator<<(std::ostream& str, Dir d);
 std::ostream& operator<<(std::ostream& str, PointRowColOrientation position);
 
-
+PointRowCol getDirrectionDif(Dir d);

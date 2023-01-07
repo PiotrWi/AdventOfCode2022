@@ -13,10 +13,10 @@ std::vector<std::string> parse()
     return parsers::parse<std::string>(fileLoc);
 }
 
-long snafuToInt(const std::string& s)
+long long  snafuToInt(const std::string& s)
 {
-    long pow = 1;
-    long out = 0;
+    long long  pow = 1;
+    long long  out = 0;
     for (int i = int(s.size())-1; i>=0; --i)
     {
         if (s[i] == '0' || s[i] == '1' || s[i] == '2')
@@ -36,7 +36,7 @@ long snafuToInt(const std::string& s)
     return out;
 }
 
-std::string intToSnafu(long num)
+std::string intToSnafu(long long  num)
 {
     std::string out;
 
@@ -68,15 +68,13 @@ std::string intToSnafu(long num)
 
 std::string Solution::solve(std::vector<std::string> input)
 {
-    long sumInDec = 0;
+    long long sumInDec = 0;
     for (auto&& snafu : input)
     {
-        long val = snafuToInt(snafu);
+        long long  val = snafuToInt(snafu);
         sumInDec += val;
     }
-    std::cout << sumInDec << std::endl;
-    std::cout << intToSnafu(sumInDec) << std::endl;
-    std::cout << snafuToInt(intToSnafu(sumInDec))  << std::endl;
+
     return intToSnafu(sumInDec);
 }
 }

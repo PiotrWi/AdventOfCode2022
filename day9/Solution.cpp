@@ -1,10 +1,10 @@
 #include "Solution.hpp"
 
-#include <fstream>
+#include <cstdlib>
 #include <sstream>
 #include <set>
-#include <utility>
-#include <iostream>
+#include <parsers/parsers.hpp>
+#include <utility/PointRowCol.hpp>
 
 namespace day9
 {
@@ -14,14 +14,8 @@ const char* fileLoc = "day9/input.txt";
 std::vector<Command> parse()
 {
     std::vector<Command> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    while (inputFile) {
-        std::getline(inputFile, line);
-        if (line == "") {
-            continue;
-        }
+    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    {
         Command c;
         std::stringstream ss(line);
         ss >> c.dir >> c.n;
@@ -34,69 +28,40 @@ std::vector<Command> parse()
 namespace
 {
 
-std::pair<int, int> getDiff(const char c)
+PointRowCol getDiff(const char c)
 {
-    if (c == 'D')
-    {
-        return {-1, 0};
-    }
-    if (c == 'U')
-    {
-        return {1, 0};
-    }
-    if (c == 'L')
-    {
-        return {0, -1};
-    }
-    if (c == 'R')
-    {
-        return {0, 1};
-    }
+    if (c == 'D') return BottomPointDiff;
+    if (c == 'U') return UpperPointDiff;
+    if (c == 'L') return LeftPointDiff; 
+    if (c == 'R') return RightPointDiff;
+
     throw 1;
 }
 
-std::pair<int, int> operator+(const std::pair<int, int>& lhs, const std::pair<int, int>& rhs)
+auto tailShallMove(const PointRowCol& headPosition, PointRowCol& tailPosition)
 {
-    return {lhs.first + rhs.first, lhs.second+ rhs.second};
-}
-
-auto tailShallMove(const std::pair<int, int>& headPosition, const std::pair<int, int>& tailPosition)
-{
-    if (abs(headPosition.first - tailPosition.first) > 1 )
+    if (abs(headPosition.row - tailPosition.row) > 1 )
     {
         return true;
     }
-    if (abs(headPosition.second - tailPosition.second) > 1 )
+    if (abs(headPosition.col - tailPosition.col) > 1 )
     {
         return true;
     }
     return false;
 }
 
-auto sign(int arg)
+auto getTailDir(const PointRowCol& headPosition, const PointRowCol& tailPosition)
 {
-    if (arg > 0)
-    {
-        return 1;
-    }
-    if (arg < 0)
-    {
-        return -1;
-    }
-    return 0;
-}
-
-auto getTailDir(const std::pair<int, int>& headPosition, const std::pair<int, int>& tailPosition)
-{
-    return std::make_pair(sign(headPosition.first-tailPosition.first), sign(headPosition.second - tailPosition.second));
+    return sign(headPosition - tailPosition);
 }
 
 template <int TNodes>
 auto simulateRope(const std::vector<Command> &in)
 {
-    std::set<std::pair<int, int>> uniquePositions;
+    std::set<PointRowCol> uniquePositions;
 
-    std::vector<std::pair<int, int>> lineNodes{TNodes, {{},{}}};
+    std::vector<PointRowCol> lineNodes{TNodes, {{},{}}};
     auto& headPosition = lineNodes[0];
     auto& tailPosition =  lineNodes[TNodes-1];
     uniquePositions.insert(tailPosition);

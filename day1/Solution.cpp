@@ -28,19 +28,10 @@ std::vector<std::vector<int>> parse()
     return out;
 }
 
-int Solution::solve(const std::vector<std::vector<int>>& input)
+namespace
 {
-    auto max = 0;
-    for (unsigned int i = 0; i < input.size(); ++i)
-    {
-        auto current = std::accumulate(input[i].begin(), input[i].end(), 0);
-        max = std::max(current, max);
-    }
-    return max;
-}
 
-// Not the optimal one, but short to code.
-int Solution::solve_part2(const std::vector<std::vector<int>>& input)
+std::vector<int> accumulteInputs(const std::vector<std::vector<int>>& input)
 {
     std::vector<int> out(input.size(), 0);
 
@@ -48,9 +39,23 @@ int Solution::solve_part2(const std::vector<std::vector<int>>& input)
     {
         out[i] = std::accumulate(input[i].begin(), input[i].end(), 0);
     }
-    std::sort(out.begin(), out.end());
+    return out;
+}
 
-    return *out.rbegin() + *(out.rbegin() + 1) + *(out.rbegin()+2);
+}
+
+int Solution::solve(const std::vector<std::vector<int>>& input) const
+{
+    auto accumulatedGroups = accumulteInputs(input);
+    return *std::max_element(accumulatedGroups.begin(), accumulatedGroups.end());
+}
+
+int Solution::solve_part2(const std::vector<std::vector<int>>& input) const
+{
+    auto accumulatedGroups = accumulteInputs(input);
+    std::sort(accumulatedGroups.begin(), accumulatedGroups.end());
+
+    return *accumulatedGroups.rbegin() + *(accumulatedGroups.rbegin() + 1) + *(accumulatedGroups.rbegin()+2);
 }
 
 }
