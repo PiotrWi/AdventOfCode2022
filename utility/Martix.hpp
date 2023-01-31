@@ -10,19 +10,19 @@
 template <typename TDataTypeIn, typename TRawMatrixTypeIn>
 struct TypesTraits
 {
-	using TDataType = typename TDataTypeIn;
-	using TRawMatrixType = typename TRawMatrixTypeIn;
-	using TRowIterator = typename std::remove_reference<decltype(std::declval<TRawMatrixType>().begin())>::type;
-	using TColumnIterator = typename std::remove_reference<decltype(std::declval<TRawMatrixType>()[0].begin())>::type;
-	using TIteratorReturnValue = typename std::remove_reference<decltype(std::declval<TRawMatrixType>()[0][0])>::type;
-	using TColumnType = typename std::remove_reference<decltype(std::declval<TRawMatrixType>()[0])>::type;
+	using TDataType = TDataTypeIn;
+	using TRawMatrixType = TRawMatrixTypeIn;
+	using TRowIterator = std::remove_reference<decltype(std::declval<TRawMatrixType>().begin())>::type;
+	using TColumnIterator = std::remove_reference<decltype(std::declval<TRawMatrixType>()[0].begin())>::type;
+	using TIteratorReturnValue = std::remove_reference<decltype(std::declval<TRawMatrixType>()[0][0])>::type;
+	using TColumnType = std::remove_reference<decltype(std::declval<TRawMatrixType>()[0])>::type;
 };
 
 template <typename TDataTypeIn, typename TRawMatrixTypeIn>
 class MatritWrapperIterator : public TypesTraits<TDataTypeIn, TRawMatrixTypeIn>
 {
 public:
-	using Traits = typename TypesTraits<TDataTypeIn, TRawMatrixTypeIn>;
+	using Traits = TypesTraits<TDataTypeIn, TRawMatrixTypeIn>;
 
 	using iterator_category = std::forward_iterator_tag;
 	using difference_type = std::ptrdiff_t;
@@ -82,7 +82,7 @@ private:
 template <typename TDataTypeIn, typename TRawMatrixTypeIn = std::vector<std::vector<TDataTypeIn>> >
 class MatrixWrapper : public TypesTraits<TDataTypeIn, TRawMatrixTypeIn>
 {
-	using Traits = typename TypesTraits<TDataTypeIn, TRawMatrixTypeIn>;
+	using Traits = TypesTraits<TDataTypeIn, TRawMatrixTypeIn>;
 	using TIteratorType = MatritWrapperIterator<TDataTypeIn, TRawMatrixTypeIn>;
 	using TConstIteratorType = MatritWrapperIterator<const TDataTypeIn, const TRawMatrixTypeIn>;
 public:
@@ -110,7 +110,7 @@ public:
 		return *this;
 	}
 
-	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>(MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>&& other)
+	MatrixWrapper(MatrixWrapper&& other)
 	{
 		matrixData_ = std::move(other.matrixData_);
 		if (matrixData_)
@@ -123,7 +123,7 @@ public:
 		}
 	}
 
-	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>(const MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>& other)
+	MatrixWrapper(const MatrixWrapper& other)
 	{
 		matrixData_ = other.matrixData_;
 		if (matrixData_)
@@ -136,7 +136,7 @@ public:
 		}
 	}
 
-	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn> operator=(const MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn>& other)
+	MatrixWrapper operator=(const MatrixWrapper& other)
 	{
 		if (&other == this)
 		{

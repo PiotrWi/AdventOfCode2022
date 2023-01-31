@@ -205,8 +205,6 @@ bool operator<(const RouteEntityWithHeuristic& lhs, const RouteEntityWithHeurist
 namespace
 {
 
-int minRouteSoFar = 1000000;
-
 [[maybe_unused]]
 int heuristic(PointRowCol point, PointRowCol destination)
 {
@@ -276,7 +274,7 @@ int Solution::solve(Wall wall)
     auto startingPoint = PointRowCol{0, 1};
     auto endPoint = PointRowCol{(int)wall.size()-1, (int)wall[0].size() - 2};
 
-    return solveAStarLike({ 0, 1 }, endPoint);
+    return solveAStarLike(startingPoint, endPoint);
 }
 
 int Solution::solve_part2(Wall wall)

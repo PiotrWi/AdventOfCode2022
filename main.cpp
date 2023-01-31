@@ -34,7 +34,10 @@ template <typename TSolutionClass>
 struct PrintAndVerifySollution
 {
     template<typename T, typename ARetType, typename BRetType>
-    void operator()(T(&parseFcn)(), const char* prefix, const ARetType& expectationA, const BRetType& expectationb)
+    void operator()(T(&parseFcn)(),
+            const char* prefix,
+            [[maybe_unused]]const ARetType& expectationA,
+            [[maybe_unused]]const BRetType& expectationb)
     {
         RaiiTimer rt(prefix);
 
@@ -50,7 +53,9 @@ struct PrintAndVerifySollution
         assert(solutionB == expectationb);
     }
     template<typename T, typename ARetType>
-    void operator()(T(&parseFcn)(), const char* prefix, const ARetType& expectationA)
+    void operator()(T(&parseFcn)(),
+            const char* prefix,
+            [[maybe_unused]]const ARetType& expectationA)
     {
         RaiiTimer rt(prefix);
 
@@ -62,7 +67,10 @@ struct PrintAndVerifySollution
         std::cout << prefix << " part 1: " << solutionA << std::endl;
     }
     template<typename T, typename ARetType>
-    void operator()(T(&parseFcn)(), const char* prefix, const ARetType& expectationA, SolveBWithoutCheck)
+    void operator()(T(&parseFcn)(),
+            const char* prefix,
+            [[maybe_unused]]const ARetType& expectationA,
+            SolveBWithoutCheck)
     {
         RaiiTimer rt(prefix);        auto intput = parseFcn();
         auto solver = TSolutionClass{};
