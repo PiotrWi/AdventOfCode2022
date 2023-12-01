@@ -85,8 +85,6 @@ std::tuple<int, int> getFirstAndLastDigit(const std::string& line)
 
 std::tuple<int, int> get_first_and_last_number(const std::string& line)
 {
-    std::vector<int> out = {};
-
     int firstNum, lastNum;
 
     auto [firtsDigitPos, firstDigit] = getFirstDigit(line);
