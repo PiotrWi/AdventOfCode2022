@@ -20,12 +20,13 @@ bool LinesInFileRange::hasData() const
     return inputFile_ && not inputFile_.eof() && const_cast<std::fstream&>(inputFile_).peek() != EOF;
 }
 
-LinesInFileRange::TIterator::TIterator(LinesInFileRange& parent)
+LinesInFileRange::TIterator::TIterator(LinesInFileRange& parent, bool endTag)
     : parent_(parent)
+    , endTag_(endTag)
 {
 }
 
-std::string LinesInFileRange::TIterator::operator*()
+std::string& LinesInFileRange::TIterator::operator*()
 {
     if (not parent_.line_)
     {
@@ -36,9 +37,14 @@ std::string LinesInFileRange::TIterator::operator*()
     return *parent_.line_;
 }
 
-void LinesInFileRange::TIterator::operator++()
+LinesInFileRange::TIterator LinesInFileRange::TIterator::operator++()
 {
     parent_.line_ = {};
+    if (not hasData())
+    {
+        endTag_ = true;
+    }
+    return *this;
 }
 
 bool LinesInFileRange::TIterator::hasData() const
@@ -47,14 +53,14 @@ bool LinesInFileRange::TIterator::hasData() const
 }
 
 LinesInFileRange::TIterator LinesInFileRange::begin() { return TIterator(*this); }
-LinesInFileRange::TEndTag LinesInFileRange::end() { return {}; }
+LinesInFileRange::TIterator LinesInFileRange::end() { return TIterator(*this, true); }
 
-bool operator==(const LinesInFileRange::TIterator& lhs, LinesInFileRange::TEndTag)
+bool operator==(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs)
 {
     return not lhs.hasData();
 }
 
-bool operator!=(const LinesInFileRange::TIterator& lhs, LinesInFileRange::TEndTag)
+bool operator!=(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs)
 {
     return lhs.hasData();
 }

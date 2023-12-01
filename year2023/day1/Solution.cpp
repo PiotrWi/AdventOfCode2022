@@ -16,17 +16,6 @@ const char* fileLoc = "year2023/day1/input.txt";
 namespace
 {
 
-std::vector<int> filter_digits(const std::string& line)
-{
-    std::vector<int> out = {};
-    for (int num : line | std::views::filter(std::isdigit) | std::views::transform([](auto&& i) { return i - '0'; }))
-    {
-        out.push_back(num);
-    }
-
-    return out;
-}
-
 auto getFirstDigit(const std::string& line)
 {
     int num = 0;
@@ -50,13 +39,14 @@ auto getLastDigit(const std::string& line)
     return std::make_tuple(line.rend() - iter - 1, num);
 }
 
+std::vector<std::pair<const char*, int>> numberLiteralsToValues = { {"one", 1}, {"two", 2}, {"three", 3}, {"four", 4}, {"five", 5}, {"six", 6}, {"seven", 7}, {"eight", 8}, {"nine", 9} };
+
 auto getFirstNumberWord(const std::string& line)
 {
     int num = 0;
     auto firstNumber = std::string::npos;
     
-    static std::vector<std::pair<const char*, int>> vec = { {"one", 1}, {"two", 2}, {"three", 3}, {"four", 4}, {"five", 5}, {"six", 6}, {"seven", 7}, {"eight", 8}, {"nine", 9} };
-    for (auto& [str, n] : vec)
+    for (auto& [str, n] : numberLiteralsToValues)
     {
         auto pos = line.find(str);
         if (pos != std::string::npos && pos < firstNumber)
@@ -73,8 +63,7 @@ auto getLastNumberWord(const std::string& line)
     int num = 0;
     int lastNumber = 0;
 
-    static std::vector<std::pair<const char*, int>> vec = { {"one", 1}, {"two", 2}, {"three", 3}, {"four", 4}, {"five", 5}, {"six", 6}, {"seven", 7}, {"eight", 8}, {"nine", 9} };
-    for (auto& [str, n] : vec)
+    for (auto& [str, n] : numberLiteralsToValues)
     {
         auto pos = line.rfind(str);
         if (pos != std::string::npos && pos > lastNumber)
@@ -130,10 +119,8 @@ std::tuple<int, int> get_first_and_last_number(const std::string& line)
 std::vector<std::string> parse()
 {
     std::vector<std::string> out;
-    for (auto&& line : parsers::LinesInFileRange(fileLoc))
-    {
-        out.emplace_back(std::move(line));
-    }
+    auto range = parsers::LinesInFileRange(fileLoc);
+    std::copy(range.begin(), range.end(), std::back_inserter(out));
 
     return out;
 }

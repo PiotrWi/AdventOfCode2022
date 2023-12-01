@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <optional>
+#include <iterator>
+#include <cstddef>
 
 namespace parsers
 {
@@ -24,28 +26,33 @@ public:
 private:
     struct TIterator
     {
-        explicit TIterator(LinesInFileRange& parent);
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = std::string;
+        using pointer = std::string*;
+        using reference = std::string&;
 
-        std::string operator*();
-        void operator++();
+
+        explicit TIterator(LinesInFileRange& parent, bool endTag = false);
+
+        std::string& operator*();
+        TIterator operator++();
         bool hasData() const;
     private:
         LinesInFileRange& parent_;
+        bool endTag_ = false;
     };
-
-    struct TEndTag{};
-
 public:
     TIterator begin();
-    TEndTag end();
+    TIterator end();
 
 private:
     std::optional<std::string> line_;
     std::fstream inputFile_;
 
 public:
-    friend bool operator==(const LinesInFileRange::TIterator& lhs, LinesInFileRange::TEndTag);
-    friend bool operator!=(const LinesInFileRange::TIterator& lhs, LinesInFileRange::TEndTag);
+    friend bool operator==(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs);
+    friend bool operator!=(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs);
 };
 
 template <typename T>
