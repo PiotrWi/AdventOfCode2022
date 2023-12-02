@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include <sstream>
 #include <utility>
-#include <StringAlgorithms/StringAlgorithms.hpp>
 
+#include <StringAlgorithms/StringAlgorithms.hpp>
 #include <parsers/parsers.hpp>
 
 namespace day16

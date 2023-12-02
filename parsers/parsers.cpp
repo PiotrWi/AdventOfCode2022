@@ -52,8 +52,16 @@ bool LinesInFileRange::TIterator::hasData() const
     return parent_.hasData();
 }
 
-LinesInFileRange::TIterator LinesInFileRange::begin() { return TIterator(*this); }
-LinesInFileRange::TIterator LinesInFileRange::end() { return TIterator(*this, true); }
+LinesInFileRange::TIterator LinesInFileRange::begin() noexcept { return TIterator(*this); }
+LinesInFileRange::TIterator LinesInFileRange::end() noexcept { return TIterator(*this, true); }
+
+std::vector <std::string> LinesInFileRange::toStringVector()
+{
+    std::vector<std::string> out;
+    std::copy(begin(), end(), std::back_inserter(out));
+
+    return out;
+}
 
 bool operator==(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs)
 {

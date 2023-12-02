@@ -7,6 +7,7 @@
 #include <utility>
 #include <tuple>
 
+#include <utility/RangesUtils.hpp>
 #include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 
@@ -78,11 +79,7 @@ int accumulate(const std::vector<std::string>& input, std::vector<std::pair<cons
 
 std::vector<std::string> parse()
 {
-    std::vector<std::string> out;
-    auto range = parsers::LinesInFileRange(fileLoc);
-    std::copy(range.begin(), range.end(), std::back_inserter(out));
-
-    return out;
+    return parsers::LinesInFileRange(fileLoc).toStringVector();
 }
 
 int Solution::solve(const std::vector<std::string>& input) const

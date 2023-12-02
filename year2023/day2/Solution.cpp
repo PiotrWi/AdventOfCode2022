@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <numeric>
 #include <sstream>
+#include <ranges>
 
+#include <utility/RangesUtils.hpp>
 #include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 
@@ -34,9 +36,7 @@ BallsRecordEntity parseRecord(const std::string& line)
 
 std::vector<BallsRecordEntity> parseRecords(const std::string& recordsLine)
 {
-	std::vector<BallsRecordEntity> out;
-	std::ranges::transform(splitAndTrim(recordsLine, ';'), std::back_inserter(out), parseRecord);
-	return out;
+	return splitAndTrim(recordsLine, ';') | std::views::transform(parseRecord) | ToVector();
 }
 
 BallsRecordEntity getMaximumForEachColor(const GameRecord& record)
@@ -103,9 +103,9 @@ int Solution::solve(const std::vector<GameRecord>& input) const
 
 int Solution::solve_part2(const std::vector<GameRecord>& input) const
 {
+	auto powers = input | std::views::transform(calculatePower) | ToVector();
+
 	int power = 0;
-	std::vector<int> powers;
-	std::transform(input.begin(), input.end(), std::back_inserter(powers), calculatePower);
 	power = std::accumulate(powers.begin(), powers.end(), power);
 	return power;
 }

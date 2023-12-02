@@ -157,7 +157,6 @@ int Solution::solve(std::vector<Blueprint> blueprints)
     int allQualities = 0;
     for (auto&& bp : blueprints)
     {
-
         allQualities += ++i * calculateBp(bp);
     }
     return allQualities;

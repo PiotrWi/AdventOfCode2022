@@ -13,6 +13,7 @@ namespace parsers
 class LinesInFileRange
 {
 public:
+
     explicit LinesInFileRange(const char* fileLocation);
     ~LinesInFileRange();
 
@@ -43,9 +44,11 @@ private:
         bool endTag_ = false;
     };
 public:
-    TIterator begin();
-    TIterator end();
+    using iterator = LinesInFileRange::TIterator;
 
+    TIterator begin() noexcept;
+    TIterator end() noexcept;
+    std::vector <std::string> toStringVector();
 private:
     std::optional<std::string> line_;
     std::fstream inputFile_;
