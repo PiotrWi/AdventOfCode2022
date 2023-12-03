@@ -76,3 +76,31 @@ std::vector<std::string> splitNumbersAndLetters(const std::string& in)
     }
     return out;
 }
+
+std::vector<std::string> splitNumbersAndChars(const std::string& in)
+{
+    std::vector<std::string> out;
+    for (decltype(in.size()) i = 0; i < in.size();)
+    {
+        std::string number;
+        while (i < in.size() && std::isdigit(in[i]))
+        {
+            number.push_back(in[i++]);
+        }
+        if (number.size())
+        {
+            out.push_back(number);
+        }
+
+        std::string letters;
+        while (i < in.size() && not std::isdigit(in[i]))
+        {
+            letters.push_back(in[i++]);
+        }
+        if (letters.size())
+        {
+            out.push_back(letters);
+        }
+    }
+    return out;
+}

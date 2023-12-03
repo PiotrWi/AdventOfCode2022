@@ -1,7 +1,15 @@
 #include <iostream>
 #include <cassert>
 
+
+struct NONE {};
 struct SolveBWithoutCheck {};
+
+template <typename T>
+bool operator == (T&&, const NONE&)
+{
+    return true;
+}
 
 template <typename TSolutionClass>
 struct PrintAndVerifySollution
