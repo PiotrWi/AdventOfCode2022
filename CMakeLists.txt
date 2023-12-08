@@ -54,6 +54,7 @@ file(COPY year2023/day3/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year20
 file(COPY year2023/day4/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day4)
 file(COPY year2023/day5/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day5)
 file(COPY year2023/day7/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day7)
+file(COPY year2023/day8/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day8)
 
 add_executable(aoc
         main.cpp
@@ -90,6 +91,6 @@ add_executable(aoc
         year2022/day25/Solution.hpp year2022/day25/Solution.cpp
         year2023/day1/Solution.hpp year2023/day1/Solution.cpp
         year2022/execute.cpp
-        year2023/execute.cpp  "year2023/day2/Solution.cpp" "year2023/day3/Solution.cpp" "year2023/day4/Solution.cpp" "year2023/day5/Solution.cpp" "year2023/day6/Solution.cpp" "year2023/day7/Solution.cpp")
+        year2023/execute.cpp  "year2023/day2/Solution.cpp" "year2023/day3/Solution.cpp" "year2023/day4/Solution.cpp" "year2023/day5/Solution.cpp" "year2023/day6/Solution.cpp" "year2023/day7/Solution.cpp" "year2023/day8/Solution.cpp")
 
 set_property(TARGET aoc PROPERTY CXX_STANDARD 20)
