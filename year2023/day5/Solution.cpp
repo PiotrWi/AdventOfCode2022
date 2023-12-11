@@ -60,12 +60,10 @@ auto mapTo(long long in, int rangeIndex, long long rangeTail, const std::vector<
 
 }  // namespace
 
-const char* fileLoc = "year2023/day5/input.txt";
-
 Context parse()
 {
 	Context ctx;
-	parsers::LinesInFileRange linesInFile(fileLoc);
+	auto linesInFile = parsers::getFile(2023, 5);
 
 	auto fileIt = linesInFile.begin();
 	auto seedLine = *fileIt; ++fileIt;

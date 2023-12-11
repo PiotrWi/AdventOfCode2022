@@ -9,10 +9,9 @@
 namespace day12
 {
 
-const char* fileLoc = "year2022/day12/input.txt";
-
 std::vector<std::vector<char>> parse()
 {
+    const char* fileLoc = "year2022/day12/input.txt";
     return parsers::parseMatrixOfChars(fileLoc);
 }
 

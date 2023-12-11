@@ -21,10 +21,9 @@ inline auto toT<::day4::TEntityType>(const std::string& in) -> ::day4::TEntityTy
 namespace day4
 {
 
-const char* fileLoc = "year2022/day4/input.txt";
-
 std::vector<TEntityType> parse()
 {
+    const char* fileLoc = "year2022/day4/input.txt";
     return parsers::parse<TEntityType>(fileLoc);
 }
 

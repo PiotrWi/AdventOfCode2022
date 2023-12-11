@@ -6,8 +6,6 @@
 namespace day15
 {
 
-const char* fileLoc = "year2022/day15/input.txt";
-
 namespace
 {
 
@@ -32,7 +30,7 @@ std::pair<SensorLocation, BeaconLocation> parseLine(const std::string& s)
 std::vector<std::pair<SensorLocation, BeaconLocation> > parse()
 {
     std::vector<std::pair<SensorLocation, BeaconLocation> > out;
-    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    for (auto&& line : parsers::getFile(2022, 15))
     {
         out.push_back(parseLine(line));
     }

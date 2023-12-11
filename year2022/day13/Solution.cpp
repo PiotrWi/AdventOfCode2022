@@ -7,8 +7,6 @@
 namespace day13
 {
 
-const char* fileLoc = "year2022/day13/input.txt";
-
 namespace
 {
 
@@ -57,7 +55,7 @@ int parseList(List& node, std::string in)
 std::vector<std::unique_ptr<Node>> parse()
 {
     std::vector<std::unique_ptr<Node>> out;
-    for (auto&& line: parsers::LinesInFileRange(fileLoc))
+    for (auto&& line: parsers::getFile(2022, 13))
     {
         if (line == "") {
             continue;

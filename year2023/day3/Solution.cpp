@@ -70,11 +70,9 @@ auto getNumbersAndOcupancyTable(const std::vector<std::string>& input)
 namespace year_2023::day3
 {
 
- const char* fileLoc = "year2023/day3/input.txt";
-
 std::vector<std::string> parse()
 {
-    return parsers::LinesInFileRange(fileLoc).toStringVector();
+    return parsers::getFile(2023, 3).toStringVector();
 }
 
 long long Solution::solve(const std::vector<std::string>& input) const

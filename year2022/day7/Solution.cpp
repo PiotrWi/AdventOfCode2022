@@ -11,13 +11,12 @@
 
 namespace day7
 {
-const char* fileLoc = "year2022/day7/input.txt";
 
 std::vector<Command> parse()
 {
     std::vector<Command> out;
 
-    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    for (auto&& line : parsers::getFile(2022, 7))
     {
         if (line[0] == '$')
         {

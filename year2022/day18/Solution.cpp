@@ -10,12 +10,10 @@
 namespace day18
 {
 
-const char *fileLoc = "year2022/day18/input.txt";
-
 std::vector<Point3d> parse()
 {
     std::vector<Point3d> out;
-    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    for (auto&& line : parsers::getFile(2022, 18))
     {
         auto splited = splitAndTrim(line, ',');
         out.emplace_back(std::stoi(splited[0]), std::stoi(splited[1]), std::stoi(splited[2]));

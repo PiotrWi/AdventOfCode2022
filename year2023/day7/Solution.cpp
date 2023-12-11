@@ -216,11 +216,9 @@ std::vector <PreprocessedHand> preprocessWithJacksAsJockers(const std::vector<Ha
 
 } // namespace
 
-const char* fileLoc = "year2023/day7/input.txt";
-
 std::vector<Hand> parse()
 {
-	parsers::LinesInFileRange file(fileLoc);
+	auto file = parsers::getFile(2023, 7);
 	std::vector<Hand> hands;
 
 	for (auto&& line : file)

@@ -1,5 +1,5 @@
 #include "Solution.hpp"
-#include <fstream>
+#include <parsers/parsers.hpp>
 #include <sstream>
 #include <iostream>
 #include <utility/PointXY.hpp>
@@ -7,22 +7,16 @@
 namespace day17
 {
 
-const char *fileLoc = "year2022/day17/input.txt";
-
 std::vector<WindDirrection> parse()
 {
     std::vector<WindDirrection> out;
-    std::fstream inputFile(fileLoc);
-    std::string line;
-
-    std::getline(inputFile, line);
+    std::string line = *(parsers::getFile(2022, 17).begin());;
     std::stringstream ss(line);
     char c;
     while (ss.get(c)) {
         out.push_back(c == '<' ? WindDirrection::left : WindDirrection::right);
     }
 
-    inputFile.close();
     return out;
 }
 

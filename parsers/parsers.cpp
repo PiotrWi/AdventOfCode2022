@@ -1,4 +1,5 @@
 #include "parsers.hpp"
+#include <string>
 
 namespace parsers
 {
@@ -71,6 +72,12 @@ bool operator==(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::
 bool operator!=(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs)
 {
     return lhs.hasData();
+}
+
+LinesInFileRange getFile(int year, int day)
+{
+    std::string filename = "year" + std::to_string(year) + "/day" + std::to_string(day) + "/input.txt";
+    return LinesInFileRange(filename.c_str());
 }
 
 }  // namespace parsers

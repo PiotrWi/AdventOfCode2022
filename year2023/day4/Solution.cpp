@@ -10,11 +10,10 @@
 
 namespace year_2023::day4
 {
-const char* fileLoc = "year2023/day4/input.txt";
 
 std::vector<Game> parse()
 {
-	parsers::LinesInFileRange range(fileLoc);
+	auto range = parsers::getFile(2023, 4);
 	std::vector<Game> games;
 
 	for (auto&& line : range)

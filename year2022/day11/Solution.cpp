@@ -7,8 +7,6 @@
 namespace day11
 {
 
-const char* fileLoc = "year2022/day11/input.txt";
-
 namespace
 {
 
@@ -56,7 +54,7 @@ std::vector<Monkey> parse()
 {
     std::vector<Monkey> out;
 
-    for (auto&& line: parsers::LinesInFileRange(fileLoc))
+    for (auto&& line: parsers::getFile(2022, 11))
     {
         std::string item;
 

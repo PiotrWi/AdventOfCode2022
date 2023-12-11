@@ -3,19 +3,15 @@
 #include <algorithm>
 #include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
-#include <iostream>
 #include <utility/PointRowColOrientation.hpp>
 
 namespace day22
 {
 
-const char *fileLoc = "year2022/day22/input.txt";
-
 Input parse()
 {
     Input out;
-
-    parsers::LinesInFileRange range(fileLoc);
+    auto range = parsers::getFile(2022, 22);
 
     auto it = range.begin();
     for (; it != range.end() && *it != ""; ++it)

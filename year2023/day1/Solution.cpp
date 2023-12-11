@@ -14,8 +14,6 @@
 namespace year_2023::day1
 {
 
-const char* fileLoc = "year2023/day1/input.txt";
-
 namespace
 {
 
@@ -79,7 +77,7 @@ int accumulate(const std::vector<std::string>& input, std::vector<std::pair<cons
 
 std::vector<std::string> parse()
 {
-    return parsers::LinesInFileRange(fileLoc).toStringVector();
+    return parsers::getFile(2023, 1).toStringVector();
 }
 
 int Solution::solve(const std::vector<std::string>& input) const

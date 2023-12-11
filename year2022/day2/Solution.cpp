@@ -28,10 +28,10 @@ enum class Result
 
 namespace day2
 {
-const char* fileLoc = "year2022/day2/input.txt";
 
 std::vector<std::pair<char, char>> parse()
 {
+    const char* fileLoc = "year2022/day2/input.txt";
     return parsers::parse<std::pair<char, char>>(fileLoc);
 }
 

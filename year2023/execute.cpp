@@ -13,6 +13,8 @@
 #include "day6/Solution.hpp"
 #include "day7/Solution.hpp"
 #include "day8/Solution.hpp"
+#include "day9/Solution.hpp"
+#include "day10/Solution.hpp"
 
 namespace year_2023
 {
@@ -29,6 +31,8 @@ namespace year_2023
         PrintAndVerifySollution<day6::Solution>()(day6::parse, "day 6", 275724, 37286485);
         PrintAndVerifySollution<day7::Solution>()(day7::parse, "day 7", 250474325, 248909434);
         PrintAndVerifySollution<day8::Solution>()(day8::parse, "day 8", 22199, 13334102464297ll);
+        PrintAndVerifySollution<day9::Solution>()(day9::parse, "day 9", 1581679977, 889);
+        PrintAndVerifySollution<day10::Solution>()(day10::parse, "day 10", NONE{}, NONE{});
     }
 
 }  // namespace year_2023

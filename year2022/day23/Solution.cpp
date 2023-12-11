@@ -12,12 +12,11 @@
 namespace day23
 {
 
-const char *fileLoc = "year2022/day23/input.txt";
 
 ElfsSurface parse()
 {
+    const char* fileLoc = "year2022/day23/input.txt";
     return parsers::parseMatrixOfChars(fileLoc);
-
 }
 
 namespace

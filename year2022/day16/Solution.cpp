@@ -16,7 +16,6 @@ namespace day16
 
 namespace
 {
-const char *fileLoc = "year2022/day16/input.txt";
 
 Node parseLine(const std::string &s)
 {
@@ -45,7 +44,7 @@ std::map<std::string, Node> parse()
 {
     std::map<std::string, Node> out;
 
-    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    for (auto&& line : parsers::getFile(2022, 16))
     {
         auto node = parseLine(line);
         out[node.label] = node;

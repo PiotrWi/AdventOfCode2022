@@ -6,12 +6,8 @@
 namespace day21
 {
 
-const char *fileLoc = "year2022/day21/input.txt";
-
 namespace
 {
-
-
 
 std::unique_ptr<Operation> toOperation(const char sign)
 {
@@ -57,7 +53,7 @@ std::unique_ptr<Monkey> parseLine(const std::string& line)
 std::map<std::string, std::unique_ptr<Monkey> > parse()
 {
     std::map<std::string, std::unique_ptr<Monkey>> monkeys;
-    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    for (auto&& line : parsers::getFile(2023, 21))
     {
         auto monkey = parseLine(line);
         monkeys.emplace(monkey->name_, std::move(monkey));

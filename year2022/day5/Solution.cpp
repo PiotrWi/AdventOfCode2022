@@ -5,7 +5,6 @@
 
 namespace day5
 {
-const char* fileLoc = "year2022/day5/input.txt";
 
 namespace
 {
@@ -35,7 +34,7 @@ Input parse()
 {
     Input input;
 
-    auto fileRange = parsers::LinesInFileRange(fileLoc);
+    auto fileRange = parsers::getFile(2022, 5);
     auto it = fileRange.begin();
 
     for (; it != fileRange.end() && *it != ""; ++it)

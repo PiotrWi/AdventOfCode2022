@@ -22,13 +22,14 @@ auto toT<std::vector<int>>(const std::string& line) -> std::vector<int>
 
 }
 
-const char* fileLoc = "year2022/day8/input.txt";
 
 namespace day8
 {
 
 std::vector<std::vector<int>> parse()
 {
+    const char* fileLoc = "year2022/day8/input.txt";
+
     return parsers::parse<std::vector<int>>(fileLoc);
 }
 

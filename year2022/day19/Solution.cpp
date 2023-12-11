@@ -6,12 +6,10 @@
 namespace day19
 {
 
-const char *fileLoc = "year2022/day19/input.txt";
-
 std::vector<Blueprint> parse()
 {
     std::vector<Blueprint> out;
-    for (auto&& line: parsers::LinesInFileRange(fileLoc))
+    for (auto&& line: parsers::getFile(2022, 19))
     {
         auto splited = splitAndTrim(line, ' ');
         Blueprint bp;

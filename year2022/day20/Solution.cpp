@@ -16,10 +16,9 @@ inline auto toT<int>(const std::string &in) -> int
 namespace day20
 {
 
-const char *fileLoc = "year2022/day20/input.txt";
-
 std::vector<int> parse()
 {
+    const char* fileLoc = "year2022/day20/input.txt";
     return parsers::parse<int>(fileLoc);
 }
 

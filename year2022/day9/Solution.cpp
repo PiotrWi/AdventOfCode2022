@@ -9,12 +9,11 @@
 namespace day9
 {
 
-const char* fileLoc = "year2022/day9/input.txt";
 
 std::vector<Command> parse()
 {
     std::vector<Command> out;
-    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    for (auto&& line : parsers::getFile(2022, 9))
     {
         Command c;
         std::stringstream ss(line);

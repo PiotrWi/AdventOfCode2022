@@ -6,13 +6,11 @@
 namespace year_2022::day1
 {
 
-const char* fileLoc = "year2022/day1/input.txt";
-
 std::vector<std::vector<int>> parse()
 {
     std::vector<std::vector<int>> out;
     std::vector<int> singleInput;
-    for (auto&& line : parsers::LinesInFileRange(fileLoc))
+    for (auto&& line : parsers::getFile(2022, 1))
     {
         if (not line.empty())
         {

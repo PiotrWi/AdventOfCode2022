@@ -58,6 +58,8 @@ public:
     friend bool operator!=(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs);
 };
 
+LinesInFileRange getFile(int year, int day);
+
 template <typename T>
 auto toT(const std::string&) -> T;
 

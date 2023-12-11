@@ -13,12 +13,10 @@
 namespace year_2023::day8
 {
 
-const char* fileLoc = "year2023/day8/input.txt";
-
 Input parse()
 {
 	Input input;
-	parsers::LinesInFileRange file(fileLoc);
+	auto file = parsers::getFile(2023, 8);
 
 	auto fileIt = file.begin();
 	auto firstLine = *fileIt;

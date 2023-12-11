@@ -1,15 +1,13 @@
 #include "Solution.hpp"
 
 #include <parsers/parsers.hpp>
-#include <iostream>
 
 namespace day25
 {
 
-const char *fileLoc = "year2022/day25/input.txt";
-
 std::vector<std::string> parse()
 {
+    const char* fileLoc = "year2022/day25/input.txt";
     return parsers::parse<std::string>(fileLoc);
 }
 

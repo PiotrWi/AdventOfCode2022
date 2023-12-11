@@ -12,10 +12,10 @@
 namespace day24
 {
 
-const char *fileLoc = "year2022/day24/input.txt";
 
 Wall parse()
 {
+    const char* fileLoc = "year2022/day24/input.txt";
     return parsers::parseMatrixOfChars(fileLoc);
 }
 namespace

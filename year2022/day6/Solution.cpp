@@ -1,19 +1,13 @@
 #include "Solution.hpp"
 #include <string>
-#include <fstream>
+#include <parsers/parsers.hpp>
 
 namespace day6
 {
-const char* fileLoc = "year2022/day6/input.txt";
 
 std::string parse()
 {
-    std::fstream inputFile(fileLoc);
-    std::string line;
-    std::getline(inputFile, line);
-    inputFile.close();
-
-    return line;
+    return *(parsers::getFile(2022, 6).begin());
 }
 
 namespace

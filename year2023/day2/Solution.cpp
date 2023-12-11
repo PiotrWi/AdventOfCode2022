@@ -15,8 +15,6 @@ namespace year_2023::day2
 namespace
 {
 
-const char* fileLoc = "year2023/day2/input.txt";
-
 BallsRecordEntity parseRecord(const std::string& line)
 {
 	BallsRecordEntity entity;
@@ -80,7 +78,7 @@ int calculatePower(const GameRecord& record)
 std::vector<GameRecord> parse()
 {
 	std::vector<GameRecord> out;
-	auto range = parsers::LinesInFileRange(fileLoc);
+	auto range = parsers::getFile(2023, 2);
 	for (auto&& line : range)
 	{
 		auto gameAndRecords = splitAndTrim(line, ':');

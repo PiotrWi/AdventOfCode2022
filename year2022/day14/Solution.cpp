@@ -6,13 +6,11 @@
 namespace day14
 {
 
-const char* fileLoc = "year2022/day14/input.txt";
-
 std::vector<SingleScanPath> parse()
 {
     std::vector<SingleScanPath> out;
 
-    for (auto&& line: parsers::LinesInFileRange(fileLoc))
+    for (auto&& line: parsers::getFile(2022, 14))
     {
         SingleScanPath singleReadout;
         for (auto&& singleRead: splitAndTrimByStr(line, "->"))
