@@ -7,7 +7,7 @@
 template <typename T>
 auto toVector(T&& range)
 {
-	using TElemType = std::decay_t<decltype(*std::begin(range))>;
+	using TElemType = std::decay_t<decltype(*(range.begin()))>;
 	std::vector <TElemType> out;
 	for (auto&& elem : range)
 	{
