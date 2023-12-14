@@ -104,3 +104,47 @@ std::vector<std::string> splitNumbersAndChars(const std::string& in)
     }
     return out;
 }
+
+std::vector <std::string> transpose(const std::vector <std::string>& input)
+{
+    std::vector <std::string> transposed(input[0].size());
+    for (int row = 0; row < input.size(); ++row)
+    {
+        for (int col = 0; col < input[0].size(); ++col)
+        {
+            transposed[col].push_back(input[row][col]);
+        }
+    }
+    return transposed;
+}
+
+namespace s_view
+{
+
+std::vector < std::span<char> > splitGroups(std::string& in, std::function<bool(char)> groupPredicate)
+{
+    std::vector<std::span<char>> out;
+    for (decltype(in.size()) i = 0; i < in.size();)
+    {
+        std::string number;
+        int j = i;
+        while (j < in.size() && groupPredicate(in[j]))
+        {
+            number.push_back(in[j++]);
+        }
+        if (number.size())
+        {
+            out.push_back(std::span(in.data() + i, in.data() + j));
+        }
+
+        std::string letters;
+        while (j < in.size() && not groupPredicate(in[j]))
+        {
+            ++j;
+        }
+        i = j;
+    }
+    return out;
+}
+
+}  // s_view

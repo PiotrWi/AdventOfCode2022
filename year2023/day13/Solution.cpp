@@ -3,7 +3,9 @@
 #include <functional>
 #include <ranges>
 #include <numeric>
+
 #include <parsers/parsers.hpp>
+#include <StringAlgorithms/StringAlgorithms.hpp>
 
 namespace year_2023::day13
 {
@@ -67,19 +69,6 @@ int checkRowReflections(const std::vector <std::string>& input, int limit)
 		}
 	}
 	return 0;
-}
-
-std::vector <std::string> transpose(const std::vector <std::string>& input)
-{
-	std::vector <std::string> transposed(input[0].size());
-	for (int row = 0; row < input.size(); ++row)
-	{
-		for (int col = 0; col < input[0].size(); ++col)
-		{
-			transposed[col].push_back(input[row][col]);
-		}
-	}
-	return transposed;
 }
 
 long long solveSingle(const std::vector <std::string>& matrix, int limit)
