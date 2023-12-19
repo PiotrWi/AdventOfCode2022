@@ -12,6 +12,9 @@ struct PointRowCol
 PointRowCol operator+(const PointRowCol& lhs, const PointRowCol& rhs);
 PointRowCol operator-(const PointRowCol& lhs, const PointRowCol& rhs);
 
+PointRowCol& operator+=(PointRowCol& lhs, const PointRowCol& rhs);
+PointRowCol operator*(int lhs, const PointRowCol& rhs);
+
 bool operator==(const PointRowCol& lhs, const PointRowCol &rhs);
 bool operator<(const PointRowCol& lhs, const PointRowCol& rhs);
 std::ostream& operator << (std::ostream& str, const PointRowCol&);
@@ -41,3 +44,5 @@ constexpr PointRowCol UpperLeftPointDiff{-1, -1};
 constexpr PointRowCol UpperRightPointDiff{-1, 1};
 constexpr PointRowCol BottomLeftPointDiff{1, -1};
 constexpr PointRowCol BottomRightPointDiff{1, 1};
+
+bool inBounds(PointRowCol point, int rows, int cols);

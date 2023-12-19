@@ -60,6 +60,12 @@ file(COPY year2023/day10/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2
 file(COPY year2023/day11/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day11)
 file(COPY year2023/day12/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day12)
 file(COPY year2023/day13/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day13)
+file(COPY year2023/day14/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day14)
+file(COPY year2023/day15/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day15)
+file(COPY year2023/day16/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day16)
+file(COPY year2023/day17/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day17)
+file(COPY year2023/day18/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day18)
+file(COPY year2023/day19/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day19)
 
 add_executable(aoc
         main.cpp
@@ -94,16 +100,24 @@ add_executable(aoc
         year2022/day23/Solution.hpp year2022/day23/Solution.cpp
         year2022/day24/Solution.hpp year2022/day24/Solution.cpp
         year2022/day25/Solution.hpp year2022/day25/Solution.cpp
-        year2023/day1/Solution.hpp year2023/day1/Solution.cpp
-        year2023/day2/Solution.cpp
-        year2023/day3/Solution.cpp
-        year2023/day4/Solution.cpp
-        year2023/day5/Solution.cpp
-        year2023/day6/Solution.cpp
-        year2023/day7/Solution.cpp
-        year2023/day8/Solution.cpp
-        year2023/day9/Solution.cpp
+        year2023/day1/Solution.cpp year2023/day1/Solution.hpp
+        year2023/day2/Solution.cpp year2023/day2/Solution.hpp
+        year2023/day3/Solution.cpp year2023/day3/Solution.hpp
+        year2023/day4/Solution.cpp year2023/day4/Solution.hpp
+        year2023/day5/Solution.cpp year2023/day5/Solution.hpp
+        year2023/day6/Solution.cpp year2023/day6/Solution.hpp
+        year2023/day7/Solution.cpp year2023/day7/Solution.hpp
+        year2023/day8/Solution.cpp year2023/day8/Solution.hpp
+        year2023/day9/Solution.cpp year2023/day9/Solution.hpp
+        year2023/day10/Solution.cpp year2023/day10/Solution.hpp
+        year2023/day11/Solution.cpp year2023/day11/Solution.hpp
+        year2023/day12/Solution.cpp year2023/day12/Solution.hpp
+        year2023/day13/Solution.cpp year2023/day13/Solution.hpp
+        year2023/day14/Solution.cpp year2023/day14/Solution.hpp
+        year2023/day15/Solution.cpp
+        year2023/day16/Solution.cpp
+        year2023/day17/Solution.cpp
         year2022/execute.cpp
-        year2023/execute.cpp "year2023/day10/Solution.cpp" "year2023/day11/Solution.cpp" "year2023/day12/Solution.cpp" "year2023/day13/Solution.cpp")
+        year2023/execute.cpp   "year2023/day18/Solution.cpp" "year2023/day19/Solution.cpp")
 
 set_property(TARGET aoc PROPERTY CXX_STANDARD 20)

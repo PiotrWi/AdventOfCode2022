@@ -24,6 +24,17 @@ PointRowCol operator-(const PointRowCol& lhs, const PointRowCol& rhs)
     return {lhs.row - rhs.row, lhs.col - rhs.col};
 }
 
+PointRowCol& operator+=(PointRowCol& lhs, const PointRowCol& rhs)
+{
+    lhs.row = lhs.row + rhs.row;
+    lhs.col = lhs.col + rhs.col;
+    return lhs;
+}
+PointRowCol operator*(int lhs, const PointRowCol& rhs)
+{
+    return { lhs * rhs.row, lhs * rhs.col };
+}
+
 bool operator==(const PointRowCol& lhs, const PointRowCol &rhs)
 {
     return lhs.row == rhs.row && lhs.col == rhs.col;
@@ -62,3 +73,9 @@ int manhatanAbs(PointRowCol lhs)
 {
     return abs(lhs.row) + abs(lhs.col);
 }
+
+bool inBounds(PointRowCol point, int rows, int cols)
+{
+    return point.row >= 0 && point.row < rows&& point.col >= 0 && point.col < cols;
+}
+
