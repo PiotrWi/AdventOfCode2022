@@ -25,6 +25,10 @@
 #include "day18/Solution.hpp"
 #include "day19/Solution.hpp"
 #include "day20/Solution.hpp"
+#include "day21/Solution.hpp"
+#include "day22/Solution.hpp"
+#include "day23/Solution.hpp"
+#include "day24/Solution.hpp"
 
 namespace year_2023
 {
@@ -33,7 +37,7 @@ namespace year_2023
     {
         RaiiTimer rt("ALL TASKS from 2022");
 
-        PrintAndVerifySollution<day1::Solution>()(day1::parse, "day 1", 55172, 54925);
+        /*PrintAndVerifySollution<day1::Solution>()(day1::parse, "day 1", 55172, 54925);
         PrintAndVerifySollution<day2::Solution>()(day2::parse, "day 2", 2541, 66016);
         PrintAndVerifySollution<day3::Solution>()(day3::parse, "day 3", 535078, 75312571);
         PrintAndVerifySollution<day4::Solution>()(day4::parse, "day 4", 23441, 5923918);
@@ -53,6 +57,10 @@ namespace year_2023
         PrintAndVerifySollution<day18::Solution>()(day18::parse, "day 18", 46359ll, 59574883048274ll);
         PrintAndVerifySollution<day19::Solution>()(day19::parse, "day 19", 397061ll, 125657431183201ll);
         PrintAndVerifySollution<day20::Solution>()(day20::parse, "day 20", 980457412ll, 232774988886497ll);
+        PrintAndVerifySollution<day21::Solution>()(day21::parse, "day 21", NONE{}, NONE{});
+        PrintAndVerifySollution<day22::Solution>()(day22::parse, "day 22", NONE{}, NONE{});*/
+        // PrintAndVerifySollution<day23::Solution>()(day23::parse, "day 23", NONE{}, NONE{});
+        PrintAndVerifySollution<day24::Solution>()(day24::parse, "day 24", NONE{}, NONE{});
 
     }
 
