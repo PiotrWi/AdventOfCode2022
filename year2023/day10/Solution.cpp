@@ -30,7 +30,7 @@ Pos operator+ (const Pos& lhs, const Pos& rhs)
 template <typename T>
 auto isInBound(int row, int collumn, const std::vector< std::vector<T> >& nodes)
 {
-	return row >= 0 && row < nodes.size() && collumn >= 0 && collumn < nodes[0].size();
+	return row >= 0 && row < (int)nodes.size() && collumn >= 0 && collumn < (int)nodes[0].size();
 }
 
 void addNeighbour(Node& node, int row, int collumn, std::vector< std::vector<Node> >& nodes)
@@ -53,9 +53,9 @@ InputType parse()
 	}
 
 	auto add = std::bind(addNeighbour, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::ref(input.nodes));
-	for (int row = 0; row < input.nodes.size(); ++row)
+	for (int row = 0; row < (int)input.nodes.size(); ++row)
 	{
-		for (int col = 0; col < input.nodes[row].size(); ++col)
+		for (int col = 0; col < (int)input.nodes[row].size(); ++col)
 		{
 			auto& node = input.nodes[row][col];
 			switch (node.symbol)
@@ -150,9 +150,9 @@ long long Solution::solve(InputType& input) const
 
 long long Solution::solve_part2(InputType& input) const
 {
-	for (auto row = 0; row < input.nodes.size(); ++row)
+	for (auto row = 0u; row < input.nodes.size(); ++row)
 	{
-		for (auto col = 0; col < input.nodes[row].size(); ++col)
+		for (auto col = 0u; col < input.nodes[row].size(); ++col)
 		{
 			auto& node = input.nodes[row][col];
 			if (not node.distanceFromStart)
@@ -166,9 +166,9 @@ long long Solution::solve_part2(InputType& input) const
 	auto enqueued = std::vector(input.nodes.size() * 3, std::vector <bool>(input.nodes[0].size() * 3, false));
 	auto queue = std::queue<Pos>();
 
-	for (auto row = 0; row < input.nodes.size(); ++row)
+	for (auto row = 0u; row < input.nodes.size(); ++row)
 	{
-		for (auto col = 0; col < input.nodes[row].size(); ++col)
+		for (auto col = 0u; col < input.nodes[row].size(); ++col)
 		{
 			auto& node = input.nodes[row][col];
 			switch (node.symbol)
@@ -238,9 +238,9 @@ long long Solution::solve_part2(InputType& input) const
 	}
 
 	auto innerFields = 0ll;
-	for (auto row = 0; row < input.nodes.size(); ++row)
+	for (auto row = 0u; row < input.nodes.size(); ++row)
 	{
-		for (auto col = 0; col < input.nodes[row].size(); ++col)
+		for (auto col = 0u; col < input.nodes[row].size(); ++col)
 		{
 			auto isInner =
 				fields[row * 3][col * 3] == '.' && fields[row * 3][col * 3 + 1] == '.' && fields[row * 3][col * 3 + 2] == '.' &&

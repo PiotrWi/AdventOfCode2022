@@ -130,8 +130,8 @@ void parsePipe(std::string line)
 		else if (operationString == "R")
 		{
 			pipeElement = std::make_unique<PipeElement>(std::move(condition),
-				[](const Item& item) {},
-				[](Ranges ranges) {}
+				[](const Item&) {},
+				[](Ranges) {}
 			);
 		}
 		else
@@ -162,7 +162,8 @@ InputType parse()
 	std::vector<Item> items;
 	for (; it != file.end(); ++it)
 	{
-		auto numbers = splitNumbersAndChars(*it)
+        auto numbersAndChars = splitNumbersAndChars(*it);
+		auto numbers = numbersAndChars
 			| std::views::filter([](auto&& s) { return std::isdigit(s[0]); })
 			| std::views::transform([](auto&& s) { return std::stoi(s); })
 			| To<std::vector<int>>{};
@@ -186,7 +187,7 @@ long long Solution::solve(const InputType& input) const
 	return sum;
 }
 
-long long Solution::solve_part2(const InputType& input) const
+long long Solution::solve_part2(const InputType&) const
 {
 	Ranges wholeArea;
 	pipes["in"].exec(wholeArea);

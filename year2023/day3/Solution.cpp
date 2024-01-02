@@ -18,8 +18,8 @@ struct Number
 
 bool isInBoundsAndFilled(int row, int col, const std::vector <std::vector <int> >& posToNumber)
 {
-    return row >= 0 && row < posToNumber.size() &&
-        col >= 0 && col < posToNumber[0].size() &&
+    return row >= 0 && row < (int)posToNumber.size() &&
+        col >= 0 && col < (int)posToNumber[0].size() &&
         posToNumber[row][col] != -1;
 }
 
@@ -31,7 +31,7 @@ void markIsPartial(int row, int col, const std::vector <std::vector <int> >& pos
     numbers[index].isPartial = true;
 }
 
-void fillGearPart(int row, int col, const std::vector <std::vector <int> > posToNumber, const std::vector<Number>& numbers, std::set<int>& gearsIndexes)
+void fillGearPart(int row, int col, const std::vector <std::vector <int> > posToNumber, std::set<int>& gearsIndexes)
 {
     if (not isInBoundsAndFilled(row, col, posToNumber)) return;
 
@@ -79,9 +79,9 @@ long long Solution::solve(const std::vector<std::string>& input) const
 {
     auto [numbers, numbersOccupancy] = getNumbersAndOcupancyTable(input);
 
-    for (int row = 0; row < input.size(); ++row)
+    for (int row = 0; row < (int)input.size(); ++row)
     {
-        for (int col = 0; col < input[0].size(); ++col)
+        for (int col = 0; col < (int)input[0].size(); ++col)
         {
             if (not std::isdigit(input[row][col]) && input[row][col] != '.')
             {
@@ -109,21 +109,21 @@ long long Solution::solve_part2(const std::vector<std::string>& input) const
     auto [numbers, numbersOccupancy] = getNumbersAndOcupancyTable(input);
 
     auto gearSum = 0ull;
-    for (int row = 0; row < input.size(); ++row)
+    for (int row = 0; row < (int)input.size(); ++row)
     {
-        for (int col = 0; col < input[0].size(); ++col)
+        for (int col = 0; col < (int)input[0].size(); ++col)
         {
             if (input[row][col] == '*')
             {
                 std::set<int> gearPartsIndexes{};
-                fillGearPart(row - 1, col - 1, numbersOccupancy, numbers, gearPartsIndexes);
-                fillGearPart(row - 1, col, numbersOccupancy, numbers, gearPartsIndexes);
-                fillGearPart(row - 1, col + 1, numbersOccupancy, numbers, gearPartsIndexes);
-                fillGearPart(row + 1, col - 1, numbersOccupancy, numbers, gearPartsIndexes);
-                fillGearPart(row + 1, col, numbersOccupancy, numbers, gearPartsIndexes);
-                fillGearPart(row + 1, col + 1, numbersOccupancy, numbers, gearPartsIndexes);
-                fillGearPart(row, col - 1, numbersOccupancy, numbers, gearPartsIndexes);
-                fillGearPart(row, col + 1, numbersOccupancy, numbers, gearPartsIndexes);
+                fillGearPart(row - 1, col - 1, numbersOccupancy, gearPartsIndexes);
+                fillGearPart(row - 1, col, numbersOccupancy, gearPartsIndexes);
+                fillGearPart(row - 1, col + 1, numbersOccupancy, gearPartsIndexes);
+                fillGearPart(row + 1, col - 1, numbersOccupancy, gearPartsIndexes);
+                fillGearPart(row + 1, col, numbersOccupancy, gearPartsIndexes);
+                fillGearPart(row + 1, col + 1, numbersOccupancy, gearPartsIndexes);
+                fillGearPart(row, col - 1, numbersOccupancy, gearPartsIndexes);
+                fillGearPart(row, col + 1, numbersOccupancy, gearPartsIndexes);
 
                 if (gearPartsIndexes.size() == 2)
                 {

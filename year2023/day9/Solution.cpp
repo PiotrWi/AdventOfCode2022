@@ -17,9 +17,9 @@ std::vector<std::vector <long long >> parse()
 	auto file = parsers::getFile(2023, 9);
 	for (auto&& line : file)
 	{
-		out.emplace_back(
-			splitAndTrim(line, ' ')
-			| std::views::transform([](auto&& el) { return std::stoll(el); })
+        auto elements = splitAndTrim(line, ' ');
+		out.emplace_back(elements
+			| std::views::transform([](const std::string& el) { return std::stoll(el); })
 			| ToVector{}
 		);
 	}
@@ -34,15 +34,15 @@ long long predictForward(const std::vector<long long>& in)
 	auto matrix = std::vector <std::vector<long long>>(in.size() + 1, std::vector<long long>(in.size() + 1, 0ll));
 	std::copy(in.begin(), in.end(), matrix[0].begin());
 
-	for (auto row = 1; row < matrix.size(); ++row)
+	for (auto row = 1u; row < matrix.size(); ++row)
 	{
-		for (auto col = 0; col < in.size() - row; ++ col)
+		for (auto col = 0u; col < in.size() - row; ++col)
 		{
 			matrix[row][col] = matrix[row - 1][col + 1] - matrix[row - 1][col];
 		}
 	}
 
-	for (int col = 1; col < matrix[0].size(); ++col)
+	for (auto col = 1u; col < matrix[0].size(); ++col)
 	{
 		auto row = in.size() - col;
 		matrix[row][col] = matrix[row][col - 1] + matrix[row + 1][col - 1];
@@ -54,9 +54,9 @@ long long predictBackward(const std::vector<long long>& in)
 {
 	auto matrix = std::vector <std::vector<long long>>(in.size() + 1, std::vector<long long>(in.size() + 2, 0ll));
 	std::copy(in.begin(), in.end(), matrix[0].begin() + 1);
-	for (auto row = 1; row < matrix.size(); ++row)
+	for (auto row = 1u; row < matrix.size(); ++row)
 	{
-		for (auto col = 1; col <= in.size() - row; ++col)
+		for (auto col = 1u; col <= in.size() - row; ++col)
 		{
 			matrix[row][col] = matrix[row - 1][col + 1] - matrix[row - 1][col];
 		}

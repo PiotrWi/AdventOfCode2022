@@ -105,9 +105,9 @@ void visit(std::vector<std::vector < std::array<bool, 4> > >& visited, const Inp
 long long collectEnergizedPoints(const std::vector<std::vector < std::array<bool, 4> > >& visitedNodes)
 {
 	auto sum = 0ull;
-	for (auto row = 0; row < visitedNodes.size(); ++row)
+	for (auto row = 0u; row < visitedNodes.size(); ++row)
 	{
-		for (auto col = 0; col < visitedNodes[row].size(); ++col)
+		for (auto col = 0u; col < visitedNodes[row].size(); ++col)
 		{
 			sum += visitedNodes[row][col][0] || visitedNodes[row][col][1] || visitedNodes[row][col][2] || visitedNodes[row][col][3];
 		}
@@ -139,16 +139,16 @@ long long Solution::solve(const InputType& input) const
 long long Solution::solve_part2(const InputType& input) const
 {
 	auto max = 0ll;
-	for (auto row = 0; row < input.size(); ++row)
+	for (auto row = 0u; row < input.size(); ++row)
 	{
-		max = std::max(max, getEnergizedPoints(input, { Dir::right, {row, 0} }));
-		max = std::max(max, getEnergizedPoints(input, { Dir::left, {row, int(input[row].size() - 1)}}));
+		max = std::max(max, getEnergizedPoints(input, { Dir::right, {(int)row, 0} }));
+		max = std::max(max, getEnergizedPoints(input, { Dir::left, {(int)row, int(input[row].size() - 1)}}));
 	}
 
-	for (auto col = 0; col < input[0].size(); ++col)
+	for (auto col = 0u; col < input[0].size(); ++col)
 	{
-		max = std::max(max, getEnergizedPoints(input, { Dir::down, {0, col} }));
-		max = std::max(max, getEnergizedPoints(input, { Dir::up, {int(input.size() - 1), col} }));
+		max = std::max(max, getEnergizedPoints(input, { Dir::down, {0, (int)col} }));
+		max = std::max(max, getEnergizedPoints(input, { Dir::up, {int(input.size() - 1), (int)col} }));
 	}
 
 	return max;

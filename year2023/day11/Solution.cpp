@@ -36,7 +36,7 @@ auto expandEmptyLines(const InputType& in)
 	std::vector<int> emptyRows{0};
 	std::vector<int> emptyCols{0};
 
-	for (auto row = 1; row < in.size(); ++row)
+	for (auto row = 1u; row < in.size(); ++row)
 	{
 		if (std::ranges::none_of(in[row], [](auto c) { return c == '#'; }))
 		{
@@ -48,10 +48,10 @@ auto expandEmptyLines(const InputType& in)
 		}
 	}
 
-	for (auto col = 1; col < in[0].size(); ++col)
+	for (auto col = 1u; col < in[0].size(); ++col)
 	{
 		bool hasHash = false;
-		for (auto row = 0; row < in.size(); ++row)
+		for (auto row = 0u; row < in.size(); ++row)
 		{
 			hasHash |= in[row][col] == '#';
 		}
@@ -71,13 +71,13 @@ auto expandEmptyLines(const InputType& in)
 auto getAllHashes(const InputType& in)
 {
 	std::vector<Pos> hashes;
-	for (auto row = 0; row < in.size(); ++row)
+	for (auto row = 0u; row < in.size(); ++row)
 	{
-		for (auto col = 0; col < in[0].size(); ++col)
+		for (auto col = 0u; col < in[0].size(); ++col)
 		{
 			if (in[row][col] == '#')
 			{
-				hashes.push_back(Pos{ row, col });
+				hashes.push_back(Pos{ (int)row, (int)col });
 			}
 		}
 	}
@@ -90,9 +90,9 @@ auto calculate(const InputType& in, long long expansionSpeed)
 	auto allHashesVec = getAllHashes(in);
 
 	auto sum = 0ll;
-	for (int i = 0; i < allHashesVec.size(); i++)
+	for (auto i = 0u; i < allHashesVec.size(); i++)
 	{
-		for (int j = i + 1; j < allHashesVec.size(); ++j)
+		for (auto j = i + 1; j < allHashesVec.size(); ++j)
 		{
 			auto minRow = std::min(allHashesVec[i].row, allHashesVec[j].row);
 			auto maxRow = std::max(allHashesVec[i].row, allHashesVec[j].row);

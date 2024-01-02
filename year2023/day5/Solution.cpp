@@ -32,7 +32,7 @@ void prepare(Context& ctx)
 
 auto mapTo(long long in, int rangeIndex, long long rangeTail, const std::vector< std::vector<Ranges> >& rangeMappings)
 {
-	if (rangeIndex >= rangeMappings.size())
+	if (rangeIndex >= (int)rangeMappings.size())
 	{
 		return std::make_tuple(in, rangeTail);
 	}
@@ -68,7 +68,8 @@ Context parse()
 	auto fileIt = linesInFile.begin();
 	auto seedLine = *fileIt; ++fileIt;
 
-	ctx.seeds = splitAndTrim(splitAndTrim(seedLine, ':')[1], ' ') | std::views::transform([](auto&& e) { return std::stoll(e); }) | ToVector{};
+    auto seedsStrs = splitAndTrim(splitAndTrim(seedLine, ':')[1], ' ');
+	ctx.seeds = seedsStrs | std::views::transform([](auto&& e) { return std::stoll(e); }) | ToVector{};
 
 	std::vector<Ranges> ranges;
 	while (fileIt != linesInFile.end())
@@ -115,7 +116,7 @@ long long Solution::solve(const Context& input) const
 long long Solution::solve_part2(Context& input) const
 {
 	auto minLocation = BigNumber;
-	for (auto i = 0; i < input.seeds.size(); i += 2)
+	for (auto i = 0u; i < input.seeds.size(); i += 2)
 	{
 		for (auto j = 0ll; j < input.seeds[i + 1];)
 		{

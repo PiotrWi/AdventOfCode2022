@@ -34,7 +34,8 @@ BallsRecordEntity parseRecord(const std::string& line)
 
 std::vector<BallsRecordEntity> parseRecords(const std::string& recordsLine)
 {
-	return splitAndTrim(recordsLine, ';') | std::views::transform(parseRecord) | ToVector();
+    auto recordStr = splitAndTrim(recordsLine, ';');
+	return recordStr | std::views::transform(parseRecord) | ToVector();
 }
 
 BallsRecordEntity getMaximumForEachColor(const GameRecord& record)
@@ -91,8 +92,8 @@ std::vector<GameRecord> parse()
 
 int Solution::solve(const std::vector<GameRecord>& input) const
 {
-	int out = 0;
-	for (int i = 1; i <= input.size(); ++i)
+	auto out = 0u;
+	for (auto i = 1u; i <= input.size(); ++i)
 	{
 		if (matchRecords(input[i - 1])) out += i;
 	}

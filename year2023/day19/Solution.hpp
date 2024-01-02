@@ -43,7 +43,7 @@ struct ICondition
 
 struct AllwaysTrue : public ICondition
 {
-	bool match(const Item& item) override { return true; };
+	bool match(const Item&) override { return true; };
 	std::pair<Ranges, Ranges> split(Ranges ranges) override { return std::make_pair(Ranges::createEmpty(), ranges); };
 };
 

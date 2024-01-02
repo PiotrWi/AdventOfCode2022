@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <tuple>
+#include <ranges>
 
 #include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
@@ -93,9 +94,9 @@ long long Solution::solve_part2(const InputType& input) const
 	}
 
 	long long out = 0ll;
-	for (int boxNr = 0; boxNr < 256; ++boxNr)
+	for (auto boxNr = 0u; boxNr < 256u; ++boxNr)
 	{
-		for (int pos = 0; pos < boxes[boxNr].size(); ++pos)
+		for (auto pos = 0u; pos < boxes[boxNr].size(); ++pos)
 		{
 			out += (boxNr + 1) * (pos + 1) * boxes[boxNr][pos].focalLen;
 		}

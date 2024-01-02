@@ -38,9 +38,9 @@ Brick Brick::construct(PointXYZ first, PointXYZ second)
 {
 	if (first.z_ <= second.z_)
 	{
-		return Brick{ first, second };
+		return Brick{ first, second, {}, {} };
 	}
-	return Brick{ second, first };
+	return Brick{ second, first, {}, {} };
 }
 
 void Brick::addLowerPoints(std::vector<int> lowers)
@@ -55,7 +55,8 @@ void Brick::addUpperIndex(int upper)
 
 auto createPointFromStr(std::string s)
 {
-	return PointXYZ(splitAndTrim(s, ',')
+    auto strs = splitAndTrim(s, ',');
+	return PointXYZ(strs
 		| std::views::transform([](auto&& el) {return std::stoi(el); })
 		| To<std::vector<int>>());
 }
@@ -106,7 +107,7 @@ std::vector<Brick> prepare(const InputType& input)
 
 	std::vector<std::vector<BricksReferences>> topsOfBricks_(maxX + 1, std::vector<BricksReferences>(maxY + 1));
 
-	for (int i = 0; i < lowerBricks.size(); ++i)
+	for (auto i = 0u; i < lowerBricks.size(); ++i)
 	{
 		int biggestTop = -1;
 		std::set<int> brickIndexes;
@@ -118,7 +119,6 @@ std::vector<Brick> prepare(const InputType& input)
 				{
 					brickIndexes = {};
 					biggestTop = topsOfBricks_[x][y].high;
-					;
 				}
 				if (topsOfBricks_[x][y].high == biggestTop && topsOfBricks_[x][y].brickIndex != -1)
 				{
@@ -193,7 +193,7 @@ long long Solution::solve_part2(const InputType& input) const
 	std::vector<Brick> lowerBricks = prepare(input);
 
 	auto sum = 0ll;
-	for (int i = 0; i < lowerBricks.size(); ++i)
+	for (int i = 0; i < (int)lowerBricks.size(); ++i)
 	{
 		toRestore = {};
 		sum += checkDropChain(i, lowerBricks);

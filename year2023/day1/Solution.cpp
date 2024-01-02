@@ -39,8 +39,8 @@ auto getFirstNumberWord(const std::string& line, std::vector<std::pair<const cha
 
 auto getLastNumberWord(const std::string& line, std::vector<std::pair<const char*, int>>& numberLiteralsToValues)
 {
-    int num = 0;
-    int lastNumber = 0;
+    auto num = 0u;
+    auto lastNumber = 0u;
 
     for (auto& [str, n] : numberLiteralsToValues)
     {

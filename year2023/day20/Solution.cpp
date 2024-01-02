@@ -18,21 +18,21 @@ struct Broadcaster : public INode
 	{
 	}
 	void init() override {};
-	std::vector<Signal> react(bool signal, std::string from) override
+	std::vector<Signal> react(bool, std::string) override
 	{
 		return neighbours_
 			| std::views::transform([&](auto&& str) { return Signal{ myLabel_, str, false }; })
 			| To<std::vector<Signal>>();
 	}
-	void registerInput(std::string from) override {}
+	void registerInput(std::string) override {}
 	bool getState() const override { return false; };
 	std::vector<std::string> getNeighbours() override
 	{
 		return neighbours_;
 	}
 private:
+    std::vector<std::string> neighbours_;
 	std::string myLabel_;
-	std::vector<std::string> neighbours_;
 };
 
 struct Conjunction : public INode
@@ -68,9 +68,9 @@ struct Conjunction : public INode
 		return neighbours_;
 	}
 private:
-	std::string myLabel_;
+    std::vector<std::string> neighbours_;
+    std::string myLabel_;
 	std::map<std::string, bool> statesOfInputs;
-	std::vector<std::string> neighbours_;
 };
 
 struct FlipFlop : public INode
@@ -81,7 +81,7 @@ struct FlipFlop : public INode
 	{
 	}
 	void init() override { state_ = false; };
-	std::vector<Signal> react(bool signal, std::string from) override
+	std::vector<Signal> react(bool signal, std::string) override
 	{
 		if (signal == true)
 		{
@@ -92,7 +92,7 @@ struct FlipFlop : public INode
 			| std::views::transform([this](auto&& str) { return Signal{ myLabel_, str, state_ }; })
 			| To<std::vector<Signal>>();
 	}
-	void registerInput(std::string from) override {}
+	void registerInput(std::string) override {}
 
 	bool getState() const override { return state_; }
 	std::vector<std::string> getNeighbours() override
@@ -100,9 +100,9 @@ struct FlipFlop : public INode
 		return neighbours_;
 	}
 private:
-		std::string myLabel_;
-		bool state_ = false;
-		std::vector<std::string> neighbours_;
+    std::vector<std::string> neighbours_;
+    std::string myLabel_;
+    bool state_ = false;
 };
 
 InputType parse()

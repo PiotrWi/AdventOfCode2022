@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
-
 find_package(Boost)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
@@ -10,9 +9,9 @@ project(aoc LANGUAGES CXX)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        SET(CMAKE_CXX_FLAGS  "-Og -g -Wall -Wextra -Werror -std=c++20 -march=haswell -fuse-ld=gold")
+        SET(CMAKE_CXX_FLAGS  "-Og -g -Wall -Wextra -Werror -std=c++23 -march=haswell -fuse-ld=gold")
     elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-        SET(CMAKE_CXX_FLAGS  "-Ofast -Wall -Wextra -Werror -std=c++20 -mbmi2 -mavx -march=haswell -msse4.1 -flto -fuse-ld=gold -m64 -lrt")
+        SET(CMAKE_CXX_FLAGS  "-Ofast -Wall -Wextra -Werror -std=c++23 -mbmi2 -mavx -march=haswell -msse4.1 -flto -fuse-ld=gold -m64 -lrt")
     endif()
 endif()
 
@@ -71,6 +70,7 @@ file(COPY year2023/day21/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2
 file(COPY year2023/day22/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day22)
 file(COPY year2023/day23/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day23)
 file(COPY year2023/day24/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day24)
+file(COPY year2023/day25/input.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/year2023/day25)
 
 add_executable(aoc
         main.cpp
@@ -95,7 +95,7 @@ add_executable(aoc
         year2022/day14/Solution.hpp year2022/day14/Solution.cpp
         year2022/day14/Solution.hpp year2022/day14/Solution.cpp
         year2022/day15/Solution.hpp year2022/day15/Solution.cpp
-        year2022/day16/Solution.hpp year2022/day16/Solution.cpp
+        #year2022/day16/Solution.hpp year2022/day16/Solution.cpp
         year2022/day17/Solution.hpp year2022/day17/Solution.cpp
         year2022/day18/Solution.hpp year2022/day18/Solution.cpp
         year2022/day19/Solution.hpp year2022/day19/Solution.cpp
@@ -122,7 +122,17 @@ add_executable(aoc
         year2023/day15/Solution.cpp
         year2023/day16/Solution.cpp
         year2023/day17/Solution.cpp
+        year2023/day18/Solution.cpp
+        year2023/day19/Solution.cpp
+        year2023/day20/Solution.cpp
+        year2023/day21/Solution.cpp
+        year2023/day22/Solution.cpp
+        year2023/day23/Solution.cpp
+        year2023/day24/Solution.cpp
+        year2023/day25/Solution.hpp
         year2022/execute.cpp
-        year2023/execute.cpp   "year2023/day18/Solution.cpp" "year2023/day19/Solution.cpp" "year2023/day20/Solution.cpp" "year2023/day21/Solution.cpp" "year2023/day22/Solution.cpp" "year2023/day23/Solution.cpp" "year2023/day24/Solution.cpp")
+        year2023/execute.cpp
+        year2023/day25/Solution.cpp)
 
-set_property(TARGET aoc PROPERTY CXX_STANDARD 20)
+set_property(TARGET aoc PROPERTY CXX_STANDARD 23)
+target_link_libraries(aoc quadmath)

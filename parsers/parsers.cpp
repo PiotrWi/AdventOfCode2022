@@ -64,12 +64,12 @@ std::vector <std::string> LinesInFileRange::toStringVector()
     return out;
 }
 
-bool operator==(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs)
+bool operator==(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator&)
 {
     return not lhs.hasData();
 }
 
-bool operator!=(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator& rhs)
+bool operator!=(const LinesInFileRange::TIterator& lhs, const LinesInFileRange::TIterator&)
 {
     return lhs.hasData();
 }

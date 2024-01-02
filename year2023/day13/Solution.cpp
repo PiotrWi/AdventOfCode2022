@@ -37,8 +37,8 @@ namespace
 
 int getNumOfDifferentCharsUpTo(const std::string& lhs, const std::string& rhs, int limit)
 {
-	int differentChars = 0;
-	int i = 0;
+	auto differentChars = 0;
+	auto i = 0u;
 	while (differentChars <= limit && i < lhs.size())
 	{
 		differentChars += (lhs[i] != rhs[i]);
@@ -51,7 +51,7 @@ bool check(int pos, const std::vector <std::string>& input, int limit)
 {
 	auto sum = 0;
 	int j = 0;
-	while (sum <= limit && pos - j >= 0 && pos + j + 1 < input.size())
+	while (sum <= limit && pos - j >= 0 && pos + j + 1 < (int)input.size())
 	{
 		sum += getNumOfDifferentCharsUpTo(input[pos - j], input[pos + j + 1], limit);
 		++j;
@@ -61,7 +61,7 @@ bool check(int pos, const std::vector <std::string>& input, int limit)
 
 int checkRowReflections(const std::vector <std::string>& input, int limit)
 {
-	for (int i = 0; i < input.size() - 1; ++i)
+	for (auto i = 0u; i < input.size() - 1; ++i)
 	{
 		if (check(i, input, limit))
 		{

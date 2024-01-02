@@ -57,11 +57,6 @@ struct PreprocessedHand
 	long long strenght;
 };
 
-bool operator<(const PreprocessedHand& lhs, const PreprocessedHand& rhs)
-{
-	return lhs.strenght < rhs.strenght;
-}
-
 std::optional<long long> calculateStrenghtForFiveOfAKind(const std::vector<QuanityToValue>& quantities)
 {
 	if (quantities.size() == 1)
@@ -144,7 +139,7 @@ std::vector <PreprocessedHand> preprocess(const std::vector<Hand>& input)
 	std::vector <PreprocessedHand> hands;
 	for (auto&& hand : input)
 	{
-		PreprocessedHand preprocessedHand{ hand, {} };
+		PreprocessedHand preprocessedHand{ hand, {} , {}};
 		for (auto&& card : hand.cards)
 		{
 			auto it = std::find_if(preprocessedHand.cardQuantities.begin(), preprocessedHand.cardQuantities.end(), [&card](auto&& el) { return el.value() == card.value; });
@@ -172,7 +167,7 @@ std::vector <PreprocessedHand> preprocessWithJacksAsJockers(const std::vector<Ha
 	std::vector <PreprocessedHand> hands;
 	for (auto&& hand : input)
 	{
-		PreprocessedHand preprocessedHand{ hand, {} };
+		PreprocessedHand preprocessedHand{ hand, {}, {} };
 		auto jacks = 0;
 		for (auto&& card : preprocessedHand.hand.cards)
 		{
@@ -241,7 +236,7 @@ long long Solution::solve(const std::vector<Hand>& input) const
 		});
 
 	long long res = 0ll;
-	for (auto i = 0ll; i < preprocessedHands.size(); ++i)
+	for (auto i = 0ll; i < (int)preprocessedHands.size(); ++i)
 	{
 		res += preprocessedHands[i].hand.bet * (i + 1);
 	}
@@ -257,7 +252,7 @@ long long Solution::solve_part2(const std::vector<Hand>& input) const
 		});
 	
 	long long res = 0ll;
-	for (auto i = 0ll; i < preprocessedHands.size(); ++i)
+	for (auto i = 0ll; i < (int)preprocessedHands.size(); ++i)
 	{
 		res += preprocessedHands[i].hand.bet * (i + 1);
 	}

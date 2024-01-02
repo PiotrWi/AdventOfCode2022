@@ -108,9 +108,9 @@ std::vector<std::string> splitNumbersAndChars(const std::string& in)
 std::vector <std::string> transpose(const std::vector <std::string>& input)
 {
     std::vector <std::string> transposed(input[0].size());
-    for (int row = 0; row < input.size(); ++row)
+    for (auto row = 0u; row < input.size(); ++row)
     {
-        for (int col = 0; col < input[0].size(); ++col)
+        for (auto col = 0u; col < input[0].size(); ++col)
         {
             transposed[col].push_back(input[row][col]);
         }
@@ -127,7 +127,7 @@ std::vector < std::span<char> > splitGroups(std::string& in, std::function<bool(
     for (decltype(in.size()) i = 0; i < in.size();)
     {
         std::string number;
-        int j = i;
+        auto j = i;
         while (j < in.size() && groupPredicate(in[j]))
         {
             number.push_back(in[j++]);

@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <utility>
+#include <x86intrin.h>
 
 #include <StringAlgorithms/StringAlgorithms.hpp>
 #include <parsers/parsers.hpp>

@@ -22,12 +22,14 @@ std::vector<Game> parse()
 		auto gameToNumbers = splitAndTrim(line, ':');
 
 		auto winningAndMy = splitAndTrim(gameToNumbers[1], '|');
-		auto winningRanage = splitAndTrim(winningAndMy[0], ' ')
+        auto winningStr = splitAndTrim(winningAndMy[0], ' ');
+		auto winningRanage = winningStr
 			| std::views::filter([](auto s) {return not s.empty(); })
 			| std::views::transform([](auto&& e) { return std::stoi(e); });
 		std::copy(winningRanage.begin(), winningRanage.end(), std::inserter(game.winningNumbers_, std::begin(game.winningNumbers_)));
 
-		auto myRange = splitAndTrim(winningAndMy[1], ' ')
+        auto myStr = splitAndTrim(winningAndMy[1], ' ');
+		auto myRange = myStr
 			| std::views::filter([](auto s) {return not s.empty(); })
 			| std::views::transform([](auto&& e) { return std::stoi(e); });
 		std::copy(myRange.begin(), myRange.end(), std::inserter(game.myNumbers_, std::begin(game.myNumbers_)));
@@ -64,12 +66,12 @@ long long Solution::solve(const std::vector<Game>& input) const
 long long Solution::solve_part2(const std::vector<Game>& input) const
 {
 	std::vector<long long> cardQuantities(input.size(), 1ull);
-	for (int i = 0; i < input.size(); ++i)
+	for (auto i = 0u; i < input.size(); ++i)
 	{
 		auto& game = input[i];
 
 		auto commonNumbers = getCommonNumberCount(game.myNumbers_, game.winningNumbers_);
-		for (int j = i + 1; j <= i + commonNumbers && j < input.size(); ++j)
+		for (auto j = i + 1; j <= i + commonNumbers && j < input.size(); ++j)
 		{
 			cardQuantities[j] += cardQuantities[i];
 		}

@@ -140,9 +140,9 @@ long long Solution::solve(const InputType& in) const
 	floodPixels(pixMap);
 
 	auto sum = 0ull;
-	for (auto row = 0; row < pixMap.size(); ++row)
+	for (auto row = 0u; row < pixMap.size(); ++row)
 	{
-		for (auto col = 0; col < pixMap[0].size(); ++col)
+		for (auto col = 0u; col < pixMap[0].size(); ++col)
 		{
 			sum += pixMap[row][col] == '#' || pixMap[row][col] == '.';
 		}
@@ -267,9 +267,9 @@ long long Solution::solve_part2(const InputType& in) const
 	floodPixels(pixMap);
 
 	auto sum = 0ull;
-	for (auto row = 0; row < pixMap.size(); ++row)
+	for (auto row = 0u; row < pixMap.size(); ++row)
 	{
-		for (auto col = 0; col < pixMap[0].size(); ++col)
+		for (auto col = 0u; col < pixMap[0].size(); ++col)
 		{
 			sum += (pixMap[row][col] == '#' || pixMap[row][col] == '.')
 				* (long long)(rowsLegend[row].end - rowsLegend[row].begin) 

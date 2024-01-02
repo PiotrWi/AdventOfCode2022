@@ -23,11 +23,11 @@ auto findAllCrossings(const InputType& input, PointRowCol startingPoint, PointRo
 	crossings.push_back(startingPoint);
 	crossings.push_back(finishPoint);
 
-	for (auto row = 0; row < input.size(); ++row)
+	for (auto row = 0u; row < input.size(); ++row)
 	{
-		for (auto col = 0; col < input.size(); ++col)
+		for (auto col = 0u; col < input.size(); ++col)
 		{
-			auto visitedPoint = PointRowCol{ row, col };
+			auto visitedPoint = PointRowCol{ (int)row, (int)col };
 			if (input[visitedPoint.row][visitedPoint.col] == '#')
 			{
 				continue;
@@ -44,7 +44,7 @@ auto findAllCrossings(const InputType& input, PointRowCol startingPoint, PointRo
 			}
 			if (emtpyNeignours > 2)
 			{
-				crossings.push_back({ row, col });
+				crossings.push_back({ (int)row, (int)col });
 			}
 		}
 	}
@@ -92,7 +92,7 @@ std::optional<Neighbour> followTheRoad(const InputType& input, const std::vector
 
 	if (std::ranges::find(crossings, currentPoint) != crossings.end())
 	{
-		return Neighbour{ currentPoint, cost };
+		return Neighbour{ currentPoint, cost, {} };
 	}
 
 	for (auto diff : { BottomPointDiff, UpperPointDiff, LeftPointDiff, RightPointDiff })

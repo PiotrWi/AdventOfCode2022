@@ -79,7 +79,7 @@ auto calculate(const InputType& input)
 	auto sum = 0ll;
 	for (auto line : transpozedInput)
 	{
-		for (auto i = 0; i < line.size(); ++i)
+		for (auto i = 0u; i < line.size(); ++i)
 		{
 			if (line[i] == 'O')
 			{
@@ -94,7 +94,7 @@ struct CycleFinder
 {
 	void add(const InputType& input, long long solution)
 	{
-		for (auto i = 0; i < data_.size(); ++i)
+		for (auto i = 0u; i < data_.size(); ++i)
 		{
 			if (input == data_[i])
 			{
@@ -110,7 +110,7 @@ struct CycleFinder
 	{
 		return cycle_ && solutons_.size() == *cycle_;
 	}
-	std::optional<int> cycle_;
+	std::optional<unsigned int> cycle_;
 	std::vector<InputType> data_;
 	std::map<int, long long> solutons_;
 };

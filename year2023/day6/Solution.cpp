@@ -1,5 +1,3 @@
-#pragma once
-
 #include <iostream>
 #include "Solution.hpp"
 
@@ -79,7 +77,7 @@ long long Solution::solve(const std::vector<SingleRace>& input) const
     return res;
 }
 
-long long Solution::solve_part2(const std::vector<SingleRace>& input) const
+long long Solution::solve_part2(const std::vector<SingleRace>&) const
 {
     SingleRace sr{ 59688274ll, 543102016641022ll };
     return resolve(sr);

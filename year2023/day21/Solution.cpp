@@ -1,5 +1,6 @@
 #include "Solution.hpp"
 
+#include <algorithm>
 #include <ranges>
 #include <queue>
 #include <iostream>
@@ -19,12 +20,12 @@ InputType parse()
 
 auto findS(const InputType& input)
 {
-	for (auto row = 0; row < input.size(); ++row)
+	for (auto row = 0u; row < input.size(); ++row)
 	{
 		auto sPos = input[row].find('S');
 		if (sPos != std::string::npos)
 		{
-			return PointRowCol{ row, (int)sPos };
+			return PointRowCol{ (int)row, (int)sPos };
 		}
 	}
 	return PointRowCol{};
@@ -33,7 +34,7 @@ auto findS(const InputType& input)
 auto countOs(const InputType& input)
 {
 	auto sum = 0ll;
-	for (auto row = 0; row < input.size(); ++row)
+	for (auto row = 0u; row < input.size(); ++row)
 	{
 		sum += std::ranges::count_if(input[row], [](auto c) { return c == 'O'; });
 	}
@@ -80,7 +81,7 @@ long long Solution::solve(const InputType& input) const
 	return countOs(visitedNodes.back());
 }
 
-long long Solution::solve_part2(InputType input) const
+long long Solution::solve_part2(InputType) const
 {
 	auto n = (26501365 - 65) / 131;
 	long long pn = 3941;

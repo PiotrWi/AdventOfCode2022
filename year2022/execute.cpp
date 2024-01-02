@@ -17,7 +17,7 @@
 #include "day13/Solution.hpp"
 #include "day14/Solution.hpp"
 #include "day15/Solution.hpp"
-#include "day16/Solution.hpp"
+// #include "day16/Solution.hpp"
 #include "day17/Solution.hpp"
 #include "day18/Solution.hpp"
 #include "day19/Solution.hpp"
@@ -52,7 +52,7 @@ void execute()
     PrintAndVerifySollution<day13::Solution>()(day13::parse, "day 13", 5393, 26712);
     PrintAndVerifySollution<day14::Solution>()(day14::parse, "day 14", 768, 26686);
     PrintAndVerifySollution<day15::Solution>()(day15::parse, "day 15", 5108096, 10553942650264ull);  // b can be improved
-    PrintAndVerifySollution<day16::Solution>()(day16::parse, "day 16", 1647, 2169);
+    // PrintAndVerifySollution<day16::Solution>()(day16::parse, "day 16", 1647, 2169); // Temporarly disabled due fact that intrincs are not available on all targets. std bit operations to be used.
     PrintAndVerifySollution<day17::Solution>()(day17::parse, "day 17", 3100, 1540634005751);
     PrintAndVerifySollution<day18::Solution>()(day18::parse, "day 18", 3498, 2008);
     PrintAndVerifySollution<day19::Solution>()(day19::parse, "day 19", 1404, 5880);

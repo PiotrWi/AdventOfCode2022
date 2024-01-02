@@ -20,7 +20,8 @@ InputType parse()
 		Line l;
 		auto patternToList = splitAndTrim(inputLine, ' ');
 		l.line = patternToList[0];
-		l.groups = splitAndTrim(patternToList[1], ',') | std::views::transform([](auto&& el) { return std::stoi(el);  }) | ToVector{};
+        auto groupsStrs = splitAndTrim(patternToList[1], ',');
+		l.groups = groupsStrs | std::views::transform([](auto&& el) { return std::stoi(el);  }) | ToVector{};
 		in.push_back(l);
 	}
 	return in;
@@ -40,9 +41,9 @@ std::unordered_map<std::pair<int, int>, long long, PairHash> cache;
 
 bool canBeMatch(int position, const std::string& line, int len)
 {
-	return line.size() >= position + len
+	return (int)line.size() >= position + len
 		&& std::all_of(line.data() + position, line.data() + position + len, [](char c) { return c == '#' || c == '?'; })
-		&& ((line.size() > position + len)
+		&& (((int)line.size() > position + len)
 			? line[position + len] != '#'
 			: true);
 			
@@ -50,13 +51,13 @@ bool canBeMatch(int position, const std::string& line, int len)
 
 long long evaluate(int position, std::string& line, const std::vector<int>& groups, int groupToMatch)
 {
-	if (position >= line.size())
+	if (position >= (int)line.size())
 	{
-		return groupToMatch == groups.size();
+		return groupToMatch == (int)groups.size();
 	}
 	if (line[position] == '#')
 	{
-		if (groupToMatch >= groups.size())
+		if (groupToMatch >= (int)groups.size())
 		{
 			return 0;
 		}
@@ -71,7 +72,7 @@ long long evaluate(int position, std::string& line, const std::vector<int>& grou
 	}
 	if (line[position] == '.')
 	{
-		if (auto node = cache.find({position, groupToMatch}) != cache.end())
+		if (cache.find({position, groupToMatch}) != cache.end())
 		{
 			return cache.find({ position, groupToMatch })->second;
 		}
@@ -101,7 +102,6 @@ long long Solution::solve(const InputType& input) const
 
 long long Solution::solve_part2(const InputType& input) const
 {
-	auto i = 0;
 	auto sum = 0ll;
 	for (auto&& entity : input)
 	{
