@@ -10,10 +10,12 @@
 
 #include "parsers/parsers.hpp"
 #include "StringAlgorithms/StringAlgorithms.hpp"
-#include <boost/multiprecision/float128.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
 
 namespace year_2023::day24
 {
+
+using namespace boost::multiprecision;
 
 InputType parse()
 {
@@ -24,15 +26,11 @@ InputType parse()
 		auto positionToVelocity = splitAndTrim(line, '@');
         auto positionsStrs = splitAndTrim(positionToVelocity[0], ',');
 		auto positions = positionsStrs | std::views::transform([](auto&& str) { return std::stod(str); }) | To<std::vector<long long>>();
-		c.position_.X_ = positions[0];
-		c.position_.Y_ = positions[1];
-		c.position_.Z_ = positions[2];
+		c.position_ = PointXYZ(positions);
 
         auto velocitiesStrs = splitAndTrim(positionToVelocity[1], ',');
 		auto velocites = velocitiesStrs | std::views::transform([](auto&& str) { return std::stod(str); }) | To<std::vector<long long>>();
-		c.velocity_.X_ = velocites[0];
-		c.velocity_.Y_ = velocites[1];
-		c.velocity_.Z_ = velocites[2];
+		c.velocity_ = PointXYZ(velocites);
 
 		in.push_back(c);
 	}
@@ -40,42 +38,29 @@ InputType parse()
 	return in;
 }
 
-bool isEqual(boost::multiprecision::float128 lhs, boost::multiprecision::float128 rhs, boost::multiprecision::float128 epsilon = 0.001)
+template <long long RangeBegin, long long RangeEnd>
+bool inRange(cpp_rational val)
 {
-    if ( lhs > rhs)
-    {
-        return lhs - rhs < epsilon;
-    }
-    if ( rhs > lhs)
-    {
-        return rhs - lhs < epsilon;
-    }
-    return true;
+	return (val >= RangeBegin) && (val <= RangeEnd);
 }
 
-template <double RangeBegin, double RangeEnd>
-bool inRange(boost::multiprecision::float128 val, boost::multiprecision::float128 epsilon = 0.001)
-{
-	return (val > (RangeBegin - epsilon)) && (val < (RangeEnd + epsilon));
-}
-
-bool isInFuture(boost::multiprecision::float128 val_0, boost::multiprecision::float128 val, boost::multiprecision::float128 vel, boost::multiprecision::float128 epsilon = 0.001)
+bool isInFuture(cpp_rational val_0, cpp_rational val, cpp_rational vel)
 {
 	if (vel > 0)
 	{
-		return val > (val_0 - epsilon);
+		return val > (val_0);
 	}
-	return val < (val_0 + epsilon);
+	return val < val_0;
 }
 
-template <double RangeBegin, double RangeEnd>
+template <long long RangeBegin, long long RangeEnd>
 bool match(Cube lhs, Cube rhs)
 {
-	auto a_lhs = (boost::multiprecision::float128)lhs.velocity_.Y_ / lhs.velocity_.X_;
-	auto b_lhs = (boost::multiprecision::float128)lhs.position_.Y_ - a_lhs * lhs.position_.X_;
+	auto a_lhs = (cpp_rational)lhs.velocity_.y_ / lhs.velocity_.x_;
+	auto b_lhs = (cpp_rational)lhs.position_.y_ - a_lhs * lhs.position_.x_;
 
-	auto a_rhs = (boost::multiprecision::float128)rhs.velocity_.Y_ / rhs.velocity_.X_;
-	auto b_rhs = (boost::multiprecision::float128)rhs.position_.Y_ - a_rhs * rhs.position_.X_;
+	auto a_rhs = (cpp_rational)rhs.velocity_.y_ / rhs.velocity_.x_;
+	auto b_rhs = (cpp_rational)rhs.position_.y_ - a_rhs * rhs.position_.y_;
 
 	if (a_lhs == a_rhs)
 	{
@@ -87,8 +72,8 @@ bool match(Cube lhs, Cube rhs)
 
 	return inRange<RangeBegin, RangeEnd>(x)
 		&& inRange<RangeBegin, RangeEnd>(y)
-		&& isInFuture((double)lhs.position_.X_, x, (double)lhs.velocity_.X_)
-		&& isInFuture((double)rhs.position_.X_, x, (double)rhs.velocity_.X_);
+		&& isInFuture((double)lhs.position_.x_, x, (double)lhs.velocity_.x_)
+		&& isInFuture((double)rhs.position_.x_, x, (double)rhs.velocity_.x_);
 }
 
 long long Solution::solve(const InputType& input) const
@@ -99,7 +84,7 @@ long long Solution::solve(const InputType& input) const
 		for (auto rhs = lhs + 1; rhs != input.end(); ++rhs)
 		{
 			// count += match<7.0, 24.0>(*lhs, *rhs);  // test input
-			count += match<200000000000000.0, 400000000000000.0>(*lhs, *rhs);
+			count += match < 200000000000000ll, 400000000000000ll > (*lhs, *rhs);
 		}
 	}
 	return count;
@@ -109,10 +94,6 @@ struct Generator
 {
 	long long operator()()
 	{
-		return generate();
-	}
-	long long generate()
-	{
 		sign_ *= -1;
 		++value_;
 		return (value_ / 2) * sign_;
@@ -121,142 +102,102 @@ struct Generator
 	long long value_ = 1;
 };
 
-std::optional<std::pair<boost::multiprecision::float128, boost::multiprecision::float128>> calcCrossXZ(Cube lhs, Cube rhs)
-{
-    if (lhs.velocity_.X_ == 0 || rhs.velocity_.X_ == 0)
-    {
-        return {};
-    }
-	auto a_lhs = (boost::multiprecision::float128)lhs.velocity_.Z_ / lhs.velocity_.X_;
-	auto b_lhs = (boost::multiprecision::float128)lhs.position_.Z_ - a_lhs * lhs.position_.X_;
+struct AnyPoint {};
+struct NonePoint {};
+using RationalPoint = std::pair<cpp_rational, cpp_rational>;
 
-	auto a_rhs = (boost::multiprecision::float128)rhs.velocity_.Z_ / rhs.velocity_.X_;
-	auto b_rhs = (boost::multiprecision::float128)rhs.position_.Z_ - a_rhs * rhs.position_.X_;
+using CrossResult = std::variant<RationalPoint, AnyPoint, NonePoint>;
+
+template <long long PointXYZ::*TYAxisPtr>
+CrossResult calcCross(Cube lhs, Cube rhs)
+{
+	if (lhs.velocity_.x_ == 0 && rhs.velocity_.x_ == 0)
+	{
+		if (lhs.position_.x_ != rhs.position_.x_)
+		{
+			return NonePoint{};
+		}
+	}
+	if (lhs.velocity_.x_ == 0 || rhs.velocity_.x_ == 0)
+	{
+		return AnyPoint{};
+	}
+	auto& lhs_velocity_y = lhs.velocity_.*TYAxisPtr;
+	auto& lhs_position_y = lhs.position_.*TYAxisPtr;
+	auto& rhs_velocity_y = rhs.velocity_.*TYAxisPtr;
+	auto& rhs_position_y = rhs.position_.*TYAxisPtr;
+
+	auto a_lhs = (cpp_rational)lhs_velocity_y / lhs.velocity_.x_;
+	auto b_lhs = (cpp_rational)lhs_position_y - a_lhs * lhs.position_.x_;
+
+	auto a_rhs = (cpp_rational)rhs_velocity_y / rhs.velocity_.x_;
+	auto b_rhs = (cpp_rational)rhs_position_y - a_rhs * rhs.position_.x_;
 
 	if (a_lhs == a_rhs)
 	{
-		return {}; // tmp
+		if (b_rhs == b_rhs)
+		{
+			return AnyPoint{};
+		}
+		return NonePoint{};
 	}
-	 
+
 	auto x = (b_rhs - b_lhs) / (a_lhs - a_rhs);
 	auto z = a_lhs * x + b_lhs;
 	return std::make_pair(x, z);
 }
 
-bool tryForGivenVX_VZ(const InputType& input, long long VtrowX, long long VtrowZ)
+template <long long PointXYZ::*TYAxisPtr>
+std::optional<RationalPoint> findFirstConcreteCrossPoint(const InputType& input, Cube lhs, long long VtrowX, long long VtrowY)
 {
-	// std::cout << "try: " << VtrowX << ", " << VtrowY << std::endl;
-
-	Cube c0 = input[0];
-	c0.velocity_.X_ -= VtrowX;
-	c0.velocity_.Z_ -= VtrowZ;
-
-    boost::multiprecision::float128 xPattern = 11425253225.0, zPattern=785423424.0;
+	std::optional<RationalPoint> pattern;
 	for (auto i = 1u; i < input.size(); ++i)
 	{
 		auto c = input[i];
-		c.velocity_.X_ -= VtrowX;
-		c.velocity_.Z_ -= VtrowZ;
-		auto xzCurrent = calcCrossXZ(c0, c);
-		if (xzCurrent)
+		c.velocity_.x_ -= VtrowX;
+		c.velocity_.*TYAxisPtr -= VtrowY;
+		auto Current = calcCross<TYAxisPtr>(lhs, c);
+		if (const auto* point = std::get_if<RationalPoint>(&Current))
 		{
-			xPattern = xzCurrent->first;
-			zPattern = xzCurrent->second;
-			break;
+			return *point;
 		}
+	}
+	return pattern;
+}
+
+template <long long PointXYZ::*TYAxisPtr>
+std::optional<RationalPoint> tryForGivenVxVy(const InputType& input, long long VtrowX, long long VtrowY)
+{
+	Cube c0 = input[0];
+	c0.velocity_.x_ -= VtrowX;
+	c0.velocity_.*TYAxisPtr -= VtrowY;
+
+	auto pattern = findFirstConcreteCrossPoint<TYAxisPtr>(input, c0, VtrowX, VtrowY);
+	if (not pattern)
+	{
+		return {};
 	}
 
 	for (auto i = 1u; i < input.size(); ++i)
 	{
 		auto c = input[i];
-		c.velocity_.X_ -= VtrowX;
-		c.velocity_.Z_ -= VtrowZ;
-		auto xzCurrent = calcCrossXZ(c0, c);
-		if (not xzCurrent)
+		c.velocity_.x_ -= VtrowX;
+		c.velocity_.*TYAxisPtr -= VtrowY;
+		auto xyCurrent = calcCross<TYAxisPtr>(c0, c);
+		if (std::get_if<NonePoint>(&xyCurrent))
+		{
+			return {};
+		}
+		if (std::get_if<AnyPoint>(&xyCurrent))
 		{
 			continue;
 		}
-		if (not isEqual(xzCurrent->first, xPattern, 100.0) ||
-			not isEqual(xzCurrent->second, zPattern, 100.0))
+		if (std::get<RationalPoint>(xyCurrent) != pattern)
 		{
-			return false;
+			return {};
 		}
 	}
-	// std::cout << "Found: " << VtrowX << ", " << VtrowZ << std::endl;
-	// std::cout << std::setprecision (std::numeric_limits<double>::digits10 + 1)  << xPattern << ", " << zPattern << std::endl;
-	return true;
-}
-
-std::optional<std::pair<boost::multiprecision::float128, boost::multiprecision::float128>> calcCrossXY(Cube lhs, Cube rhs)
-{
-    if (lhs.velocity_.X_ == 0 || rhs.velocity_.X_ == 0)
-    {
-        return {};
-    }
-	auto a_lhs = (boost::multiprecision::float128)lhs.velocity_.Y_ / lhs.velocity_.X_;
-	auto b_lhs = (boost::multiprecision::float128)lhs.position_.Y_ - a_lhs * lhs.position_.X_;
-
-	auto a_rhs = (boost::multiprecision::float128)rhs.velocity_.Y_ / rhs.velocity_.X_;
-	auto b_rhs = (boost::multiprecision::float128)rhs.position_.Y_ - a_rhs * rhs.position_.X_;
-
-	if (a_lhs == a_rhs)
-	{
-		return {}; // tmp
-	}
-
-	auto x = (b_rhs - b_lhs) / (a_lhs - a_rhs);
-	auto y = a_lhs * x + b_lhs;
-	return std::make_pair(x, y);
-	/*if (isInFuture((double)lhs.position_.X_, x, (double)lhs.velocity_.X_, 100.0)
-		&& isInFuture((double)rhs.position_.X_, x, (double)rhs.velocity_.X_, 100.0))
-	{
-		return std::make_pair(x, y);
-	}
-	return {};*/
-}
-
-bool tryForGivenVX_VY(const InputType& input, long long VtrowX, long long VtrowY)
-{
-	// std::cout << "try: " << VtrowX << ", " << VtrowY << std::endl;
-
-	Cube c0 = input[0];
-	c0.velocity_.X_ -= VtrowX;
-	c0.velocity_.Y_ -= VtrowY;
-
-    boost::multiprecision::float128 xPattern = -1001111212.0, yPattern=103233110.0;
-	for (auto i = 1u; i < input.size(); ++i)
-	{
-		auto c = input[i];
-		c.velocity_.X_ -= VtrowX;
-		c.velocity_.Y_ -= VtrowY;
-		auto xyCurrent = calcCrossXY(c0, c);
-		if (xyCurrent)
-		{
-			xPattern = xyCurrent->first;
-			yPattern = xyCurrent->second;
-			break;
-		}
-	}
-
-	for (auto i = 1u; i < input.size(); ++i)
-	{
-		auto c = input[i];
-		c.velocity_.X_ -= VtrowX;
-		c.velocity_.Y_ -= VtrowY;
-		auto xyCurrent = calcCrossXY(c0, c);
-		if (not xyCurrent)
-		{
-			continue;
-		}
-		if (not isEqual(xyCurrent->first, xPattern, 100) ||
-			not isEqual(xyCurrent->second, yPattern, 100))
-		{
-			return false;
-		}
-	}
-	// std::cout << std::setprecision (std::numeric_limits<double>::digits10 + 1) <<"Shall try: " << VtrowX << ", " << VtrowY << std::endl;
-	// std::cout << xPattern << ", " << yPattern << std::endl;
-	return true;
+	return *pattern;
 }
 
 long long Solution::solve_part2(const InputType& input) const
@@ -269,26 +210,26 @@ long long Solution::solve_part2(const InputType& input) const
 		for (long long j = 0; j < 700; ++j)
 		{
 			auto vy = gVy();
-			if (tryForGivenVX_VY(input, vx, vy))
+			auto pointXY = tryForGivenVxVy<&PointXYZ::y_>(input, vx, vy);
+			if (pointXY)
 			{
-				/*Generator gVz;
+				Generator gVz;
 				for (long long k = 0; k < 700; ++k)
 				{
 					auto vz = gVz();
-					tryForGivenVX_VZ(input, vx, vz);
-				}*/
+					auto pointXZ = tryForGivenVxVy<&PointXYZ::z_>(input, vx, vz);
+					if (pointXZ)
+					{
+						return boost::multiprecision::numerator(pointXY->first).convert_to<long long>()
+							+ boost::multiprecision::numerator(pointXY->second).convert_to<long long>()
+							+ boost::multiprecision::numerator(pointXZ->second).convert_to<long long>();
+					}
+				}
 			}
-
 		}
 	}
-    Generator gVz;
-    for (long long k = 0; k < 700; ++k)
-    {
-        auto vz = gVz();
-        tryForGivenVX_VZ(input, -213, vz);
-    }
 
-	return 769281292688187ll;
+	return {};
 }
 
 }  // namespace year_2023::day24

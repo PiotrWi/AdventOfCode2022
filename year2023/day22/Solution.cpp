@@ -12,26 +12,9 @@
 namespace year_2023::day22
 {
 
-PointXYZ::PointXYZ(int x, int y, int z)
-	: x_(x)
-	, y_(y)
-	, z_(z)
-{
-}
-
-bool operator< (const PointXYZ& lhs, const PointXYZ& rhs)
-{
-	return lhs.z_ < rhs.z_;
-}
-
 bool operator< (const Brick& lhs, const Brick& rhs)
 {
 	return lhs.lowerPoint_ < rhs.lowerPoint_;
-}
-
-PointXYZ::PointXYZ(std::vector<int> array)
-	: PointXYZ(array[0], array[1], array[2])
-{
 }
 
 Brick Brick::construct(PointXYZ first, PointXYZ second)
@@ -58,7 +41,7 @@ auto createPointFromStr(std::string s)
     auto strs = splitAndTrim(s, ',');
 	return PointXYZ(strs
 		| std::views::transform([](auto&& el) {return std::stoi(el); })
-		| To<std::vector<int>>());
+		| To<std::vector<long long>>());
 }
 
 InputType parse()
@@ -80,8 +63,8 @@ InputType parse()
 
 auto findValuesRange(const InputType& input)
 {
-	auto maxX = 0;
-	auto maxY = 0;
+	auto maxX = 0ll;
+	auto maxY = 0ll;
 	for (auto&& element : input)
 	{
 		maxX = std::max(maxX, element.lowerPoint_.x_);

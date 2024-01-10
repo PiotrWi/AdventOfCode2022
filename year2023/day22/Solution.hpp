@@ -3,17 +3,10 @@
 #include <array>
 #include <vector>
 
+#include <utility/PointXYZ.hpp>
+
 namespace year_2023::day22
 {
-
-struct PointXYZ
-{
-	explicit PointXYZ(int x, int y, int z);
-	explicit PointXYZ(std::vector<int> array);
-	int x_;
-	int y_;
-	int z_;
-};
 
 struct Brick
 {

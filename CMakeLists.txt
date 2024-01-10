@@ -132,7 +132,6 @@ add_executable(aoc
         year2023/day25/Solution.hpp
         year2022/execute.cpp
         year2023/execute.cpp
-        year2023/day25/Solution.cpp)
+        year2023/day25/Solution.cpp "utility/PointXYZ.cpp")
 
 set_property(TARGET aoc PROPERTY CXX_STANDARD 23)
-target_link_libraries(aoc quadmath)

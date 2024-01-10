@@ -1,15 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <utility/PointXYZ.hpp>
 
 namespace year_2023::day24
 {
-struct PointXYZ
-{
-	long long X_;
-	long long Y_;
-	long long Z_;
-};
 
 struct Cube
 {

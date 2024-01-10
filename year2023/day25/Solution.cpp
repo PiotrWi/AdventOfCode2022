@@ -72,11 +72,13 @@ InputType parse()
 
     return allNodes;
 }
+
 struct Edge
 {
     int begin;
     int end;
 };
+
 bool operator==(Edge lhs, Edge rhs)
 {
     return lhs.begin == rhs.begin && lhs.end == rhs.end;
@@ -143,39 +145,6 @@ auto splitGroups(const InputType &input, const std::vector<Edge>& minSpanTree, E
     }
     return groupIndexes;
 }
-/*
-template <int N>
-std::optional< std::vector<int> > tryToSplitGroups(const InputType &input, std::vector<Edge> minSpanTree)
-{
-    for (auto cutIndex = 0u; cutIndex < minSpanTree.size(); cutIndex++)
-    {
-        auto cutEdge = minSpanTree[cutIndex];
-
-        std::vector<int> groupIndexes = splitGroups(input, minSpanTree, cutEdge);
-
-        auto sum = 0ull;
-        for (auto i = 0u; i < groupIndexes.size(); ++i)
-        {
-            if (groupIndexes[i] == 1)
-            {
-                continue;
-            }
-            for (auto neighbourIndex : input[i].neighboursIndexes_)
-            {
-                if (groupIndexes[neighbourIndex] == 1)
-                {
-                    sum += 1;
-                }
-            }
-        }
-
-        if (sum <= N)
-        {
-            return groupIndexes;
-        }
-    }
-    return {};
-}*/
 
 /*
  * This is graphix based solution.
