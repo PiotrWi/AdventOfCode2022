@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <ostream>
 #include <functional>
 
@@ -39,6 +40,8 @@ constexpr PointRowCol UpperPointDiff{-1, 0};
 constexpr PointRowCol BottomPointDiff{1, 0};
 constexpr PointRowCol RightPointDiff{0, 1};
 constexpr PointRowCol LeftPointDiff{0, -1};
+
+constexpr std::array<PointRowCol, 4> neighboursDiffs{ UpperPointDiff, BottomPointDiff, RightPointDiff, LeftPointDiff};
 
 constexpr PointRowCol UpperLeftPointDiff{-1, -1};
 constexpr PointRowCol UpperRightPointDiff{-1, 1};

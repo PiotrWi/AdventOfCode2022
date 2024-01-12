@@ -6,6 +6,7 @@
 #include <sstream>
 #include <ranges>
 
+#include <utility/Martix.hpp>
 #include <parsers/parsers.hpp>
 #include <StringAlgorithms/StringAlgorithms.hpp>
 
@@ -91,8 +92,7 @@ auto getPixelRanges(std::map<int, std::set<int>> rowToCol)
 auto createPixelMap(std::map<int, std::set<int>>& in)
 {
 	auto [minRow, maxRow, minCol, maxCol] = getPixelRanges(in);
-
-	std::vector<std::vector<char>> pixMap(maxRow - minRow + 3, std::vector<char>(maxCol - minCol + 3, '.'));
+	Matrix<char> pixMap(maxRow - minRow + 3, maxCol - minCol + 3, '.');
 	for (auto&& elem : in)
 	{
 		auto& row = elem.first;
@@ -104,7 +104,7 @@ auto createPixelMap(std::map<int, std::set<int>>& in)
 	return pixMap;
 }
 
-void floodPixels(std::vector<std::vector<char>>& pixMap)
+void floodPixels(Matrix<char>& pixMap)
 {
 	auto queue = std::queue<PointRowCol>();
 	queue.push(PointRowCol{ 0, 0 });
@@ -113,17 +113,12 @@ void floodPixels(std::vector<std::vector<char>>& pixMap)
 	{
 		auto pos = queue.front();
 		queue.pop();
-		auto& field = pixMap[pos.row][pos.col];
+		auto& field = pixMap[pos];
 		if (field == '.')
 		{
 			field = 'O';
-			for (auto&& diff : { PointRowCol{-1, 0}, PointRowCol{1, 0}, PointRowCol{0, -1}, PointRowCol{0, 1} })
+			for (auto&& nextPos : getInBoundsNeighbours(pixMap, pos))
 			{
-				auto nextPos = pos + diff;
-				if (not inBounds(nextPos, pixMap.size(), pixMap[0].size()))
-				{
-					continue;
-				}
 				queue.push(nextPos);
 			}
 		}
@@ -139,16 +134,7 @@ long long Solution::solve(const InputType& in) const
 
 	floodPixels(pixMap);
 
-	auto sum = 0ull;
-	for (auto row = 0u; row < pixMap.size(); ++row)
-	{
-		for (auto col = 0u; col < pixMap[0].size(); ++col)
-		{
-			sum += pixMap[row][col] == '#' || pixMap[row][col] == '.';
-		}
-	}
-
-	return sum;
+	return std::count_if(pixMap.begin(), pixMap.end(), [](char c) {return c == '#' || c == '.'; });
 }
 
 namespace
@@ -241,7 +227,7 @@ long long Solution::solve_part2(const InputType& in) const
 	auto listOfPixels = getListOfIntermediatePixels(in);
 	auto [rowsLegend, colsLegend] = getLegends(listOfPixels);
 
-	std::vector<std::vector<char>> pixMap(rowsLegend.size(), std::vector<char>(colsLegend.size(), '.'));
+	Matrix<char> pixMap(rowsLegend.size(), colsLegend.size(), '.');
 
 	PointRowColOrientation cursor = { Dir::down, 1, 1 };
 	PointRowColOrientation indexes;
@@ -267,14 +253,11 @@ long long Solution::solve_part2(const InputType& in) const
 	floodPixels(pixMap);
 
 	auto sum = 0ull;
-	for (auto row = 0u; row < pixMap.size(); ++row)
+	for (auto it = pixMap.begin(); it != pixMap.end(); ++it)
 	{
-		for (auto col = 0u; col < pixMap[0].size(); ++col)
-		{
-			sum += (pixMap[row][col] == '#' || pixMap[row][col] == '.')
-				* (long long)(rowsLegend[row].end - rowsLegend[row].begin) 
-				* (long long)(colsLegend[col].end - colsLegend[col].begin);
-		}
+		sum += (*it == '#' || *it == '.')
+			* (long long)(rowsLegend[it.getRow()].end - rowsLegend[it.getRow()].begin)
+			* (long long)(colsLegend[it.getCol()].end - colsLegend[it.getCol()].begin);
 	}
 
 	return sum;

@@ -1,12 +1,11 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include <utility/Martix.hpp>
 
 namespace year_2023::day17
 {
 
-using InputType = std::vector<std::vector<int> >;
+using InputType = Matrix<int>;
 
 InputType parse();
 

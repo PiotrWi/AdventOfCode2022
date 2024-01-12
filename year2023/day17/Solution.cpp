@@ -47,8 +47,8 @@ bool operator< (const NodeToVisit& lhs, const NodeToVisit& rhs)
 auto getShortestPathLenght(const InputType& input, int minStep, int maxStep)
 {
 	std::priority_queue<NodeToVisit> queue;
-	std::vector< std::vector<long long> > minimalCostsFromHorizontal(input.size(), std::vector<long long>(input[0].size(), 1000'000'000ll));
-	std::vector< std::vector<long long> > minimalCostsFromVertical(input.size(), std::vector<long long>(input[0].size(), 1000'000'000ll));
+	Matrix<long long> minimalCostsFromHorizontal(input.rows_count(), input.cols_count(), 1000'000'000ll);
+	Matrix<long long> minimalCostsFromVertical(input.rows_count(), input.cols_count(), 1000'000'000ll);
 
 	queue.push(NodeToVisit{ 0, Direction::horizontal, {0, 0} });
 	queue.push(NodeToVisit{ 0, Direction::vertical, {0, 0} });
@@ -60,11 +60,11 @@ auto getShortestPathLenght(const InputType& input, int minStep, int maxStep)
 		if (node.dirrection == Direction::horizontal)
 		{
 			auto point = node.point;
-			if (minimalCostsFromVertical[point.row][point.col] <= node.cost)
+			if (minimalCostsFromVertical[point] <= node.cost)
 			{
 				continue;
 			}
-			minimalCostsFromVertical[point.row][point.col] = node.cost;
+			minimalCostsFromVertical[point] = node.cost;
 
 			for (auto&& diff : { LeftPointDiff, RightPointDiff })
 			{
@@ -74,11 +74,11 @@ auto getShortestPathLenght(const InputType& input, int minStep, int maxStep)
 				for (int i = 1; i <= maxStep; ++i)
 				{
 					nextNode.point = nextNode.point + diff;
-					if (not inBounds(nextNode.point, input.size(), input[0].size()))
+					if (not input.inBounds(nextNode.point))
 					{
 						continue;
 					}
-					nextNode.cost = nextNode.cost + input[nextNode.point.row][nextNode.point.col];
+					nextNode.cost = nextNode.cost + input[nextNode.point];
 					if (i >= minStep)
 					{
 						queue.push(nextNode);
@@ -90,11 +90,11 @@ auto getShortestPathLenght(const InputType& input, int minStep, int maxStep)
 		else
 		{
 			auto point = node.point;
-			if (minimalCostsFromHorizontal[point.row][point.col] <= node.cost)
+			if (minimalCostsFromHorizontal[point] <= node.cost)
 			{
 				continue;
 			}
-			minimalCostsFromHorizontal[point.row][point.col] = node.cost;
+			minimalCostsFromHorizontal[point] = node.cost;
 
 			for (auto&& diff : { BottomPointDiff, UpperPointDiff })
 			{
@@ -104,11 +104,11 @@ auto getShortestPathLenght(const InputType& input, int minStep, int maxStep)
 				for (int i = 1; i <= maxStep; ++i)
 				{
 					nextNode.point = nextNode.point + diff;
-					if (not inBounds(nextNode.point, input.size(), input[0].size()))
+					if (not input.inBounds(nextNode.point))
 					{
 						continue;
 					}
-					nextNode.cost = nextNode.cost + input[nextNode.point.row][nextNode.point.col];
+					nextNode.cost = nextNode.cost + input[nextNode.point];
 					if (i >= minStep)
 					{
 						queue.push(nextNode);
@@ -118,7 +118,7 @@ auto getShortestPathLenght(const InputType& input, int minStep, int maxStep)
 		}
 	}
 
-	return std::min(minimalCostsFromHorizontal[input.size() - 1][input[0].size() - 1], minimalCostsFromVertical[input.size() - 1][input[0].size() - 1]);
+	return std::min(minimalCostsFromHorizontal.back(), minimalCostsFromVertical.back());
 }
 
 } // namespace

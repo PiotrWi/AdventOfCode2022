@@ -23,31 +23,27 @@ auto findAllCrossings(const InputType& input, PointRowCol startingPoint, PointRo
 	crossings.push_back(startingPoint);
 	crossings.push_back(finishPoint);
 
-	for (auto row = 0u; row < input.size(); ++row)
+	for (auto it = input.begin(); it != input.end(); ++it)
 	{
-		for (auto col = 0u; col < input.size(); ++col)
+		auto visitedPoint = it.getPoint();
+		if (*it == '#')
 		{
-			auto visitedPoint = PointRowCol{ (int)row, (int)col };
-			if (input[visitedPoint.row][visitedPoint.col] == '#')
+			continue;
+		}
+		auto emtpyNeignours = 0;
+		for (auto point : getInBoundsNeighbours(input, visitedPoint))
+		{
+			if (input[point] != '#')
 			{
-				continue;
-			}
-			auto emtpyNeignours = 0;
-			for (auto diff : { BottomPointDiff, UpperPointDiff, LeftPointDiff, RightPointDiff })
-			{
-				auto neighbour = visitedPoint + diff;
-
-				if (inBounds(neighbour, input.size(), input[0].size()) && input[neighbour.row][neighbour.col] != '#')
-				{
-					emtpyNeignours += 1;
-				}
-			}
-			if (emtpyNeignours > 2)
-			{
-				crossings.push_back({ (int)row, (int)col });
+				emtpyNeignours += 1;
 			}
 		}
+		if (emtpyNeignours > 2)
+		{
+			crossings.push_back(visitedPoint);
+		}
 	}
+
 	return crossings;
 }
 
@@ -69,18 +65,18 @@ struct Node
 
 bool allowedToPass(const InputType& input, PointRowCol previousPoint, PointRowCol currentPoint)
 {
-	return input[previousPoint.row][previousPoint.col] == '.' ||
-		(input[previousPoint.row][previousPoint.col] == '>' && previousPoint + RightPointDiff == currentPoint) ||
-		(input[previousPoint.row][previousPoint.col] == '<' && previousPoint + LeftPointDiff == currentPoint) ||
-		(input[previousPoint.row][previousPoint.col] == 'v' && previousPoint + BottomPointDiff == currentPoint) ||
-		(input[previousPoint.row][previousPoint.col] == '^' && previousPoint + UpperPointDiff == currentPoint);
+	return input[previousPoint] == '.' ||
+		(input[previousPoint] == '>' && previousPoint + RightPointDiff == currentPoint) ||
+		(input[previousPoint] == '<' && previousPoint + LeftPointDiff == currentPoint) ||
+		(input[previousPoint] == 'v' && previousPoint + BottomPointDiff == currentPoint) ||
+		(input[previousPoint] == '^' && previousPoint + UpperPointDiff == currentPoint);
 }
 
 template <bool TUseSlopes>
 std::optional<Neighbour> followTheRoad(const InputType& input, const std::vector <PointRowCol>& crossings, PointRowCol previousPoint, PointRowCol currentPoint, int cost)
 {
-	if (not inBounds(currentPoint, input.size(), input[0].size())
-		|| input[currentPoint.row][currentPoint.col] == '#')
+	if (not input.inBounds(currentPoint)
+		|| input[currentPoint] == '#')
 	{
 		return {};
 	}
@@ -95,7 +91,7 @@ std::optional<Neighbour> followTheRoad(const InputType& input, const std::vector
 		return Neighbour{ currentPoint, cost, {} };
 	}
 
-	for (auto diff : { BottomPointDiff, UpperPointDiff, LeftPointDiff, RightPointDiff })
+	for (auto diff : neighboursDiffs)
 	{
 		auto nextPoint = currentPoint + diff;
 		if (nextPoint != previousPoint)
@@ -119,7 +115,7 @@ auto fullfillNodes(const InputType& input, const std::vector <PointRowCol>& cros
 	{
 		Node node;
 		node.begin = crossing;
-		for (auto diff : { BottomPointDiff, UpperPointDiff, LeftPointDiff, RightPointDiff })
+		for (auto diff : neighboursDiffs)
 		{
 			auto neighbourOpt = followTheRoad<TUseSlopes>(input, crossings, crossing, crossing + diff, 1);
 			if (neighbourOpt)
@@ -169,7 +165,7 @@ long long Solution::solve(const InputType& input) const
 {
 	max = 0;
 	auto startingPoint = PointRowCol{ 0, 1 };
-	auto finishPoint = PointRowCol{ (int)input.size() - 1, (int)input[0].size() - 2};
+	auto finishPoint = PointRowCol{ (int)input.rows_count() - 1, (int)input.cols_count() - 2};
 	std::vector <PointRowCol> crossings = findAllCrossings(input, startingPoint, finishPoint);
 	std::vector <Node> nodes = fullfillNodes<true>(input, crossings);
 
@@ -183,7 +179,7 @@ long long Solution::solve_part2(const InputType& input) const
 {
 	max = 0;
 	auto startingPoint = PointRowCol{ 0, 1 };
-	auto finishPoint = PointRowCol{ (int)input.size() - 1, (int)input[0].size() - 2 };
+	auto finishPoint = PointRowCol{ (int)input.rows_count() - 1, (int)input.cols_count() - 2 };
 	std::vector <PointRowCol> crossings = findAllCrossings(input, startingPoint, finishPoint);
 	std::vector <Node> nodes = fullfillNodes<false>(input, crossings);
 

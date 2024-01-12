@@ -20,25 +20,17 @@ InputType parse()
 
 auto findS(const InputType& input)
 {
-	for (auto row = 0u; row < input.size(); ++row)
+	auto pos = std::find(input.begin(), input.end(), 'S');
+	if (pos != input.end())
 	{
-		auto sPos = input[row].find('S');
-		if (sPos != std::string::npos)
-		{
-			return PointRowCol{ (int)row, (int)sPos };
-		}
+		return pos.getPoint();
 	}
 	return PointRowCol{};
 }
 
 auto countOs(const InputType& input)
 {
-	auto sum = 0ll;
-	for (auto row = 0u; row < input.size(); ++row)
-	{
-		sum += std::ranges::count_if(input[row], [](auto c) { return c == 'O'; });
-	}
-	return sum;
+	return std::count_if(input.begin(), input.end(), [](auto c) { return c == 'O'; });
 }
 
 long long Solution::solve(const InputType& input) const
@@ -62,18 +54,14 @@ long long Solution::solve(const InputType& input) const
 			auto node = toVisitPoints.front();
 			toVisitPoints.pop();
 
-			if (visitedNodes[i][node.row][node.col] == 'O' || visitedNodes[i][node.row][node.col] == '#')
+			if (visitedNodes[i][node] == 'O' || visitedNodes[i][node] == '#')
 			{
 				continue;
 			}
-			visitedNodes[i][node.row][node.col] = 'O';
-			for (auto&& diff : { UpperPointDiff, BottomPointDiff, RightPointDiff, LeftPointDiff })
+			visitedNodes[i][node] = 'O';
+			for (auto&& point : getInBoundsNeighbours(input, node))
 			{
-				auto neighbour = node + diff;
-				if (inBounds(neighbour, input.size(), input[0].size()))
-				{
-					toVisitNextIteration.push(neighbour);
-				}
+				toVisitNextIteration.push(point);
 			}
 		}
 	}
