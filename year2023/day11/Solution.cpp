@@ -6,37 +6,25 @@
 #include <tuple>
 
 #include <parsers/parsers.hpp>
+#include <utility/RangesUtils.hpp>
 
 namespace year_2023::day11
 {
 
 InputType parse()
 {
-	InputType in;
-	for (auto&& line : parsers::getFile(2023, 11))
-	{
-		auto vec = std::vector<char>();
-		std::copy(line.begin(), line.end(), std::back_inserter(vec));
-		in.push_back(vec);
-	}
-	return in;
+	return parsers::getFile(2023, 11) | To<InputType>();
 }
 
 namespace
 {
-
-struct Pos
-{
-	int row = 0;
-	int col = 0;
-};
 
 auto expandEmptyLines(const InputType& in)
 {
 	std::vector<int> emptyRows{0};
 	std::vector<int> emptyCols{0};
 
-	for (auto row = 1u; row < in.size(); ++row)
+	for (auto row = 1u; row < in.rows_count(); ++row)
 	{
 		if (std::ranges::none_of(in[row], [](auto c) { return c == '#'; }))
 		{
@@ -48,10 +36,10 @@ auto expandEmptyLines(const InputType& in)
 		}
 	}
 
-	for (auto col = 1u; col < in[0].size(); ++col)
+	for (auto col = 1u; col < in.cols_count(); ++col)
 	{
 		bool hasHash = false;
-		for (auto row = 0u; row < in.size(); ++row)
+		for (auto row = 0u; row < in.cols_count(); ++row)
 		{
 			hasHash |= in[row][col] == '#';
 		}
@@ -70,15 +58,12 @@ auto expandEmptyLines(const InputType& in)
 
 auto getAllHashes(const InputType& in)
 {
-	std::vector<Pos> hashes;
-	for (auto row = 0u; row < in.size(); ++row)
+	std::vector<PointRowCol> hashes;
+	for (auto it = in.begin(); it != in.end(); ++it)
 	{
-		for (auto col = 0u; col < in[0].size(); ++col)
+		if (*it == '#')
 		{
-			if (in[row][col] == '#')
-			{
-				hashes.push_back(Pos{ (int)row, (int)col });
-			}
+			hashes.push_back(it.getPoint());
 		}
 	}
 	return hashes;

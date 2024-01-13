@@ -3,66 +3,44 @@
 #include <sstream>
 #include <parsers/parsers.hpp>
 #include <utility/Martix.hpp>
-
-namespace parsers
-{
-
-template<>
-auto toT<std::vector<int>>(const std::string& line) -> std::vector<int>
-{
-    std::vector<int> singleRow;
-    std::stringstream ss(line);
-    char c;
-    while (ss.get(c))
-    {
-        singleRow.push_back(c);
-    }
-    return singleRow;
-}
-
-}
-
-
+#include <utility/RangesUtils.hpp>
 namespace day8
 {
 
-std::vector<std::vector<int>> parse()
+InputType parse()
 {
-    const char* fileLoc = "year2022/day8/input.txt";
-
-    return parsers::parse<std::vector<int>>(fileLoc);
+    return parsers::getFile(2022, 8) | To<InputType>();
 }
 
-int Solution::solve(const std::vector<std::vector<int>>& in)
+int Solution::solve(const InputType& in)
 {
-    std::vector<std::vector<int>> visibility(in.size(), std::vector<int>(in[0].size(), 0));
-    auto visibilityMatrixWrapper = createMatrixWrapper(visibility);
+    Matrix<int> visibilityMatrixWrapper(in.rows_count(), in.cols_count(), 0);
 
-    for (auto row = 0u; row < in.size(); ++row)
+    for (auto row = 0u; row < in.rows_count(); ++row)
     {
         auto max = -1;
-        for (auto col = 0u; col < in[row].size(); ++col)
+        for (auto col = 0u; col < in.cols_count(); ++col)
         {
             visibilityMatrixWrapper[row][col] = visibilityMatrixWrapper[row][col] || (max < in[row][col]);
             max = std::max(in[row][col], max);
         }
         max = -1;
-        for (int col = in[row].size() -1; col >= 0; --col)
+        for (int col = in.cols_count() -1; col >= 0; --col)
         {
             visibilityMatrixWrapper[row][col] = visibilityMatrixWrapper[row][col] || (max < in[row][col]);
             max = std::max(in[row][col], max);
         }
     }
-    for (auto col = 0u; col < in[0].size(); ++col)
+    for (auto col = 0u; col < in.cols_count(); ++col)
     {
         auto max = -1;
-        for (auto row = 0u; row < in.size(); ++row)
+        for (auto row = 0u; row < in.rows_count(); ++row)
         {
             visibilityMatrixWrapper[row][col] = visibilityMatrixWrapper[row][col] || (max < in[row][col]);
             max = std::max(in[row][col], max);
         }
         max = -1;
-        for (int row = in.size() -1; row >= 0; --row)
+        for (int row = in.rows_count() -1; row >= 0; --row)
         {
             visibilityMatrixWrapper[row][col] = visibilityMatrixWrapper[row][col] || (max < in[row][col]);
             max = std::max(in[row][col], max);
@@ -81,14 +59,14 @@ int Solution::solve(const std::vector<std::vector<int>>& in)
 namespace
 {
 
-int getVisibility(const std::vector<std::vector<int>>& in , int row, int col)
+int getVisibility(const InputType& in , int row, int col)
 {
     auto currentHeight = in[row][col];
     int up = 0;
     int down = 0;
     int left = 0;
     int right = 0;
-    for (int r = row + 1; r < (int)in.size(); ++r)
+    for (int r = row + 1; r < (int)in.rows_count(); ++r)
     {
         up += 1;
         if (in[r][col] >= currentHeight) break;
@@ -115,12 +93,12 @@ int getVisibility(const std::vector<std::vector<int>>& in , int row, int col)
 
 }  // namespace
 
-int Solution::solve_part2(const std::vector<std::vector<int>>& in)
+int Solution::solve_part2(const InputType& in)
 {
     auto maxVisibility = 0;
-    for (auto row = 0u; row < in.size(); ++row)
+    for (auto row = 0u; row < in.rows_count(); ++row)
     {
-        for (auto col = 0u; col < in[0].size(); ++col)
+        for (auto col = 0u; col < in.cols_count(); ++col)
         {
             auto currentVisibility = getVisibility(in, row, col);
             if (currentVisibility > maxVisibility)

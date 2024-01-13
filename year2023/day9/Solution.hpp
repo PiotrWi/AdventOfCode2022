@@ -1,17 +1,18 @@
 #pragma once
 
-#include <vector>
+#include <utility/Martix.hpp>
 
 namespace year_2023::day9
 {
 
-std::vector<std::vector<long long>> parse();
+using InputType = Matrix<long long>;
+InputType parse();
 
 class Solution
 {
 public:
-    long long solve(std::vector<std::vector<long long>>& input) const;
-    long long solve_part2(std::vector<std::vector<long long>>& input) const;
+    long long solve(InputType& input) const;
+    long long solve_part2(InputType& input) const;
 };
 
 }  // namespace year_2023::day9

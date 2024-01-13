@@ -13,33 +13,13 @@ namespace year_2023::day10
 namespace
 {
 
-struct Pos
+void addNeighbour(Node& node, PointRowCol point, Matrix<Node>& nodes)
 {
-	int row = 0;
-	int col = 0;
-};
-
-Pos operator+ (const Pos& lhs, const Pos& rhs)
-{
-	Pos p;
-	p.row = lhs.row + rhs.row;
-	p.col = lhs.col + rhs.col;
-	return p;
-}
-
-template <typename T>
-auto isInBound(int row, int collumn, const std::vector< std::vector<T> >& nodes)
-{
-	return row >= 0 && row < (int)nodes.size() && collumn >= 0 && collumn < (int)nodes[0].size();
-}
-
-void addNeighbour(Node& node, int row, int collumn, std::vector< std::vector<Node> >& nodes)
-{
-	if (not isInBound(row, collumn, nodes))
+	if (not nodes.inBounds(point))
 	{
 		return;
 	}
-	node.neighbours.push_back(&nodes[row][collumn]);
+	node.neighbours.push_back(&nodes[point]);
 }
 
 }  // namespace
@@ -49,46 +29,44 @@ InputType parse()
 	InputType input;
 	for (auto&& line : parsers::getFile(2023, 10))
 	{
-		input.nodes.emplace_back(line | std::views::transform([](auto&& c) { return Node(c); }) | ToVector{});
+		input.nodes.push_back(line | std::views::transform([](auto&& c) { return Node(c); }) | ToVector{});
 	}
 
-	auto add = std::bind(addNeighbour, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::ref(input.nodes));
-	for (int row = 0; row < (int)input.nodes.size(); ++row)
+	auto add = std::bind(addNeighbour, std::placeholders::_1, std::placeholders::_2, std::ref(input.nodes));
+	for (auto it = input.nodes.begin(); it != input.nodes.end(); ++it)
 	{
-		for (int col = 0; col < (int)input.nodes[row].size(); ++col)
-		{
-			auto& node = input.nodes[row][col];
+			auto& node = *it;
+			auto point = it.getPoint();
 			switch (node.symbol)
 			{
 			case '|':
-				add(node, row + 1, col);
-				add(node, row - 1, col);
+				add(node, point + BottomPointDiff);
+				add(node, point + UpperPointDiff);
 				break;
 			case '-':
-				add(node, row, col - 1);
-				add(node, row, col + 1);
+				add(node, point + LeftPointDiff);
+				add(node, point + RightPointDiff);
 				break;
 			case 'L':
-				add(node, row - 1, col);
-				add(node, row, col + 1);
+				add(node, point + UpperPointDiff);
+				add(node, point + RightPointDiff);
 				break;
 			case 'J':
-				add(node, row - 1, col);
-				add(node, row, col - 1);
+				add(node, point + UpperPointDiff);
+				add(node, point + LeftPointDiff);
 				break;
 			case '7':
-				add(node, row + 1, col);
-				add(node, row, col - 1);
+				add(node, point + BottomPointDiff);
+				add(node, point + LeftPointDiff);
 				break;
 			case 'F':
-				add(node, row + 1, col);
-				add(node, row, col + 1);
+				add(node, point + BottomPointDiff);
+				add(node, point + RightPointDiff);
 				break;
 			case 'S':
-				add(node, row + 1 , col);
-				add(node, row, col - 1);
-				input.startingRow = row;
-				input.startingCol = col;
+				add(node, point + BottomPointDiff);
+				add(node, point + LeftPointDiff);
+				input.startingPoint = point;
 				node.symbol = '7';
 				break;
 			case '.':
@@ -97,7 +75,6 @@ InputType parse()
 				throw 1;
 				break;	
 			}
-		}
 	}
 	return input;
 }
@@ -129,9 +106,9 @@ std::optional<long long> evaluatePipeForward(auto toVisit, int distance)
 
 std::optional<long long> evaluatePipe(InputType& input)
 {
-	auto& startingNode = input.nodes[input.startingRow][input.startingCol];
+	auto& startingNode = input.nodes[input.startingPoint];
 	startingNode.distanceFromStart = 0;
-	for (auto& neigbourNode : input.nodes[input.startingRow][input.startingCol].neighbours)
+	for (auto& neigbourNode : input.nodes[input.startingPoint].neighbours)
 	{
 		std::vector<Node*> toVisit;
 		toVisit.emplace_back(neigbourNode);
@@ -150,25 +127,21 @@ long long Solution::solve(InputType& input) const
 
 long long Solution::solve_part2(InputType& input) const
 {
-	for (auto row = 0u; row < input.nodes.size(); ++row)
+	for (auto& node: input.nodes)
 	{
-		for (auto col = 0u; col < input.nodes[row].size(); ++col)
+		if (not node.distanceFromStart)
 		{
-			auto& node = input.nodes[row][col];
-			if (not node.distanceFromStart)
-			{
-				node.symbol = '.';
-			}
+			node.symbol = '.';
 		}
 	}
 
-	auto fields = std::vector(input.nodes.size() * 3, std::vector <char>(input.nodes[0].size() * 3, '.'));
-	auto enqueued = std::vector(input.nodes.size() * 3, std::vector <bool>(input.nodes[0].size() * 3, false));
-	auto queue = std::queue<Pos>();
+	auto fields = Matrix<char>(input.nodes.rows_count() * 3, input.nodes.cols_count() * 3, '.');
+	auto enqueued = std::vector<std::vector<bool>>(input.nodes.rows_count() * 3, std::vector<bool>(input.nodes.cols_count() * 3, false));
+	auto queue = std::queue<PointRowCol>();
 
-	for (auto row = 0u; row < input.nodes.size(); ++row)
+	for (auto row = 0u; row < input.nodes.rows_count(); ++row)
 	{
-		for (auto col = 0u; col < input.nodes[row].size(); ++col)
+		for (auto col = 0u; col < input.nodes.cols_count(); ++col)
 		{
 			auto& node = input.nodes[row][col];
 			switch (node.symbol)
@@ -213,20 +186,19 @@ long long Solution::solve_part2(InputType& input) const
 	}
 
 	enqueued[0][0] = true;
-	queue.push(Pos{ 0, 0 });
+	queue.push(PointRowCol{ 0, 0 });
 
 	while (not queue.empty())
 	{
 		auto pos = queue.front();
 		queue.pop();
-		auto& field = fields[pos.row][pos.col];
+		auto& field = fields[pos];
 		if (field == '.')
 		{
 			field = 'O';
-			for (auto&& diff : { Pos{-1, 0}, Pos{1, 0}, Pos{0, -1}, Pos{0, 1} })
+			for (auto&& nextPos : getInBoundsNeighbours(fields, pos))
 			{
-				auto nextPos = pos + diff;
-				if (not isInBound(nextPos.row, nextPos.col, fields) || enqueued[nextPos.row][nextPos.col])
+				if (enqueued[nextPos.row][nextPos.col])
 				{
 					continue;
 				}
@@ -238,9 +210,9 @@ long long Solution::solve_part2(InputType& input) const
 	}
 
 	auto innerFields = 0ll;
-	for (auto row = 0u; row < input.nodes.size(); ++row)
+	for (auto row = 0u; row < input.nodes.rows_count(); ++row)
 	{
-		for (auto col = 0u; col < input.nodes[row].size(); ++col)
+		for (auto col = 0u; col < input.nodes.cols_count(); ++col)
 		{
 			auto isInner =
 				fields[row * 3][col * 3] == '.' && fields[row * 3][col * 3 + 1] == '.' && fields[row * 3][col * 3 + 2] == '.' &&

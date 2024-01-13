@@ -11,14 +11,14 @@
 namespace year_2023::day9
 {
 
-std::vector<std::vector <long long >> parse()
+InputType parse()
 {
-	std::vector<std::vector <long long >> out;
+	InputType out;
 	auto file = parsers::getFile(2023, 9);
 	for (auto&& line : file)
 	{
         auto elements = splitAndTrim(line, ' ');
-		out.emplace_back(elements
+		out.push_back(elements
 			| std::views::transform([](const std::string& el) { return std::stoll(el); })
 			| ToVector{}
 		);
@@ -29,12 +29,12 @@ std::vector<std::vector <long long >> parse()
 namespace
 {
 
-long long predictForward(const std::vector<long long>& in)
+long long predictForward(const InputType::row_view& in)
 {
-	auto matrix = std::vector <std::vector<long long>>(in.size() + 1, std::vector<long long>(in.size() + 1, 0ll));
-	std::copy(in.begin(), in.end(), matrix[0].begin());
+	auto matrix = Matrix<long long>(in.size() + 1, in.size() + 1, 0ll);
+	std::copy(in.begin(), in.end(), matrix.begin());
 
-	for (auto row = 1u; row < matrix.size(); ++row)
+	for (auto row = 1u; row < matrix.rows_count(); ++row)
 	{
 		for (auto col = 0u; col < in.size() - row; ++col)
 		{
@@ -42,7 +42,7 @@ long long predictForward(const std::vector<long long>& in)
 		}
 	}
 
-	for (auto col = 1u; col < matrix[0].size(); ++col)
+	for (auto col = 1u; col < matrix.cols_count(); ++col)
 	{
 		auto row = in.size() - col;
 		matrix[row][col] = matrix[row][col - 1] + matrix[row + 1][col - 1];
@@ -50,11 +50,11 @@ long long predictForward(const std::vector<long long>& in)
 	return matrix[0][in.size()];
 }
 
-long long predictBackward(const std::vector<long long>& in)
+long long predictBackward(const InputType::row_view& in)
 {
-	auto matrix = std::vector <std::vector<long long>>(in.size() + 1, std::vector<long long>(in.size() + 2, 0ll));
-	std::copy(in.begin(), in.end(), matrix[0].begin() + 1);
-	for (auto row = 1u; row < matrix.size(); ++row)
+	auto matrix = Matrix<long long>(in.size() + 1, in.size() + 2, 0ll);
+	std::copy(in.begin(), in.end(), matrix.begin() + 1);
+	for (auto row = 1u; row < matrix.rows_count(); ++row)
 	{
 		for (auto col = 1u; col <= in.size() - row; ++col)
 		{
@@ -62,7 +62,7 @@ long long predictBackward(const std::vector<long long>& in)
 		}
 	}
 
-	for (int row = matrix.size() - 2; row >= 0; --row)
+	for (int row = matrix.rows_count() - 2; row >= 0; --row)
 	{
 		matrix[row][0] = matrix[row][1] - matrix[row + 1][0];
 	}
@@ -72,20 +72,20 @@ long long predictBackward(const std::vector<long long>& in)
 }  // namespace
 
 // 3163359954 to hight
-long long Solution::solve(std::vector<std::vector<long long>>& input) const
+long long Solution::solve(InputType& input) const
 {
 	auto sum = 0ll;
-	for (auto&& row : input)
+	for (auto&& row : input.rows())
 	{
 		sum += predictForward(row);
 	}
 	return sum;
 }
 
-long long Solution::solve_part2(std::vector<std::vector<long long>>& input) const
+long long Solution::solve_part2(InputType& input) const
 {
 	auto sum = 0ll;
-	for (auto&& row : input)
+	for (auto&& row : input.rows())
 	{
 		sum += predictBackward(row);
 	}

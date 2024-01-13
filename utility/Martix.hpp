@@ -9,235 +9,6 @@
 #include <optional>
 #include <type_traits>
 
-template <typename TDataTypeIn, typename TRawMatrixTypeIn>
-struct TypesTraits
-{
-	using TDataType = TDataTypeIn;
-	using TRawMatrixType = TRawMatrixTypeIn;
-	using TRowIterator = std::remove_reference<decltype(std::declval<TRawMatrixType>().begin())>::type;
-	using TColumnIterator = std::remove_reference<decltype(std::declval<TRawMatrixType>()[0].begin())>::type;
-	using TIteratorReturnValue = std::remove_reference<decltype(std::declval<TRawMatrixType>()[0][0])>::type;
-	using TColumnType = std::remove_reference<decltype(std::declval<TRawMatrixType>()[0])>::type;
-};
-
-template <typename TDataTypeIn, typename TRawMatrixTypeIn>
-class MatritWrapperIterator : public TypesTraits<TDataTypeIn, TRawMatrixTypeIn>
-{
-public:
-	using Traits = TypesTraits<TDataTypeIn, TRawMatrixTypeIn>;
-
-	using iterator_category = std::forward_iterator_tag;
-	using difference_type = std::ptrdiff_t;
-	using value_type = typename Traits::TDataType;
-	using pointer = Traits::TDataType*;
-	using reference = Traits::TDataType&;
-public:
-	explicit MatritWrapperIterator(Traits::TRowIterator rowIterator)
-		: rowIt_(rowIterator)
-	{
-	}
-
-	MatritWrapperIterator& operator++()
-	{
-		if (not colIt_) colIt_ = rowIt_->begin();
-
-		++(*colIt_);
-		if (*colIt_ == rowIt_->end())
-		{
-			++rowIt_;
-			colIt_ = {};
-		}
-		return *this;
-	}
-
-	Traits::TIteratorReturnValue& operator*()
-	{
-		if (not colIt_) colIt_ = rowIt_->begin();
-		return (**colIt_);
-	}
-
-	pointer operator->()
-	{
-		return this->operator*();
-	}
-
-	bool operator==(const MatritWrapperIterator<TDataTypeIn, TRawMatrixTypeIn>& rhs)
-	{
-		return rowIt_ == rhs.rowIt_ && colIt_ == rhs.colIt_;
-	}
-
-	bool operator!=(const MatritWrapperIterator<TDataTypeIn, TRawMatrixTypeIn>& rhs)
-	{
-		return not (*this == rhs);
-	}
-
-	PointRowCol toPointRowCol(const MatritWrapperIterator<TDataTypeIn, TRawMatrixTypeIn>& begin)
-	{
-		auto thisCol = (colIt_) ? ((*colIt_) - rowIt_->begin()) : 0;
-		return PointRowCol{ int(rowIt_ - begin.rowIt_), (int)thisCol };
-	}
-private:
-	Traits::TRowIterator rowIt_;
-	std::optional<typename Traits::TColumnIterator> colIt_;
-};
-
-template <typename TDataTypeIn, typename TRawMatrixTypeIn = std::vector<std::vector<TDataTypeIn>> >
-class MatrixWrapper : public TypesTraits<TDataTypeIn, TRawMatrixTypeIn>
-{
-	using Traits = TypesTraits<TDataTypeIn, TRawMatrixTypeIn>;
-	using TIteratorType = MatritWrapperIterator<TDataTypeIn, TRawMatrixTypeIn>;
-	using TConstIteratorType = MatritWrapperIterator<const TDataTypeIn, const TRawMatrixTypeIn>;
-public:
-	explicit MatrixWrapper(TRawMatrixTypeIn& matrix)
-		: matrix_(&matrix)
-	{
-	}
-
-	explicit MatrixWrapper(int rows, int columns, TDataTypeIn&& initValue)
-	{
-		matrixData_ = std::vector<std::vector<TDataTypeIn>>(rows, std::vector<TDataTypeIn>(columns, initValue));
-	}
-
-	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn> operator=(MatrixWrapper&& other)
-	{
-		matrixData_ = std::move(other.matrixData_);
-		if (matrixData_)
-		{
-			matrix_ = &(*matrixData_);
-		}
-		else
-		{
-			matrix_ = other.matrix_;
-		}
-		return *this;
-	}
-
-	MatrixWrapper(MatrixWrapper&& other)
-	{
-		matrixData_ = std::move(other.matrixData_);
-		if (matrixData_)
-		{
-			matrix_ = &(*matrixData_);
-		}
-		else
-		{
-			matrix_ = other.matrix_;
-		}
-	}
-
-	MatrixWrapper(const MatrixWrapper& other)
-	{
-		matrixData_ = other.matrixData_;
-		if (matrixData_)
-		{
-			matrix_ = &(*matrixData_);
-		}
-		else
-		{
-			matrix_ = other.matrix_;
-		}
-	}
-
-	MatrixWrapper operator=(const MatrixWrapper& other)
-	{
-		if (&other == this)
-		{
-			return *this;
-		}
-		matrixData_ = other.matrixData_;
-		if (matrixData_)
-		{
-			matrix_ = &(*matrixData_);
-		}
-		else
-		{
-			matrix_ = other.matrix_;
-		}
-		return *this;
-	}
-
-
-	MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn> cloneAndClear(TDataTypeIn&& initValue) const
-	{
-		MatrixWrapper<TDataTypeIn, TRawMatrixTypeIn> mv(this->getRowsCount(), this->getColumnsCount(), std::forward<TDataTypeIn>(initValue));
-		return mv;
-	}
-
-	TConstIteratorType begin() const
-	{
-		return TConstIteratorType((*matrix_).begin());
-	}
-
-	TConstIteratorType end() const
-	{
-		return TConstIteratorType((*matrix_).end());
-	}
-
-	TIteratorType begin()
-	{
-		return TIteratorType((*matrix_).begin());
-	}
-
-	TIteratorType end()
-	{
-		return TIteratorType((*matrix_).end());
-	}
-
-	Traits::TColumnType & operator[](std::size_t rowIndex)
-	{
-		return (*matrix_)[rowIndex];
-	}
-
-	const Traits::TColumnType& operator[](std::size_t rowIndex) const
-	{
-		return (*matrix_)[rowIndex];
-	}
-
-	Traits::TDataType& operator[](const PointRowCol& point)
-	{
-		return (*matrix_)[point.row][point.col];
-	}
-
-	const Traits::TDataType& operator[](const PointRowCol& point) const
-	{
-		return (*matrix_)[point.row][point.col];
-	}
-
-	int getRowsCount() const
-	{
-		return (int)(*matrix_).size();
-	}
-
-	int getColumnsCount() const 
-	{
-		if (getRowsCount() == 0)
-		{
-			return 0;
-		}
-		return (int)(*matrix_)[0].size();
-	}
-
-	bool isInBound(const PointRowCol& point) const
-	{
-		return point.row >= 0 && point.col >= 0 && point.row < getRowsCount() and point.col < getColumnsCount();
-	}
-private:
-	Traits::TRawMatrixType* matrix_;
-	std::optional<typename Traits::TRawMatrixType> matrixData_;
-};
-
-template <typename TDataType>
-auto createMatrixWrapper(const std::vector<std::vector<TDataType>>& in) -> const MatrixWrapper<TDataType, const std::vector< std::vector<TDataType> > >
-{
-	return MatrixWrapper<TDataType, const std::vector< std::vector<TDataType> > >(in);
-}
-
-template <typename TDataType>
-auto createMatrixWrapper(std::vector<std::vector<TDataType>>& in)
-{
-	return MatrixWrapper<TDataType, std::vector<std::vector<TDataType>> >(in);
-}
-
 template <typename TDataTypeIn>
 class MatrixIterator
 {
@@ -265,6 +36,19 @@ public:
 	{
 		auto other = *this;
 		++curent_;
+		return other;
+	}
+
+	MatrixIterator& operator--() noexcept
+	{
+		--curent_;
+		return *this;
+	}
+
+	MatrixIterator& operator--(int) noexcept
+	{
+		auto other = *this;
+		--curent_;
 		return other;
 	}
 
@@ -353,12 +137,14 @@ public:
 
 	using size_type = unsigned int;
 
+	using iterator = typename std::span<TDataTypeIn>::iterator;
+
 	explicit RowView(const std::span<TDataTypeIn>& data)
 		: data_(data)
 	{
 	}
 
-	size_type size() const
+	size_type size() const noexcept
 	{
 		return data_.size();
 	}
@@ -373,8 +159,57 @@ public:
 		return data_[pos];
 	}
 
+	iterator begin() noexcept
+	{
+		return data_.begin();
+	}
+
+	iterator end() noexcept
+	{
+		return data_.end();
+	}
+
+	iterator begin() const noexcept
+	{
+		return data_.begin();
+	}
+
+	iterator end() const noexcept
+	{
+		return data_.end();
+	}
 private:
 	std::span<TDataTypeIn> data_;
+};
+
+template <typename TDataTypeIn> class Matrix;
+
+template <typename TDataTypeIn>
+class RowsRange
+{
+public:
+	explicit RowsRange(Matrix<TDataTypeIn>& matrix)
+		: matrix_(matrix)
+	{
+		for (auto i = 0u; i < matrix.rows_count(); ++i)
+		{
+			rows_.push_back(matrix.row(i));
+		}
+	}
+
+	std::vector<RowView<TDataTypeIn>>::iterator begin()
+	{
+		return rows_.begin();
+	}
+
+	std::vector<RowView<TDataTypeIn>>::iterator end()
+	{
+		return rows_.end();
+	}
+
+private:
+	Matrix<TDataTypeIn>& matrix_;
+	std::vector<RowView<TDataTypeIn>> rows_;
 };
 
 template <typename TDataTypeIn>
@@ -384,6 +219,7 @@ public:
 	using size_type = unsigned int;
 	using row_view = RowView<TDataTypeIn>;
 	using const_row_view = const RowView<const TDataTypeIn>;
+	using iterator = MatrixIterator<TDataTypeIn>;
 	using const_iterator = MatrixIterator<const TDataTypeIn>;
 	using reference = TDataTypeIn&;
 	using const_reference = const TDataTypeIn&;
@@ -419,16 +255,27 @@ public:
 		return point.row >= 0 && point.row < rows_ && point.col >= 0 && point.col < cols_;
 	}
 
-	RowView<TDataTypeIn> operator[](size_type pos)
+	row_view operator[](size_type pos)
 	{
 		std::span<TDataTypeIn> row(data_.data() + pos * cols_, cols_);
-		return RowView<TDataTypeIn>(row);
+		return row_view(row);
 	}
 
 	const RowView<const TDataTypeIn> operator[](size_type pos) const
 	{
 		std::span<const TDataTypeIn> row(data_.data() + pos * cols_, cols_);
 		return RowView<const TDataTypeIn>(row);
+	}
+
+	RowsRange<TDataTypeIn> rows()
+	{
+		return RowsRange<TDataTypeIn>(*this);
+	}
+
+	RowView<TDataTypeIn> row(size_type pos)
+	{
+		std::span<TDataTypeIn> row(data_.data() + pos * cols_, cols_);
+		return RowView<TDataTypeIn>(row);
 	}
 
 	const RowView<const TDataTypeIn> row(size_type pos) const
@@ -447,6 +294,16 @@ public:
 		return *(data_.data() + point.row * cols_ + point.col);
 	}
 
+	iterator begin() noexcept
+	{
+		return MatrixIterator(data_.data(), data_.data(), cols_);
+	}
+
+	iterator end() noexcept
+	{
+		return MatrixIterator(data_.data(), data_.data() + data_.size(), cols_);
+	}
+
 	const_iterator begin() const noexcept
 	{
 		return MatrixIterator(data_.data(), data_.data(), cols_);
@@ -463,9 +320,9 @@ public:
 	}
 
 	template <template<typename, typename> class TContainerType>
-	void push_back(TContainerType<TDataTypeIn, std::allocator<int>>&& row)
+	void push_back(TContainerType<TDataTypeIn, std::allocator<TDataTypeIn>>&& row)
 	{
-		push_row(std::forward<TContainerType<TDataTypeIn, std::allocator<int>>&&>(row));
+		push_row(std::forward<TContainerType<TDataTypeIn, std::allocator<TDataTypeIn>>&&>(row));
 	}
 
 	template <template<typename> class TContainerType>
@@ -485,7 +342,7 @@ public:
 	}
 
 	template <template<typename, typename> class TContainerType>
-	void push_row(TContainerType<TDataTypeIn, std::allocator<int>>&& row)
+	void push_row(TContainerType<TDataTypeIn, std::allocator<TDataTypeIn>>&& row)
 	{
 		++rows_;
 		std::ranges::copy(row, std::back_inserter(data_));

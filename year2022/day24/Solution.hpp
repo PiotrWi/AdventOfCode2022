@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vector>
+#include <utility/Martix.hpp>
 
 namespace day24
 {
 
-using Wall = std::vector<std::vector<char>>;
+using Wall = Matrix<char>;
 
 Wall parse();
 

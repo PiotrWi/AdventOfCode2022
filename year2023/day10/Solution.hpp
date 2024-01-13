@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <vector>
+#include <utility/Martix.hpp>
 
 namespace year_2023::day10
 {
@@ -17,9 +18,8 @@ struct Node
 
 struct Input
 {
-    int startingRow;
-    int startingCol;
-    std::vector< std::vector<Node> > nodes;
+    PointRowCol startingPoint;
+    Matrix<Node> nodes;
 };
 
 using InputType = Input;  

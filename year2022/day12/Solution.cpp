@@ -5,59 +5,58 @@
 #include <utility/Martix.hpp>
 #include <iostream>
 #include <functional>
+#include <utility/RangesUtils.hpp>
 
 namespace day12
 {
 
-std::vector<std::vector<char>> parse()
+    InputType parse()
 {
-    const char* fileLoc = "year2022/day12/input.txt";
-    return parsers::parseMatrixOfChars(fileLoc);
+    return parsers::getFile(2023, 23) | To<InputType>();
 }
 
 namespace
 {
 
-PointRowCol findPos(const std::vector<std::vector<char>>& in, char c)
+PointRowCol findPos(const InputType& in, char c)
 {
-    auto matrixWrapper = createMatrixWrapper(in);
-    auto pos = std::find(matrixWrapper.begin(), matrixWrapper.end(), c);
-    if (pos != matrixWrapper.end())
+    auto pos = std::find(in.begin(), in.end(), c);
+    if (pos != in.end())
     {
-        return pos.toPointRowCol(matrixWrapper.begin());
+        return pos.getPoint();
     }
 
     throw 1;
 }
 
-bool wasVisited(PointRowCol in, const MatrixWrapper<int>& costs)
+bool wasVisited(PointRowCol in, const Matrix<int>& costs)
 {
     return costs[in] != -1;
 }
 
 auto isAccessible(PointRowCol source,
     PointRowCol destination,
-                  const std::vector<std::vector<char>>& heights)
+    const InputType& heights)
 {
-    return heights[destination.row][destination.col] - heights[source.row][source.col] <= 1;
+    return heights[destination] - heights[source] <= 1;
 }
 
-auto is_a(PointRowCol in, const std::vector<std::vector<char>>& heights)
+auto is_a(PointRowCol in, const InputType& heights)
 {
-    return heights[in.row][in.col] == 'a';
+    return heights[in] == 'a';
 }
 
 auto isAccessible_part2(PointRowCol source,
                     PointRowCol destination,
-                  const std::vector<std::vector<char>>& heights)
+                  const InputType& heights)
 {
-    return heights[source.row][source.col] - heights[destination.row][destination.col] <= 1;
+    return heights[source] - heights[destination] <= 1;
 }
 
 struct BFS
 {
 public:
-    BFS(MatrixWrapper<int>& costMatrix)
+    BFS(Matrix<int>& costMatrix)
         : costMatrix_(costMatrix)
     {}
     
@@ -87,7 +86,7 @@ public:
                 LeftPointDiff})
             {
                 auto neigbourNode = nodesToCheck[i].second + diff;
-                if (costMatrix_.isInBound(neigbourNode)
+                if (costMatrix_.inBounds(neigbourNode)
                     && isValidTransaction(analyzedNode, neigbourNode))
                 {
                     nodesToCheck.push_back({ nodeCost + 1, neigbourNode });
@@ -97,21 +96,20 @@ public:
         return -1;
     }
 private:
-    MatrixWrapper<int> costMatrix_;
+    Matrix<int> costMatrix_;
 };
 
 }
 
-int Solution::solve(std::vector<std::vector<char>> in)
+int Solution::solve(InputType in)
 {
-    std::vector<std::vector<int>> stepsToVisit(in.size(), std::vector<int>(in[0].size(), -1));
+    Matrix<int> costMatrix(in.rows_count(), in[0].size(), -1);
 
     auto startPos = findPos(in, 'S');
     auto endPos = findPos(in, 'E');
     in[startPos.row][startPos.col] = 'a';
     in[endPos.row][endPos.col] = 'z';
 
-    auto costMatrix = createMatrixWrapper(stepsToVisit);
     return BFS(costMatrix).calculateTotalCost(startPos,
         [&endPos](auto&& point) {return point == endPos; },
         [&](auto&& sourceNode, auto&& destinationNode)
@@ -121,9 +119,9 @@ int Solution::solve(std::vector<std::vector<char>> in)
     return 0;
 }
 
-int Solution::solve_part2(std::vector<std::vector<char>> in)
+int Solution::solve_part2(InputType in)
 {
-    std::vector<std::vector<int>> stepsToVisit(in.size(), std::vector<int>(in[0].size(), -1));
+    Matrix<int> costMatrix(in.rows_count(), in[0].size(), -1);
 
     auto startPos = findPos(in, 'S');
     auto endPos = findPos(in, 'E');
@@ -131,7 +129,6 @@ int Solution::solve_part2(std::vector<std::vector<char>> in)
     in[endPos.row][endPos.col] = 'z';
     startPos = endPos;
 
-    auto costMatrix = createMatrixWrapper(stepsToVisit);
     return BFS(costMatrix).calculateTotalCost(startPos,
         [&](auto&& point) {return is_a(point, in); },
         [&](auto&& sourceNode, auto&& destinationNode)

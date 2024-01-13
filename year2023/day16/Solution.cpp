@@ -13,7 +13,7 @@ namespace year_2023::day16
 namespace
 {
 
-void visit(std::vector<std::vector < std::array<bool, 4> > >& visited, const InputType& input, PointRowColOrientation point)
+void visit(Matrix<std::array<bool, 4>>& visited, const InputType& input, PointRowColOrientation point)
 {
 	std::queue<PointRowColOrientation> toVisit;
 	toVisit.push(point);
@@ -24,13 +24,13 @@ void visit(std::vector<std::vector < std::array<bool, 4> > >& visited, const Inp
 		toVisit.pop();
 
 		auto p = point.position_;
-		if (not inBounds(point.position_, input.size(), input[0].size()) || visited[p.row][p.col][static_cast<int>(point.orientation_)] == true)
+		if (not input.inBounds(point.position_) || visited[p][static_cast<int>(point.orientation_)] == true)
 		{
 			continue;
 		}
-		visited[p.row][p.col][static_cast<int>(point.orientation_)] = true;
+		visited[p][static_cast<int>(point.orientation_)] = true;
 
-		switch (input[p.row][p.col])
+		switch (input[p])
 		{
 		case '.':
 			point.position_ = point.position_ + getDirrectionDif(point.orientation_);
@@ -102,23 +102,16 @@ void visit(std::vector<std::vector < std::array<bool, 4> > >& visited, const Inp
 	}
 }
 
-long long collectEnergizedPoints(const std::vector<std::vector < std::array<bool, 4> > >& visitedNodes)
+long long collectEnergizedPoints(Matrix<std::array<bool, 4>>& visitedNodes)
 {
-	auto sum = 0ull;
-	for (auto row = 0u; row < visitedNodes.size(); ++row)
-	{
-		for (auto col = 0u; col < visitedNodes[row].size(); ++col)
-		{
-			sum += visitedNodes[row][col][0] || visitedNodes[row][col][1] || visitedNodes[row][col][2] || visitedNodes[row][col][3];
-		}
-	}
-	return sum;
+	return std::count_if(visitedNodes.begin(), visitedNodes.end(), [](auto&& visitedTable){
+		return std::ranges::any_of(visitedTable, [](auto visited) { return visited; });
+	});
 }
 
 long long getEnergizedPoints(const InputType& input, PointRowColOrientation point)
 {
-	std::vector<std::vector < std::array<bool, 4> > > visitedNodes(input.size(), std::vector<std::array<bool, 4> >(input[0].size(), { false, false, false, false }));
-
+	Matrix<std::array<bool, 4>> visitedNodes(input.rows_count(), input.cols_count(), { false, false, false, false });
 	visit(visitedNodes, input, point);
 	return collectEnergizedPoints(visitedNodes);
 }
@@ -139,16 +132,16 @@ long long Solution::solve(const InputType& input) const
 long long Solution::solve_part2(const InputType& input) const
 {
 	auto max = 0ll;
-	for (auto row = 0u; row < input.size(); ++row)
+	for (auto row = 0u; row < input.rows_count(); ++row)
 	{
 		max = std::max(max, getEnergizedPoints(input, { Dir::right, {(int)row, 0} }));
-		max = std::max(max, getEnergizedPoints(input, { Dir::left, {(int)row, int(input[row].size() - 1)}}));
+		max = std::max(max, getEnergizedPoints(input, { Dir::left, {(int)row, int(input.cols_count() - 1)}}));
 	}
 
-	for (auto col = 0u; col < input[0].size(); ++col)
+	for (auto col = 0u; col < input.cols_count(); ++col)
 	{
 		max = std::max(max, getEnergizedPoints(input, { Dir::down, {0, (int)col} }));
-		max = std::max(max, getEnergizedPoints(input, { Dir::up, {int(input.size() - 1), (int)col} }));
+		max = std::max(max, getEnergizedPoints(input, { Dir::up, {int(input.rows_count() - 1), (int)col} }));
 	}
 
 	return max;

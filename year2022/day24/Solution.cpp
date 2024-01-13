@@ -8,24 +8,24 @@
 #include <cassert>
 #include <queue>
 #include <utility/Martix.hpp>
+#include <utility/RangesUtils.hpp>
 
 namespace day24
 {
 
-
 Wall parse()
 {
-    const char* fileLoc = "year2022/day24/input.txt";
-    return parsers::parseMatrixOfChars(fileLoc);
+    return parsers::getFile(2023, 23) | To<Wall>();
 }
+
 namespace
 {
 
-PointRowCol teleport(const MatrixWrapper<char> &map, PointRowCol pow, Dir orientation)
+PointRowCol teleport(const Wall& map, PointRowCol pow, Dir orientation)
 {
     if (orientation == Dir::up)
     {
-        for (int row = map.getRowsCount() -1; row >= 0; row--)
+        for (int row = map.rows_count() -1; row >= 0; row--)
         {
             if (map[row][pow.col] == '.')
             {
@@ -35,7 +35,7 @@ PointRowCol teleport(const MatrixWrapper<char> &map, PointRowCol pow, Dir orient
     }
     if (orientation == Dir::down)
     {
-        for (int row = 0; row < (int)map.getRowsCount(); row++)
+        for (int row = 0; row < (int)map.rows_count(); row++)
         {
             if (map[row][pow.col] == '.')
             {
@@ -68,24 +68,24 @@ PointRowCol teleport(const MatrixWrapper<char> &map, PointRowCol pow, Dir orient
 
 }
 
-bool isRock(const MatrixWrapper<char> &map, PointRowCol pos)
+bool isRock(const Wall &map, PointRowCol pos)
 {
     return map[pos] == '#';
 }
 
-bool isBlank(const MatrixWrapper<char>& map, PointRowCol pos)
+bool isBlank(const Wall& map, PointRowCol pos)
 {
-    return map.isInBound(pos) && map[pos] == '.';
+    return map.inBounds(pos) && map[pos] == '.';
 }
 
 struct Blizards
 {
     explicit Blizards(Wall&);
     Blizards getNewIteration();
-    const MatrixWrapper<char>& getFullSurface();
+    const Wall& getFullSurface();
 private:
     void performIteration();
-    MatrixWrapper<char> wall_;
+    Wall wall_;
     std::vector<PointRowColOrientation> blizzardPoints_;
     std::vector<PointRowCol> rocks_;
 };
@@ -95,7 +95,7 @@ Blizards::Blizards(Wall& wall)
 {
     for (auto it = wall_.begin(); it != wall_.end(); ++it)
     {
-        const auto& point = it.toPointRowCol(wall_.begin());
+        const auto& point = it.getPoint();
         if (isRock(wall_, point))
         {
             rocks_.emplace_back(point);
@@ -119,7 +119,7 @@ Blizards::Blizards(Wall& wall)
     }
 }
 
-const MatrixWrapper<char>& Blizards::getFullSurface()
+const Wall& Blizards::getFullSurface()
 {
     return wall_;
 }
@@ -133,7 +133,7 @@ Blizards Blizards::getNewIteration()
 
 void Blizards::performIteration()
 {
-    wall_ = wall_.cloneAndClear('.');
+    wall_ = Matrix<char>(wall_.rows_count(), wall_.cols_count(), '.');
 
     for (auto&& rock : rocks_)
     {
@@ -157,7 +157,7 @@ void Blizards::performIteration()
 [[maybe_unused]]
 void printBlizards(const Wall& wall)
 {
-    for (int row = 0; row < (int)wall.size(); ++row)
+    for (int row = 0; row < (int)wall.rows_count(); ++row)
     {
         for (int col = 0; col < (int)wall[row].size(); ++col)
         {
@@ -169,7 +169,7 @@ void printBlizards(const Wall& wall)
 }
 
 std::deque<Blizards> blizards;
-const MatrixWrapper<char>& getBlizard(int iteration)
+const Wall& getBlizard(int iteration)
 {
     assert(iteration <= (int)blizards.size());
     if (iteration >= (int)blizards.size())
@@ -272,7 +272,7 @@ int Solution::solve(Wall wall)
     blizards.push_back(Blizards(wall));
 
     auto startingPoint = PointRowCol{0, 1};
-    auto endPoint = PointRowCol{(int)wall.size()-1, (int)wall[0].size() - 2};
+    auto endPoint = PointRowCol{(int)wall.rows_count()-1, (int)wall[0].size() - 2};
 
     return solveAStarLike(startingPoint, endPoint);
 }
@@ -283,7 +283,7 @@ int Solution::solve_part2(Wall wall)
     blizards.push_back(Blizards(wall));
 
     auto startingPoint = PointRowCol{0, 1};
-    auto endPoint = PointRowCol{(int)wall.size()-1, (int)wall[0].size() - 2};
+    auto endPoint = PointRowCol{(int)wall.rows_count()-1, (int)wall[0].size() - 2};
 
     auto iterationNum = solveAStarLike(startingPoint, endPoint);
     iterationNum = solveAStarLike(endPoint, startingPoint, iterationNum);

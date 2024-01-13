@@ -1,17 +1,18 @@
 #pragma once
 
-#include <vector>
+#include <utility/Martix.hpp>
 
 namespace day8
 {
 
-std::vector<std::vector<int>> parse();
+using InputType = Matrix<int>;
+InputType parse();
 
 class Solution
 {
 public:
-    int solve(const std::vector<std::vector<int>>&);
-    int solve_part2(const std::vector<std::vector<int>>&);
+    int solve(const InputType&);
+    int solve_part2(const InputType&);
 };
 
 }  // namespace
